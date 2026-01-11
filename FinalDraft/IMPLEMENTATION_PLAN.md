@@ -831,7 +831,7 @@ class CircuitDashboard extends Component
 
 - [x] Install PostgreSQL locally
 - [x] Configure `.env` for PostgreSQL
-- [X] Install composer packages (spatie/laravel-permission, spatie/laravel-activitylog)
+- [x] Install composer packages (spatie/laravel-permission, spatie/laravel-activitylog)
 - [ ] Install npm packages (livewire-sortable, apexcharts)
 - [ ] Set timezone to `America/New_York` in `config/app.php`
 - [ ] Create `config/workstudio.php`
