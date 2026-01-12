@@ -1,0 +1,256 @@
+{
+    "UnitList": [
+        [
+            "ASH1218",
+            "VCT",
+            "Ash 12.1-18\"",
+            "Ash 12.1-18\""
+        ],
+        [
+            "ASH1824",
+            "VCT",
+            "Ash 18.1 -24\"",
+            "Ash 18.1 -24\""
+        ],
+        [
+            "ASH2430",
+            "VCT",
+            "Ash 24.1 - 30\"",
+            "Ash 24.1 - 30\""
+        ],
+        [
+            "ASH3036",
+            "VCT",
+            "Ash 30.1-36\"",
+            "Ash 30.1-36\""
+        ],
+        [
+            "ASH36",
+            "VCT",
+            "Ash > 36.1\"",
+            "Ash > 36.1\""
+        ],
+        [
+            "ASH612",
+            "VCT",
+            "Ash 6-12\"",
+            "Ash 6-12\""
+        ],
+        [
+            "BRUSH",
+            "VAR",
+            "Hand Cut Brush/Mowin",
+            "Hand Cut Brush/Mowing"
+        ],
+        [
+            "BRUSHTRIM",
+            "VAR",
+            "Hand Cut Brush w Tri",
+            "Hand Cut Brush w Trim"
+        ],
+        [
+            "BTR",
+            "VCT",
+            "Bucket Trim",
+            "Bucket Trim"
+        ],
+        [
+            "HCB",
+            "VAR",
+            "Hand Cut Brush",
+            "Hand Cut Brush"
+        ],
+        [
+            "Herb-Sub",
+            "VAR",
+            "T&M",
+            "Herbicide - Substation"
+        ],
+        [
+            "HERBA",
+            "VAR",
+            "Herbicide - Aquatic",
+            "Herbicide - Aquatic"
+        ],
+        [
+            "HERBNA",
+            "VAR",
+            "Herbicide - Non Aqua",
+            "Herbicide - Non Aquatic"
+        ],
+        [
+            "HERBS",
+            "VAR",
+            "HERBS",
+            "Herbicide - Substation"
+        ],
+        [
+            "MOW",
+            "VAR",
+            "",
+            "Mowing"
+        ],
+        [
+            "MPB",
+            "VLG",
+            "Multi-Phase - Bucket",
+            "Multi-Phase - Bucket"
+        ],
+        [
+            "MPBE",
+            "VLG",
+            "Multi-Phase - Bucket",
+            "Multi-Phase - Bucket Enhanced"
+        ],
+        [
+            "MPE",
+            "VLG",
+            "Multi-Phase - Enhanc",
+            "Multi-Phase - Enhanced"
+        ],
+        [
+            "MPM",
+            "VLG",
+            "Multi-Phase - Manual",
+            "Multi-Phase - Manual"
+        ],
+        [
+            "MPME",
+            "VLG",
+            "Multi-Phase - Manual",
+            "Multi-Phase - Manual Enhanced"
+        ],
+        [
+            "MST",
+            "VLG",
+            "Mech Side Trim",
+            "Mech Side Trim"
+        ],
+        [
+            "NOT",
+            "VNW",
+            "Notification",
+            "Notification"
+        ],
+        [
+            "NW",
+            "VNW",
+            "No Work Needed",
+            "No Work"
+        ],
+        [
+            "OHT",
+            "VLG",
+            "Overhang Trim",
+            "Overhang Trim"
+        ],
+        [
+            "REM>30",
+            "VCT",
+            "Removal > 30.1\"",
+            "Removal > 30.1\" (new)"
+        ],
+        [
+            "REM1218",
+            "VCT",
+            "Removal 12.1-18\"",
+            "Removal 12.1-18\""
+        ],
+        [
+            "REM1824",
+            "VCT",
+            "Removal 18.1 -24\"",
+            "Removal 18.1 -24\""
+        ],
+        [
+            "REM2430",
+            "VCT",
+            "Removal 24.1 - 30\"",
+            "Removal 24.1 - 30\""
+        ],
+        [
+            "REM3036",
+            "VCT",
+            "Removal 30.1-36\"",
+            "Removal 30.1-36\""
+        ],
+        [
+            "REM36",
+            "VCT",
+            "Removal > 36.1\"",
+            "Removal > 36.1\""
+        ],
+        [
+            "REM612",
+            "VCT",
+            "Removal 6-12\"",
+            "Removal 6-12\""
+        ],
+        [
+            "SENSI",
+            "VSA",
+            "Sensitive Customer",
+            "Sensitive Customer"
+        ],
+        [
+            "SIDET",
+            "VLG",
+            "Side Trim",
+            "Side Trim"
+        ],
+        [
+            "SOHT",
+            "VLG",
+            "Secondary OH Trim",
+            "Secondary OH Trim"
+        ],
+        [
+            "SPB",
+            "VLG",
+            "Single Phase - Bucke",
+            "Single Phase - Bucket"
+        ],
+        [
+            "SPE",
+            "VLG",
+            "Single Phase - Enhan",
+            "Single Phase - Enhanced"
+        ],
+        [
+            "SPM",
+            "VLG",
+            "Single Phase - Manua",
+            "Single Phase - Manual"
+        ],
+        [
+            "STB",
+            "VLG",
+            "Side Trim - Bucket",
+            "Side Trim - Bucket"
+        ],
+        [
+            "STM",
+            "VLG",
+            "Side Trim - Manual",
+            "Side Trim - Manual"
+        ],
+        [
+            "T&M",
+            "VAR",
+            "T&M",
+            "Time & Material"
+        ],
+        [
+            "TTS",
+            "VLG",
+            "Trim To Spec",
+            "Trim To Spec"
+        ],
+        [
+            "VPS",
+            "VCT",
+            "Vine Pole/Structure",
+            "Vine Pole/Structure"
+        ]
+    ]
+}

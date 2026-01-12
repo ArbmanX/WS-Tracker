@@ -1,0 +1,271 @@
+{
+    "metadata": {
+        "description": "PPL Vegetation Management Unit Types",
+        "source": "WorkStudio UnitList export",
+        "generated": "2026-01-11",
+        "categories": {
+            "VLG": "Vegetation Line/Length - measured in linear feet",
+            "VAR": "Variable Area - measured in acres",
+            "VCT": "Vegetation Count/Tree - measured by tree count (DBH sizing)",
+            "VNW": "Vegetation No Work - no measurement",
+            "VSA": "Vegetation Sensitive Area - flag only"
+        }
+    },
+    "units": {
+        "SPM": {
+            "description": "Single Phase - Manual",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "SPB": {
+            "description": "Single Phase - Bucket",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "SPE": {
+            "description": "Single Phase - Enhanced",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MPM": {
+            "description": "Multi-Phase - Manual",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MPB": {
+            "description": "Multi-Phase - Bucket",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MPE": {
+            "description": "Multi-Phase - Enhanced",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MPME": {
+            "description": "Multi-Phase - Manual Enhanced",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MPBE": {
+            "description": "Multi-Phase - Bucket Enhanced",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "MST": {
+            "description": "Mech Side Trim",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "OHT": {
+            "description": "Overhang Trim",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "SIDET": {
+            "description": "Side Trim",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "SOHT": {
+            "description": "Secondary OH Trim",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "STB": {
+            "description": "Side Trim - Bucket",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "STM": {
+            "description": "Side Trim - Manual",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "TTS": {
+            "description": "Trim To Spec",
+            "category": "VLG",
+            "measurement": "linear_ft"
+        },
+        "HCB": {
+            "description": "Hand Cut Brush",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "BRUSH": {
+            "description": "Hand Cut Brush/Mowing",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "BRUSHTRIM": {
+            "description": "Hand Cut Brush w Trim",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "MOW": {
+            "description": "Mowing",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "HERBNA": {
+            "description": "Herbicide - Non Aquatic",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "HERBA": {
+            "description": "Herbicide - Aquatic",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "HERBS": {
+            "description": "Herbicide - Substation",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "Herb-Sub": {
+            "description": "Herbicide - Substation",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "T&M": {
+            "description": "Time & Material",
+            "category": "VAR",
+            "measurement": "acres"
+        },
+        "REM612": {
+            "description": "Removal 6-12\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "6-12"
+        },
+        "REM1218": {
+            "description": "Removal 12.1-18\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "12.1-18"
+        },
+        "REM1824": {
+            "description": "Removal 18.1-24\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "18.1-24"
+        },
+        "REM2430": {
+            "description": "Removal 24.1-30\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "24.1-30"
+        },
+        "REM3036": {
+            "description": "Removal 30.1-36\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "30.1-36"
+        },
+        "REM36": {
+            "description": "Removal > 36.1\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": ">36.1"
+        },
+        "REM>30": {
+            "description": "Removal > 30.1\" (new)",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": ">30.1"
+        },
+        "ASH612": {
+            "description": "Ash 6-12\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "6-12",
+            "species": "ash"
+        },
+        "ASH1218": {
+            "description": "Ash 12.1-18\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "12.1-18",
+            "species": "ash"
+        },
+        "ASH1824": {
+            "description": "Ash 18.1-24\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "18.1-24",
+            "species": "ash"
+        },
+        "ASH2430": {
+            "description": "Ash 24.1-30\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "24.1-30",
+            "species": "ash"
+        },
+        "ASH3036": {
+            "description": "Ash 30.1-36\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": "30.1-36",
+            "species": "ash"
+        },
+        "ASH36": {
+            "description": "Ash > 36.1\"",
+            "category": "VCT",
+            "measurement": "tree_count",
+            "dbh_range": ">36.1",
+            "species": "ash"
+        },
+        "BTR": {
+            "description": "Bucket Trim",
+            "category": "VCT",
+            "measurement": "tree_count"
+        },
+        "VPS": {
+            "description": "Vine Pole/Structure",
+            "category": "VCT",
+            "measurement": "tree_count"
+        },
+        "NW": {
+            "description": "No Work",
+            "category": "VNW",
+            "measurement": "none"
+        },
+        "NOT": {
+            "description": "Notification",
+            "category": "VNW",
+            "measurement": "none"
+        },
+        "SENSI": {
+            "description": "Sensitive Customer",
+            "category": "VSA",
+            "measurement": "none"
+        }
+    },
+    "aggregation_groups": {
+        "trim_line": {
+            "description": "Line trimming work (linear feet)",
+            "units": ["SPM", "SPB", "SPE", "MPM", "MPB", "MPE", "MPME", "MPBE", "MST", "OHT", "SIDET", "SOHT", "STB", "STM", "TTS"]
+        },
+        "brush_area": {
+            "description": "Brush/herbicide work (acres)",
+            "units": ["HCB", "BRUSH", "BRUSHTRIM", "MOW", "HERBNA", "HERBA", "HERBS", "Herb-Sub", "T&M"]
+        },
+        "tree_removal": {
+            "description": "Tree removals (tree count)",
+            "units": ["REM612", "REM1218", "REM1824", "REM2430", "REM3036", "REM36", "REM>30"]
+        },
+        "ash_removal": {
+            "description": "Ash tree removals - EAB program (tree count)",
+            "units": ["ASH612", "ASH1218", "ASH1824", "ASH2430", "ASH3036", "ASH36"]
+        },
+        "other_tree": {
+            "description": "Other tree work (tree count)",
+            "units": ["BTR", "VPS"]
+        },
+        "no_work": {
+            "description": "No work/notification units",
+            "units": ["NW", "NOT", "SENSI"]
+        }
+    }
+}
