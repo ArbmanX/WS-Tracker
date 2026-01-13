@@ -44,6 +44,10 @@ class CircuitFactory extends Factory
             'api_data_json' => null,
             'last_synced_at' => now(),
             'planned_units_sync_enabled' => true,
+            'is_excluded' => false,
+            'exclusion_reason' => null,
+            'excluded_by' => null,
+            'excluded_at' => null,
         ];
     }
 
@@ -113,6 +117,18 @@ class CircuitFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'region_id' => $region->id,
+        ]);
+    }
+
+    /**
+     * Mark as excluded from reporting.
+     */
+    public function excluded(?string $reason = 'Test exclusion'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_excluded' => true,
+            'exclusion_reason' => $reason,
+            'excluded_at' => now(),
         ]);
     }
 }

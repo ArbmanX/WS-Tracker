@@ -35,6 +35,10 @@ class Circuit extends Model
         'last_synced_at',
         'last_planned_units_synced_at',
         'planned_units_sync_enabled',
+        'is_excluded',
+        'exclusion_reason',
+        'excluded_by',
+        'excluded_at',
     ];
 
     protected function casts(): array
@@ -50,6 +54,8 @@ class Circuit extends Model
             'last_synced_at' => 'datetime',
             'last_planned_units_synced_at' => 'datetime',
             'planned_units_sync_enabled' => 'boolean',
+            'is_excluded' => 'boolean',
+            'excluded_at' => 'datetime',
         ];
     }
 
@@ -199,5 +205,71 @@ class Circuit extends Model
                 $q->whereNull('last_planned_units_synced_at')
                     ->orWhere('last_planned_units_synced_at', '<', now()->subHours(12));
             });
+    }
+
+    /**
+     * The user who excluded this circuit.
+     */
+    public function excludedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'excluded_by');
+    }
+
+    /**
+     * Get miles remaining (total - planned).
+     */
+    public function getMilesRemainingAttribute(): float
+    {
+        return round((float) $this->total_miles - (float) $this->miles_planned, 2);
+    }
+
+    /**
+     * Scope to excluded circuits.
+     */
+    public function scopeExcluded($query)
+    {
+        return $query->where('is_excluded', true);
+    }
+
+    /**
+     * Scope to non-excluded circuits (for reporting).
+     */
+    public function scopeNotExcluded($query)
+    {
+        return $query->where('is_excluded', false);
+    }
+
+    /**
+     * Scope to circuits included in reporting (alias for notExcluded).
+     */
+    public function scopeForReporting($query)
+    {
+        return $query->notExcluded();
+    }
+
+    /**
+     * Mark this circuit as excluded from reporting.
+     */
+    public function exclude(?string $reason = null, ?int $excludedByUserId = null): void
+    {
+        $this->update([
+            'is_excluded' => true,
+            'exclusion_reason' => $reason,
+            'excluded_by' => $excludedByUserId,
+            'excluded_at' => now(),
+        ]);
+    }
+
+    /**
+     * Mark this circuit as included in reporting.
+     */
+    public function include(): void
+    {
+        $this->update([
+            'is_excluded' => false,
+            'exclusion_reason' => null,
+            'excluded_by' => null,
+            'excluded_at' => null,
+        ]);
     }
 }

@@ -25,10 +25,17 @@ class CircuitAggregateFactory extends Factory
         $refused = fake()->numberBetween(0, (int) ($totalUnits * 0.1));
         $pending = $totalUnits - $approved - $refused;
 
+        $totalMiles = fake()->randomFloat(2, 10, 100);
+        $milesPlanned = fake()->randomFloat(2, 0, $totalMiles * 0.8);
+        $milesRemaining = $totalMiles - $milesPlanned;
+
         return [
             'circuit_id' => Circuit::factory(),
             'aggregate_date' => fake()->dateTimeBetween('-30 days', 'now')->format('Y-m-d'),
             'is_rollup' => false,
+            'total_miles' => $totalMiles,
+            'miles_planned' => $milesPlanned,
+            'miles_remaining' => $milesRemaining,
             'total_units' => $totalUnits,
             'total_linear_ft' => fake()->randomFloat(2, 1000, 25000),
             'total_acres' => fake()->randomFloat(4, 0, 10),

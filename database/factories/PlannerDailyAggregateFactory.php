@@ -35,6 +35,7 @@ class PlannerDailyAggregateFactory extends Factory
             'total_linear_ft' => fake()->randomFloat(2, 500, 10000),
             'total_acres' => fake()->randomFloat(4, 0, 5),
             'total_trees' => fake()->numberBetween(0, 50),
+            'miles_planned' => fake()->randomFloat(2, 1, 10),
             'units_approved' => $approved,
             'units_refused' => $refused,
             'units_pending' => $pending,

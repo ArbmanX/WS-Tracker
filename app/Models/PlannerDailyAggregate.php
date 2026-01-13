@@ -19,6 +19,7 @@ class PlannerDailyAggregate extends Model
         'total_linear_ft',
         'total_acres',
         'total_trees',
+        'miles_planned',
         'units_approved',
         'units_refused',
         'units_pending',
@@ -32,6 +33,7 @@ class PlannerDailyAggregate extends Model
             'aggregate_date' => 'date',
             'total_linear_ft' => 'decimal:2',
             'total_acres' => 'decimal:4',
+            'miles_planned' => 'decimal:2',
             'unit_counts_by_type' => 'array',
             'circuit_breakdown' => 'array',
         ];

@@ -961,34 +961,37 @@ class CircuitDashboard extends Component
 - [x] <!--Qnng9qyYsh05c-E_KY3_3--> Install npm packages (livewire-sortable, apexcharts)
 - [x] <!--7xwTnhUke8d7L3JJmOdR3--> Set timezone to `America/New_York` in `config/app.php`
 - [x] <!--tU6RAPwymp31GcHK7eDVW--> Create `config/workstudio.php`
-  # Phase 1A: Database Foundation (Days 2-3)
-- [ ] <!--rRxRdVgBnkrMNwqVwinE6--> Create all migrations in order
-- [ ] <!--QTGoojU6eYrJqpRPEgebW--> Create Eloquent models with relationships
-- [ ] <!--p7KaOL62E0fJsbiudFhSK--> Create factories for testing
-- [ ] <!--AncrwZz_H3v_XlMhAEHd_--> Create seeders (roles, permissions, regions, statuses)
-- [ ] <!--rZ1ekjG4-lefSR1JxjyhP--> Run migrations and seeders
-- [ ] <!--lxkY1RthkSsquTo-veRAP--> Add `HasRoles` trait to User model
-  # Phase 1B: API Service Layer (Days 4-5)
-- [ ] <!--n0d9vsdSC0U7DngAJFdij--> Create `WorkStudioApiService` with health check and retry logic
-- [ ] <!--e106u2DQeKs1HzMWoa-i8--> Create `ApiCredentialManager` for credential rotation
-- [ ] <!--GdniQILdZCYQAAbDRGj6o--> Create `DDOTableTransformer` for generic response parsing
-- [ ] <!--o6umuaXVGrppqD9mCLXX---> Create `CircuitTransformer` with field mappings
-- [ ] <!--a95DV8RZZyS370MKpb8N9--> Create `PlannedUnitTransformer`
-- [ ] <!--lD8kDzYZUOLSYIwsAwSMC--> Write Pest tests for transformers
-  # Phase 1C: Sync Jobs (Days 6-7)
+### Phase 1A: Database Foundation (Days 2-3) ✅ COMPLETE
+- [x] <!--rRxRdVgBnkrMNwqVwinE6--> Create all migrations in order
+- [x] <!--QTGoojU6eYrJqpRPEgebW--> Create Eloquent models with relationships
+- [x] <!--p7KaOL62E0fJsbiudFhSK--> Create factories for testing
+- [x] <!--AncrwZz_H3v_XlMhAEHd_--> Create seeders (roles, permissions, regions, statuses)
+- [x] <!--rZ1ekjG4-lefSR1JxjyhP--> Run migrations and seeders
+- [x] <!--lxkY1RthkSsquTo-veRAP--> Add `HasRoles` trait to User model
+
+### Phase 1B: API Service Layer (Days 4-5) ✅ COMPLETE
+- [x] <!--n0d9vsdSC0U7DngAJFdij--> Create `WorkStudioApiService` with health check and retry logic
+- [x] <!--e106u2DQeKs1HzMWoa-i8--> Create `ApiCredentialManager` for credential rotation
+- [x] <!--GdniQILdZCYQAAbDRGj6o--> Create `DDOTableTransformer` for generic response parsing
+- [x] <!--o6umuaXVGrppqD9mCLXX---> Create `CircuitTransformer` with field mappings
+- [x] <!--a95DV8RZZyS370MKpb8N9--> Create `PlannedUnitAggregateTransformer`
+- [x] <!--lD8kDzYZUOLSYIwsAwSMC--> Write Pest tests for transformers
+### Phase 1C: Sync Jobs (Days 6-7)
 - [ ] <!--np2tDpwuyhaXirq8hkfuZ--> Create `SyncCircuitsJob`
 - [ ] <!--hhRR26qyv2PknZU31b4Jy--> Create `SyncPlannedUnitsJob`
 - [ ] <!--H1R2aAMnf6YWrQSr-V7MJ--> Implement daily snapshot creation
 - [ ] <!--_sZIyRA9iqHf3sKvZfVhB--> Configure scheduled jobs in `routes/console.php`
-- [ ] <!--dIqDVVcNWL2SP1Jstpecm--> Create `SyncLog` tracking
+- [x] <!--dIqDVVcNWL2SP1Jstpecm--> Create `SyncLog` tracking (model exists)
 - [ ] <!--xgP65faPw0RqnCS2xaG5b--> Write Pest tests for sync jobs
-  # Phase 1D: Theme System (Day 8)
+
+### Phase 1D: Theme System (Day 8)
 - [ ] <!--jkpBFJstV9CvVzZ9yUNEP--> Create `ppl-brand` theme CSS
 - [ ] <!--QtF3L9fnn_6G_zHV5_gqr--> Create theme switcher Alpine component
 - [ ] <!--cx24NXG7fJv4tQfRniONl--> Add theme selector to user settings
 - [ ] <!--XMn-cMlTvHrUvr_KgEpG4--> Implement system preference detection
 - [ ] <!--F2DcFhaaw8-dvsXey8GNP--> Test dark mode compatibility
-  # Phase 1E: Dashboard UI (Days 9-12)
+
+### Phase 1E: Dashboard UI (Days 9-12)
 - [ ] <!--QZNmmFo3PLkgQjzoXMMRh--> Create `CircuitDashboard` component
 - [ ] <!--N9gox48lGx8nZ8ME8rtaE--> Create `WorkflowColumn` component
 - [ ] <!--d1j5i7pTsfbcpaMlkuf13--> Create `CircuitCard` component with drag handle
@@ -997,20 +1000,23 @@ class CircuitDashboard extends Component
 - [ ] <!--bXI1oyf2lcBHYd7X-0Qq0--> Create `StatsPanel` component
 - [ ] <!--yy6KXXbImkpa8LkimS6NO--> Implement role-based visibility
 - [ ] <!--8Es1gEhmcnvtv9h9t6tbW--> Write Pest Livewire tests
-  # Phase 1F: Charts & Visualization (Days 13-14)
+
+### Phase 1F: Charts & Visualization (Days 13-14)
 - [ ] <!--UlRHTX0jIL6YOF_uF6pIx--> Create ApexCharts Alpine wrapper
 - [ ] <!--Ndg95il4NSEp-b8QijL6U--> Create `MilesByRegionChart` component
 - [ ] <!--pvY4_z-N1aZvzwAD18M41--> Create `PlannerProgressChart` component
 - [ ] <!--teVikk4GvT7cMSlwc1GN4--> Create `PermissionStatusChart` component
 - [ ] <!--RorU_yyx3-U8ZXyp4_7w---> Implement Saturday aggregate calculations
-  # Phase 1G: Admin Features (Day 15)
+
+### Phase 1G: Admin Features (Day 15)
 - [ ] <!--UAEiDP3pfKLwA7CHe8nXM--> Create force sync UI
 - [ ] <!--Bf8ac8UbbRz1qhmQQBQoJ--> Create unlinked planners management
 - [ ] <!--8OSd7tTDcjtugG3pXVRmL--> Add sync history viewer
 - [ ] <!--Oq4Tt6auOAtFZmgqpB206--> Implement permission gates
-  # Phase 1H: Testing & Polish (Days 16-17)
-- [ ] <!--iriweTrnQtSqi-3MYRSOl--> Complete Pest test coverage
-- [ ] <!--VEBuQkdtmyQ64WCsnfVHV--> Run `vendor/bin/pint` for code style
+
+### Phase 1H: Testing & Polish (Days 16-17) - Partial
+- [x] <!--iriweTrnQtSqi-3MYRSOl--> Core Pest test coverage (138 tests passing)
+- [x] <!--VEBuQkdtmyQ64WCsnfVHV--> Run `vendor/bin/pint` for code style
 - [ ] <!--xXRPoLUzR7EfvmAgYG07E--> Test all role-based access
 - [ ] <!--Mlch7VlpupJDy71AuHdQ8--> Performance testing with sample data
 - [ ] <!--M7coASNRXguNmHa6YX-w---> Browser testing with Pest 4

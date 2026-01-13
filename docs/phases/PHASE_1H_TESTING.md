@@ -6,15 +6,15 @@
 
 ---
 
-## Status: Not Started
+## Status: Partial (~60% Complete)
 
 | Item | Status | Notes |
 |------|--------|-------|
-| Unit tests | Needed | Models, services, helpers |
-| Feature tests | Needed | Livewire components, jobs |
-| Browser tests | Needed | Pest 4 browser testing |
-| Code formatting | Needed | Laravel Pint |
-| Performance audit | Needed | N+1 queries, indexes |
+| Unit tests | ✅ Done | Models, services, transformers |
+| Feature tests | Partial | Services done, Livewire pending |
+| Browser tests | Not Started | Pest 4 browser testing |
+| Code formatting | ✅ Done | Laravel Pint clean |
+| Performance audit | Not Started | N+1 queries, indexes |
 
 ---
 
@@ -27,17 +27,18 @@
 ## Checklist
 
 ### Unit Tests
-- [ ] <!--ns65t-Cg-tV5BHy7VS9tn--> UnitType model tests
-- [ ] <!--drAwR-blhkKzfcoQdqc1W--> Circuit model tests
+- [x] <!--ns65t-Cg-tV5BHy7VS9tn--> UnitType model tests
+- [x] <!--drAwR-blhkKzfcoQdqc1W--> Circuit model tests
 - [ ] <!--ZXGNrxnjQcarjwPSHm86o--> Region model tests
-- [ ] <!--WlqTYa0R1zCVe-yFtAVkj--> DateParser helper tests
-- [ ] <!--3F4et655vBZfXxftvq-87--> DDOTableTransformer tests
-- [ ] <!--Eg4gh7H5W5CXQzOxWH3Px--> CircuitTransformer tests
-- [ ] <!--l_3A_z4q45pZ2dhKfjOic--> PlannedUnitAggregateTransformer tests
-- [ ] <!--LYWM_fP4OXMz_6_pn5xqL--> AggregateCalculationService tests
-- [ ] <!--6ZCqYz6zLq9fq_LS83kGk--> ApiCredentialManager tests
-  # Feature Tests
-- [ ] <!--BucyznQjUyuaQZyqqaQFB--> Authentication flow tests
+- [x] <!--WlqTYa0R1zCVe-yFtAVkj--> DateParser helper tests (in CircuitTransformer)
+- [x] <!--3F4et655vBZfXxftvq-87--> DDOTableTransformer tests
+- [x] <!--Eg4gh7H5W5CXQzOxWH3Px--> CircuitTransformer tests
+- [x] <!--l_3A_z4q45pZ2dhKfjOic--> PlannedUnitAggregateTransformer tests
+- [x] <!--LYWM_fP4OXMz_6_pn5xqL--> AggregateCalculationService tests (AggregateQueryServiceTest)
+- [x] <!--6ZCqYz6zLq9fq_LS83kGk--> ApiCredentialManager tests
+
+### Feature Tests
+- [x] <!--BucyznQjUyuaQZyqqaQFB--> Authentication flow tests
 - [ ] <!--FvD_jAtqf_fLNeQmsZUGY--> Dashboard component tests
 - [ ] <!--Rgv474c06va9zxegyT_Fn--> Filter panel tests
 - [ ] <!--4WAv4p4ocpO2sR0OnT-9_--> Workflow drag-drop tests
@@ -48,6 +49,10 @@
 - [ ] <!--53rHPuMJ_ntfOws5OEAE3--> SyncCircuitsJob tests
 - [ ] <!--WaMda96-51KO8K8dZsqgM--> SyncCircuitAggregatesJob tests
 - [ ] <!--7Xy4yqSYXORft8bUIR9Ri--> CreateDailySnapshotsJob tests
+- [x] Database migration tests
+- [x] AggregateStorageService tests
+- [x] AggregateDiffService tests
+- [x] AggregateQueryService tests
   # Browser Tests (Pest 4)
 - [ ] <!--P5pvqjLqylE0R8PfCs69---> Login flow
 - [ ] <!--ITiN_R72taLwKnAPnnd-5--> Dashboard filter/sort
@@ -55,16 +60,17 @@
 - [ ] <!--_0UeZ_orvAQVWcuNOGvWt--> Theme switching
 - [ ] <!--S7-pf-eqM5GlJc0eSoVQn--> Admin sync control
 - [ ] <!--_dTPmhxhpp8OmAPpfRB7m--> Chart rendering
-  # Code Quality
-- [ ] <!--hH-JjZmmSsgKWTBiO_vE_--> Run `vendor/bin/pint --dirty`
-- [ ] <!--PeZhuFUUfqtfynq3ajHS7--> Run `vendor/bin/pint` (full)
+### Code Quality
+- [x] <!--hH-JjZmmSsgKWTBiO_vE_--> Run `vendor/bin/pint --dirty`
+- [x] <!--PeZhuFUUfqtfynq3ajHS7--> Run `vendor/bin/pint` (full)
 - [ ] <!--VDjUgSZDF4r4EBhI6bS3I--> Check for N+1 queries
 - [ ] <!--ye7O4z6MwRU_sUHfsDjxb--> Add missing database indexes
 - [ ] <!--ratWQvp7yOKn0yWkHPfek--> Review error handling
-  # Documentation
-- [ ] <!--AKeORLz16PPfWlao5xiU3--> Update CLAUDE.md if needed
+
+### Documentation
+- [x] <!--AKeORLz16PPfWlao5xiU3--> Update CLAUDE.md if needed
 - [ ] <!--Ci0oBn7EHmsmOEqAhWjUC--> Add inline documentation where complex
-- [ ] <!--KknIAx-ph_6B8IgRYIU-f--> Verify all tests pass
+- [x] <!--KknIAx-ph_6B8IgRYIU-f--> Verify all tests pass (138 passing, 4 skipped)
   -
    Test File Structure
   `

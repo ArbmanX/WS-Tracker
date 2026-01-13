@@ -27,6 +27,7 @@ class WorkStudioApiService implements WorkStudioApiInterface
     public function healthCheck(): bool
     {
         try {
+            /** @var Response $response */
             $response = Http::timeout(10)
                 ->withOptions(['verify' => false]) // Handle self-signed certs
                 ->get($this->getBaseUrlWithoutPath());
@@ -184,6 +185,7 @@ class WorkStudioApiService implements WorkStudioApiInterface
         // WorkStudio API requires the protocol in the URL path
         $url = rtrim(config('workstudio.base_url'), '/').'/'.($payload['Protocol'] ?? 'GETVIEWDATA');
 
+        /** @var Response $response */
         $response = Http::timeout(config('workstudio.timeout', 60))
             ->withOptions(['verify' => false]) // Handle self-signed certs
             ->withBasicAuth($credentials['username'], $credentials['password'])
@@ -224,7 +226,7 @@ class WorkStudioApiService implements WorkStudioApiInterface
     {
         $baseUrl = config('workstudio.base_url');
 
-        return preg_replace('#/ddoprotocol/?$#', '', $baseUrl);
+        return preg_replace('#/DDOProtocol/?$#', '', $baseUrl);
     }
 
     /**
