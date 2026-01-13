@@ -8,27 +8,31 @@
 
 ## Status: Partially Complete
 
-| Item | Status | Notes |
-|------|--------|-------|
-| PostgreSQL database | Needed | `ws_tracker` database with proper user |
-| `.env` configured | Needed | DB_CONNECTION=pgsql |
-| Timezone setting | Needed | `config/app.php` → America/New_York |
-| `config/workstudio.php` | Partial | File exists but empty |
-| NPM packages | Done | livewire-sortable, apexcharts installed |
-| Spatie packages | Partial | Installed, needs publishing |
+| Item                    | Status  | Notes                                   |
+| ----------------------- | ------- | --------------------------------------- |
+| PostgreSQL database     | Needed  | `ws_tracker` database with proper user  |
+| `.env` configured       | Needed  | DB_CONNECTION=pgsql                     |
+| Timezone setting        | Needed  | `config/app.php` → America/New_York     |
+| `config/workstudio.php` | Partial | File exists but empty                   |
+| NPM packages            | Done    | livewire-sortable, apexcharts installed |
+| Spatie packages         | Partial | Installed, needs publishing             |
 
 ---
 
 ## Checklist
 
 ### Database Setup
-- [ ] Create PostgreSQL database and user
+
+- [x] Create PostgreSQL database and user
+  
   ```bash
   sudo -u postgres createuser ws_tracker
   sudo -u postgres createdb ws_tracker -O ws_tracker
   sudo -u postgres psql -c "ALTER USER ws_tracker WITH PASSWORD 'your_secure_password';"
   ```
-- [ ] Update `.env` with PostgreSQL credentials
+
+- [x] Update `.env` with PostgreSQL credentials
+  
   ```env
   DB_CONNECTION=pgsql
   DB_HOST=127.0.0.1
@@ -39,12 +43,17 @@
   ```
 
 ### Laravel Configuration
-- [ ] Set timezone in `config/app.php`
+
+- [x] Set timezone in `config/app.php`
+  
   ```php
   'timezone' => 'America/New_York',
   ```
-- [ ] Complete `config/workstudio.php` with API settings (see template below)
-- [ ] Add WorkStudio environment variables to `.env`
+
+- [x] Complete `config/workstudio.php` with API settings (see template below)
+
+- [x] Add WorkStudio environment variables to `.env`
+  
   ```env
   WORKSTUDIO_BASE_URL=https://ppl02.geodigital.com:8372/ddoprotocol/
   WORKSTUDIO_TIMEOUT=60
@@ -53,21 +62,29 @@
   ```
 
 ### Package Publishing
-- [ ] Publish Spatie Permission config and migrations
+
+- [x] Publish Spatie Permission config and migrations
+  
   ```bash
   sail artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
   ```
-- [ ] Publish Spatie Activitylog migrations
+
+- [x] Publish Spatie Activitylog migrations
+  
   ```bash
   sail artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"
   ```
 
 ### Frontend Assets
-- [ ] Verify NPM packages installed
+
+- [x] Verify NPM packages installed
+  
   ```bash
   sail npm list livewire-sortable apexcharts
   ```
-- [ ] Update `resources/js/app.js` if needed
+
+- [x] Update `resources/js/app.js` if needed
+  
   ```javascript
   import 'livewire-sortable';
   import ApexCharts from 'apexcharts';
@@ -75,15 +92,21 @@
   ```
 
 ### Verification
-- [ ] Verify PostgreSQL connection
+
+- [x] Verify PostgreSQL connection
+  
   ```bash
   sail artisan tinker --execute="DB::connection()->getPdo(); echo 'Connected!';"
   ```
-- [ ] Verify config loads
+
+- [x] Verify config loads
+  
   ```bash
   sail artisan tinker --execute="echo config('workstudio.base_url');"
   ```
-- [ ] Run build
+
+- [x] Run build
+  
   ```bash
   sail npm run build
   ```

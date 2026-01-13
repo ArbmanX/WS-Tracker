@@ -1,3 +1,28 @@
+# Project Rules
+
+See @.claude/agents/DaisyUI.md for all frontend/UI work.
+
+## WorkStudio API
+
+The WorkStudio DDOProtocol API requires the protocol name to be part of the URL path, not just in the request body.
+
+**Endpoint Format:** `{base_url}/DDOProtocol/{PROTOCOL_NAME}`
+
+Examples:
+- `https://ppl02.geodigital.com:8372/ddoprotocol/GETVIEWDATA` - for fetching view data
+- The protocol value (e.g., `GETVIEWDATA`) goes in both the URL path AND the request body
+
+The request body should still include:
+```json
+{
+    "Protocol": "GETVIEWDATA",
+    "ViewDefinitionGuid": "{guid}",
+    "ViewFilter": {...},
+    "ResultFormat": "DDOTable"
+}
+```
+
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

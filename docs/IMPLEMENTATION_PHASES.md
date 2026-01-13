@@ -100,134 +100,99 @@ circuit_aggregates table (daily totals)
 ## Current Progress
 
 ### Completed
-- [x] Laravel 12 foundation
-- [x] Authentication with Fortify 2FA
-- [x] DaisyUI 5.x + Tailwind v4
-- [x] UnitType model and seeder (44 unit types)
-- [x] NPM packages (livewire-sortable, apexcharts)
-- [x] Spatie packages installed
-
-### In Progress
-- [ ] Database migrations (1/17 complete)
-- [ ] config/workstudio.php (file exists, needs content)
-
-### Not Started
-- [ ] Remaining 16 migrations
-- [ ] API service layer
-- [ ] Sync jobs
-- [ ] Dashboard components
-- [ ] Admin features
-- [ ] Test suite
-
----
-
-## Getting Started
-
-### Start Development Environment
-
-```bash
-# With Sail (recommended)
-sail up -d
-sail artisan migrate:fresh --seed
-
-# Without Sail
-php artisan migrate:fresh --seed
-npm run dev
-```
-
-### Run Tests
-
-```bash
-sail artisan test --compact
-```
-
-### Code Formatting
-
-```bash
-vendor/bin/pint --dirty
-```
-
----
-
-## Reference Documents
-
-### Primary (Use These)
-- [`docs/IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md) - Complete implementation details
-- [`docs/project-context.md`](./project-context.md) - Quick reference
-- [`docs/UnitTypes.json`](./UnitTypes.json) - Unit type definitions
-- [`docs/WS_TRACKER_DOCS.md`](./WS_TRACKER_DOCS.md) - API documentation
-
-### UI Mockups
-- [`docs/diagrams/DASHBOARD_MOCKUP.md`](./diagrams/DASHBOARD_MOCKUP.md) - Dashboard wireframe
-- [`docs/diagrams/ADMIN_PANEL_MOCKUP.md`](./diagrams/ADMIN_PANEL_MOCKUP.md) - Admin panel wireframe
-
-### Archived (Outdated)
-- [`docs/archived/ARCHITECTURE.md`](./archived/ARCHITECTURE.md) - Has outdated storage approach
-- [`docs/archived/unit-types-analysis.md`](./archived/unit-types-analysis.md) - Superseded by UnitTypes.json
-
----
-
-## Key Configuration
-
-### Environment Variables
-
-```env
-# Database
-DB_CONNECTION=pgsql
-DB_DATABASE=ws_tracker
-
-# WorkStudio API
-WORKSTUDIO_BASE_URL=https://ppl02.geodigital.com:8372/ddoprotocol/
-WORKSTUDIO_TIMEOUT=60
-WORKSTUDIO_SERVICE_USERNAME=
-WORKSTUDIO_SERVICE_PASSWORD=
-```
-
-### Sync Schedule
-
-| Status | Frequency | Time (ET) |
-|--------|-----------|-----------|
-| ACTIV | 2x daily | 4:30 AM, 4:30 PM |
-| QC/REWORK/CLOSE | Weekly | Monday 4:30 AM |
-
----
-
-## Implementation Order
-
-### Week 1
-1. **Phase 0** - Complete environment setup
-2. **Phase 1A** - Create all migrations, models, seeders
-3. **Phase 1D** - Theme system (parallel)
-
-### Week 2
-4. **Phase 1B** - API service layer
-5. **Phase 1C** - Sync jobs
-
-### Week 3
-6. **Phase 1E** - Dashboard UI components
-
-### Week 4
-7. **Phase 1F** - Charts
-8. **Phase 1G** - Admin features
-9. **Phase 1H** - Testing & polish
-
----
-
-## Success Criteria
-
-MVP is complete when:
-- [ ] All 9 phases marked complete
-- [ ] 90%+ test coverage
-- [ ] Laravel Pint clean
-- [ ] No N+1 queries
-- [ ] Manual smoke test passes for all roles
-- [ ] Scheduled sync runs successfully
-
----
-
-## Support
-
-For questions about this implementation plan:
-1. Review the detailed phase documents
-2. Check `docs/project-context.md` for architecture decisions
-3. Search docs with `search-docs` MCP tool for Laravel ecosystem help
+- [x] <!--DvxwvXqmSquy_e4DktiYY--> Laravel 12 foundation
+- [x] <!--7_GSLGr3Wbq5TWxtEf4yG--> Authentication with Fortify 2FA
+- [x] <!--exsUFS91zdlLbNg5HVDrw--> DaisyUI 5.x + Tailwind v4
+- [x] <!--d2S6qAOnEH4kRtr9pIyq_--> UnitType model and seeder (44 unit types)
+- [x] <!--x_7Hf1gJYmNLJw92_UcOi--> NPM packages (livewire-sortable, apexcharts)
+- [x] <!--kq36FIw61CyANAdTLxrpM--> Spatie packages installed
+  # In Progress
+- [ ] <!--AnL7d9K5GbjA17_gfhsRD--> Database migrations (1/17 complete)
+- [ ] <!--U8XOGtyTMY5h5kAGZYnbh--> config/workstudio.php (file exists, needs content)
+  # Not Started
+- [ ] <!--dCloZ80yqhprxj9dkGZgk--> Remaining 16 migrations
+- [ ] <!--hob_X9txfli4d4RdN-xnV--> API service layer
+- [ ] <!--7uhKH1L7FKk8T8nKFldV2--> Sync jobs
+- [ ] <!--KSNdKmXkF3TbY04z_mBKz--> Dashboard components
+- [ ] <!--XgiTNUk-c0bQHeJA2sZYH--> Admin features
+- [ ] <!--KEBEnUHIyv15E8vBb_PdF--> Test suite
+  -
+   Getting Started
+  # Start Development Environment
+  `bash
+  With Sail (recommended)
+  il up -d
+  il artisan migrate:fresh --seed
+  Without Sail
+  p artisan migrate:fresh --seed
+  m run dev
+  `
+  # Run Tests
+  `bash
+  il artisan test --compact
+  `
+  # Code Formatting
+  `bash
+  ndor/bin/pint --dirty
+  `
+  -
+   Reference Documents
+  # Primary (Use These)
+  [`docs/IMPLEMENTATION_PLAN.md`](./IMPLEMENTATION_PLAN.md) - Complete implementation details
+  [`docs/project-context.md`](./project-context.md) - Quick reference
+  [`docs/UnitTypes.json`](./UnitTypes.json) - Unit type definitions
+  [`docs/WS_TRACKER_DOCS.md`](./WS_TRACKER_DOCS.md) - API documentation
+  # UI Mockups
+  [`docs/diagrams/DASHBOARD_MOCKUP.md`](./diagrams/DASHBOARD_MOCKUP.md) - Dashboard wireframe
+  [`docs/diagrams/ADMIN_PANEL_MOCKUP.md`](./diagrams/ADMIN_PANEL_MOCKUP.md) - Admin panel wireframe
+  # Archived (Outdated)
+  [`docs/archived/ARCHITECTURE.md`](./archived/ARCHITECTURE.md) - Has outdated storage approach
+  [`docs/archived/unit-types-analysis.md`](./archived/unit-types-analysis.md) - Superseded by UnitTypes.json
+  -
+   Key Configuration
+  # Environment Variables
+  `env
+  Database
+  _CONNECTION=pgsql
+  _DATABASE=ws_tracker
+  WorkStudio API
+  RKSTUDIO_BASE_URL=https://ppl02.geodigital.com:8372/ddoprotocol/
+  RKSTUDIO_TIMEOUT=60
+  RKSTUDIO_SERVICE_USERNAME=
+  RKSTUDIO_SERVICE_PASSWORD=
+  `
+  # Sync Schedule
+  Status | Frequency | Time (ET) |
+  -------|-----------|-----------|
+  ACTIV | 2x daily | 4:30 AM, 4:30 PM |
+  QC/REWORK/CLOSE | Weekly | Monday 4:30 AM |
+  -
+   Implementation Order
+  # Week 1
+   **Phase 0** - Complete environment setup
+   **Phase 1A** - Create all migrations, models, seeders
+   **Phase 1D** - Theme system (parallel)
+  # Week 2
+   **Phase 1B** - API service layer
+   **Phase 1C** - Sync jobs
+  # Week 3
+   **Phase 1E** - Dashboard UI components
+  # Week 4
+   **Phase 1F** - Charts
+   **Phase 1G** - Admin features
+   **Phase 1H** - Testing & polish
+  -
+   Success Criteria
+  P is complete when:
+- [ ] <!--GLkut5y6t4nnmTk1ceIfw--> All 9 phases marked complete
+- [ ] <!--Ba-R0O85R1w3j7Ys10o5X--> 90%+ test coverage
+- [ ] <!--wLa_bf7OUkv3LWytsH2-f--> Laravel Pint clean
+- [ ] <!--c9GXVd2GCAuaDW0OVXCFX--> No N+1 queries
+- [ ] <!--es8NFNSX5YqOW3PRzvAYP--> Manual smoke test passes for all roles
+- [ ] <!--0ZmvrbqhU9vf-wW7iaovz--> Scheduled sync runs successfully
+  -
+   Support
+  r questions about this implementation plan:
+   Review the detailed phase documents
+   Check `docs/project-context.md` for architecture decisions
+   Search docs with `search-docs` MCP tool for Laravel ecosystem help

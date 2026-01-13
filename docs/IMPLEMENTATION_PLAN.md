@@ -955,178 +955,159 @@ class CircuitDashboard extends Component
 
 ### Phase 0: Environment Setup (Day 1)
 
-- [x] Install PostgreSQL locally
-- [x] Configure `.env` for PostgreSQL
-- [x] Install composer packages (spatie/laravel-permission, spatie/laravel-activitylog)
-- [ ] Install npm packages (livewire-sortable, apexcharts)
-- [ ] Set timezone to `America/New_York` in `config/app.php`
-- [ ] Create `config/workstudio.php`
-
-### Phase 1A: Database Foundation (Days 2-3)
-
-- [ ] Create all migrations in order
-- [ ] Create Eloquent models with relationships
-- [ ] Create factories for testing
-- [ ] Create seeders (roles, permissions, regions, statuses)
-- [ ] Run migrations and seeders
-- [ ] Add `HasRoles` trait to User model
-
-### Phase 1B: API Service Layer (Days 4-5)
-
-- [ ] Create `WorkStudioApiService` with health check and retry logic
-- [ ] Create `ApiCredentialManager` for credential rotation
-- [ ] Create `DDOTableTransformer` for generic response parsing
-- [ ] Create `CircuitTransformer` with field mappings
-- [ ] Create `PlannedUnitTransformer`
-- [ ] Write Pest tests for transformers
-
-### Phase 1C: Sync Jobs (Days 6-7)
-
-- [ ] Create `SyncCircuitsJob`
-- [ ] Create `SyncPlannedUnitsJob`
-- [ ] Implement daily snapshot creation
-- [ ] Configure scheduled jobs in `routes/console.php`
-- [ ] Create `SyncLog` tracking
-- [ ] Write Pest tests for sync jobs
-
-### Phase 1D: Theme System (Day 8)
-
-- [ ] Create `ppl-brand` theme CSS
-- [ ] Create theme switcher Alpine component
-- [ ] Add theme selector to user settings
-- [ ] Implement system preference detection
-- [ ] Test dark mode compatibility
-
-### Phase 1E: Dashboard UI (Days 9-12)
-
-- [ ] Create `CircuitDashboard` component
-- [ ] Create `WorkflowColumn` component
-- [ ] Create `CircuitCard` component with drag handle
-- [ ] Implement drag-drop with livewire-sortable
-- [ ] Create `FilterPanel` component
-- [ ] Create `StatsPanel` component
-- [ ] Implement role-based visibility
-- [ ] Write Pest Livewire tests
-
-### Phase 1F: Charts & Visualization (Days 13-14)
-
-- [ ] Create ApexCharts Alpine wrapper
-- [ ] Create `MilesByRegionChart` component
-- [ ] Create `PlannerProgressChart` component
-- [ ] Create `PermissionStatusChart` component
-- [ ] Implement Saturday aggregate calculations
-
-### Phase 1G: Admin Features (Day 15)
-
-- [ ] Create force sync UI
-- [ ] Create unlinked planners management
-- [ ] Add sync history viewer
-- [ ] Implement permission gates
-
-### Phase 1H: Testing & Polish (Days 16-17)
-
-- [ ] Complete Pest test coverage
-- [ ] Run `vendor/bin/pint` for code style
-- [ ] Test all role-based access
-- [ ] Performance testing with sample data
-- [ ] Browser testing with Pest 4
-
----
-
-## File Structure
-
-```
-app/
-├── Enums/
-│   ├── WorkflowStage.php
-│   ├── AssignmentSource.php
-│   ├── SnapshotType.php
-│   ├── SyncType.php
-│   ├── SyncStatus.php
-│   └── SizeUnit.php
-├── Events/
-│   ├── SyncCompletedEvent.php
-│   ├── PlannedUnitsSyncedEvent.php
-│   └── CircuitWorkflowChangedEvent.php
-├── Jobs/
-│   ├── SyncCircuitsJob.php
-│   └── SyncPlannedUnitsJob.php
-├── Livewire/
-│   ├── Dashboard/
-│   │   ├── CircuitDashboard.php
-│   │   ├── WorkflowBoard.php
-│   │   ├── WorkflowColumn.php
-│   │   ├── CircuitCard.php
-│   │   ├── FilterPanel.php
-│   │   └── StatsPanel.php
-│   ├── Charts/
-│   │   ├── MilesByRegionChart.php
-│   │   ├── PlannerProgressChart.php
-│   │   └── PermissionStatusChart.php
-│   ├── Admin/
-│   │   ├── SyncControl.php
-│   │   └── UnlinkedPlanners.php
-│   └── Settings/
-│       └── ThemeSelector.php
-├── Models/
-│   ├── Circuit.php
-│   ├── CircuitUiState.php
-│   ├── CircuitSnapshot.php
-│   ├── CircuitAggregate.php          # Daily circuit totals (replaces PlannedUnit)
-│   ├── PlannerDailyAggregate.php     # Planner productivity tracking
-│   ├── RegionalDailyAggregate.php    # Regional rollups
-│   ├── Region.php
-│   ├── UnitType.php                  # Reference table with cached lookups
-│   ├── PermissionStatus.php
-│   ├── ApiStatusConfig.php
-│   ├── UnlinkedPlanner.php
-│   ├── UserWsCredential.php
-│   └── SyncLog.php
-├── Policies/
-│   └── CircuitPolicy.php
-├── Services/
-│   └── WorkStudio/
-│       ├── WorkStudioApiService.php
-│       ├── ApiCredentialManager.php
-│       ├── Contracts/
-│       │   └── WorkStudioApiInterface.php
-│       ├── Aggregation/                      # NEW: Aggregate processing
-│       │   ├── AggregateCalculationService.php
-│       │   ├── AggregateStorageService.php
-│       │   ├── AggregateDiffService.php
-│       │   └── AggregateQueryService.php
-│       └── Transformers/
-│           ├── DDOTableTransformer.php
-│           ├── CircuitTransformer.php
-│           └── PlannedUnitAggregateTransformer.php
-├── Support/
-│   └── Helpers/
-│       └── DateParser.php
-config/
-└── workstudio.php
-database/
-├── factories/
-│   ├── CircuitFactory.php
-│   ├── CircuitAggregateFactory.php
-│   ├── PlannerDailyAggregateFactory.php
-│   └── RegionFactory.php
-├── migrations/
-│   └── (17 migration files)
-└── seeders/
+- [x] <!--GBeqidW6Qf0ru36FVbXut--> Install PostgreSQL locally
+- [x] <!--NiXLoAgb08bNxVoNokH9J--> Configure `.env` for PostgreSQL
+- [x] <!--nWdRUpqf1dswp50JZU9Wv--> Install composer packages (spatie/laravel-permission, spatie/laravel-activitylog)
+- [x] <!--Qnng9qyYsh05c-E_KY3_3--> Install npm packages (livewire-sortable, apexcharts)
+- [x] <!--7xwTnhUke8d7L3JJmOdR3--> Set timezone to `America/New_York` in `config/app.php`
+- [x] <!--tU6RAPwymp31GcHK7eDVW--> Create `config/workstudio.php`
+  # Phase 1A: Database Foundation (Days 2-3)
+- [ ] <!--rRxRdVgBnkrMNwqVwinE6--> Create all migrations in order
+- [ ] <!--QTGoojU6eYrJqpRPEgebW--> Create Eloquent models with relationships
+- [ ] <!--p7KaOL62E0fJsbiudFhSK--> Create factories for testing
+- [ ] <!--AncrwZz_H3v_XlMhAEHd_--> Create seeders (roles, permissions, regions, statuses)
+- [ ] <!--rZ1ekjG4-lefSR1JxjyhP--> Run migrations and seeders
+- [ ] <!--lxkY1RthkSsquTo-veRAP--> Add `HasRoles` trait to User model
+  # Phase 1B: API Service Layer (Days 4-5)
+- [ ] <!--n0d9vsdSC0U7DngAJFdij--> Create `WorkStudioApiService` with health check and retry logic
+- [ ] <!--e106u2DQeKs1HzMWoa-i8--> Create `ApiCredentialManager` for credential rotation
+- [ ] <!--GdniQILdZCYQAAbDRGj6o--> Create `DDOTableTransformer` for generic response parsing
+- [ ] <!--o6umuaXVGrppqD9mCLXX---> Create `CircuitTransformer` with field mappings
+- [ ] <!--a95DV8RZZyS370MKpb8N9--> Create `PlannedUnitTransformer`
+- [ ] <!--lD8kDzYZUOLSYIwsAwSMC--> Write Pest tests for transformers
+  # Phase 1C: Sync Jobs (Days 6-7)
+- [ ] <!--np2tDpwuyhaXirq8hkfuZ--> Create `SyncCircuitsJob`
+- [ ] <!--hhRR26qyv2PknZU31b4Jy--> Create `SyncPlannedUnitsJob`
+- [ ] <!--H1R2aAMnf6YWrQSr-V7MJ--> Implement daily snapshot creation
+- [ ] <!--_sZIyRA9iqHf3sKvZfVhB--> Configure scheduled jobs in `routes/console.php`
+- [ ] <!--dIqDVVcNWL2SP1Jstpecm--> Create `SyncLog` tracking
+- [ ] <!--xgP65faPw0RqnCS2xaG5b--> Write Pest tests for sync jobs
+  # Phase 1D: Theme System (Day 8)
+- [ ] <!--jkpBFJstV9CvVzZ9yUNEP--> Create `ppl-brand` theme CSS
+- [ ] <!--QtF3L9fnn_6G_zHV5_gqr--> Create theme switcher Alpine component
+- [ ] <!--cx24NXG7fJv4tQfRniONl--> Add theme selector to user settings
+- [ ] <!--XMn-cMlTvHrUvr_KgEpG4--> Implement system preference detection
+- [ ] <!--F2DcFhaaw8-dvsXey8GNP--> Test dark mode compatibility
+  # Phase 1E: Dashboard UI (Days 9-12)
+- [ ] <!--QZNmmFo3PLkgQjzoXMMRh--> Create `CircuitDashboard` component
+- [ ] <!--N9gox48lGx8nZ8ME8rtaE--> Create `WorkflowColumn` component
+- [ ] <!--d1j5i7pTsfbcpaMlkuf13--> Create `CircuitCard` component with drag handle
+- [ ] <!--nH_nVhzTqECDjNZvLfTiH--> Implement drag-drop with livewire-sortable
+- [ ] <!--jetp3al8LMpTffv3rXGSp--> Create `FilterPanel` component
+- [ ] <!--bXI1oyf2lcBHYd7X-0Qq0--> Create `StatsPanel` component
+- [ ] <!--yy6KXXbImkpa8LkimS6NO--> Implement role-based visibility
+- [ ] <!--8Es1gEhmcnvtv9h9t6tbW--> Write Pest Livewire tests
+  # Phase 1F: Charts & Visualization (Days 13-14)
+- [ ] <!--UlRHTX0jIL6YOF_uF6pIx--> Create ApexCharts Alpine wrapper
+- [ ] <!--Ndg95il4NSEp-b8QijL6U--> Create `MilesByRegionChart` component
+- [ ] <!--pvY4_z-N1aZvzwAD18M41--> Create `PlannerProgressChart` component
+- [ ] <!--teVikk4GvT7cMSlwc1GN4--> Create `PermissionStatusChart` component
+- [ ] <!--RorU_yyx3-U8ZXyp4_7w---> Implement Saturday aggregate calculations
+  # Phase 1G: Admin Features (Day 15)
+- [ ] <!--UAEiDP3pfKLwA7CHe8nXM--> Create force sync UI
+- [ ] <!--Bf8ac8UbbRz1qhmQQBQoJ--> Create unlinked planners management
+- [ ] <!--8OSd7tTDcjtugG3pXVRmL--> Add sync history viewer
+- [ ] <!--Oq4Tt6auOAtFZmgqpB206--> Implement permission gates
+  # Phase 1H: Testing & Polish (Days 16-17)
+- [ ] <!--iriweTrnQtSqi-3MYRSOl--> Complete Pest test coverage
+- [ ] <!--VEBuQkdtmyQ64WCsnfVHV--> Run `vendor/bin/pint` for code style
+- [ ] <!--xXRPoLUzR7EfvmAgYG07E--> Test all role-based access
+- [ ] <!--Mlch7VlpupJDy71AuHdQ8--> Performance testing with sample data
+- [ ] <!--M7coASNRXguNmHa6YX-w---> Browser testing with Pest 4
+  -
+   File Structure
+  `
+  p/
+  ─ Enums/
+    ├── WorkflowStage.php
+    ├── AssignmentSource.php
+    ├── SnapshotType.php
+    ├── SyncType.php
+    ├── SyncStatus.php
+    └── SizeUnit.php
+  ─ Events/
+    ├── SyncCompletedEvent.php
+    ├── PlannedUnitsSyncedEvent.php
+    └── CircuitWorkflowChangedEvent.php
+  ─ Jobs/
+    ├── SyncCircuitsJob.php
+    └── SyncPlannedUnitsJob.php
+  ─ Livewire/
+    ├── Dashboard/
+    │   ├── CircuitDashboard.php
+    │   ├── WorkflowBoard.php
+    │   ├── WorkflowColumn.php
+    │   ├── CircuitCard.php
+    │   ├── FilterPanel.php
+    │   └── StatsPanel.php
+    ├── Charts/
+    │   ├── MilesByRegionChart.php
+    │   ├── PlannerProgressChart.php
+    │   └── PermissionStatusChart.php
+    ├── Admin/
+    │   ├── SyncControl.php
+    │   └── UnlinkedPlanners.php
+    └── Settings/
+        └── ThemeSelector.php
+  ─ Models/
+    ├── Circuit.php
+    ├── CircuitUiState.php
+    ├── CircuitSnapshot.php
+    ├── CircuitAggregate.php          # Daily circuit totals (replaces PlannedUnit)
+    ├── PlannerDailyAggregate.php     # Planner productivity tracking
+    ├── RegionalDailyAggregate.php    # Regional rollups
+    ├── Region.php
+    ├── UnitType.php                  # Reference table with cached lookups
+    ├── PermissionStatus.php
+    ├── ApiStatusConfig.php
+    ├── UnlinkedPlanner.php
+    ├── UserWsCredential.php
+    └── SyncLog.php
+  ─ Policies/
+    └── CircuitPolicy.php
+  ─ Services/
+    └── WorkStudio/
+        ├── WorkStudioApiService.php
+        ├── ApiCredentialManager.php
+        ├── Contracts/
+        │   └── WorkStudioApiInterface.php
+        ├── Aggregation/                      # NEW: Aggregate processing
+        │   ├── AggregateCalculationService.php
+        │   ├── AggregateStorageService.php
+        │   ├── AggregateDiffService.php
+        │   └── AggregateQueryService.php
+        └── Transformers/
+            ├── DDOTableTransformer.php
+            ├── CircuitTransformer.php
+            └── PlannedUnitAggregateTransformer.php
+  ─ Support/
+    └── Helpers/
+        └── DateParser.php
+  nfig/
+  ─ workstudio.php
+  tabase/
+  ─ factories/
+    ├── CircuitFactory.php
+    ├── CircuitAggregateFactory.php
+    ├── PlannerDailyAggregateFactory.php
+    └── RegionFactory.php
+  ─ migrations/
+    └── (17 migration files)
+  ─ seeders/
     ├── DatabaseSeeder.php
     ├── RolesAndPermissionsSeeder.php
     ├── RegionsSeeder.php
     ├── ApiStatusConfigsSeeder.php
     ├── UnitTypesSeeder.php
     └── PermissionStatusesSeeder.php
-resources/
-├── css/
-│   └── themes/
-│       └── ppl-brand.css
-├── js/
-│   ├── app.js
-│   └── theme-switcher.js
-└── views/
+  sources/
+  ─ css/
+    └── themes/
+        └── ppl-brand.css
+  ─ js/
+    ├── app.js
+    └── theme-switcher.js
+  ─ views/
     └── livewire/
         ├── dashboard/
         │   ├── circuit-dashboard.blade.php
@@ -1140,17 +1121,17 @@ resources/
         └── admin/
             ├── sync-control.blade.php
             └── unlinked-planners.blade.php
-tests/
-├── Feature/
-│   ├── Dashboard/
-│   │   ├── CircuitDashboardTest.php
-│   │   └── WorkflowDragDropTest.php
-│   ├── Sync/
-│   │   ├── SyncCircuitsJobTest.php
-│   │   └── SyncAggregatesJobTest.php
-│   └── Auth/
-│       └── RoleAccessTest.php
-└── Unit/
+  sts/
+  ─ Feature/
+    ├── Dashboard/
+    │   ├── CircuitDashboardTest.php
+    │   └── WorkflowDragDropTest.php
+    ├── Sync/
+    │   ├── SyncCircuitsJobTest.php
+    │   └── SyncAggregatesJobTest.php
+    └── Auth/
+        └── RoleAccessTest.php
+  ─ Unit/
     ├── Transformers/
     │   ├── CircuitTransformerTest.php
     │   └── PlannedUnitAggregateTransformerTest.php
@@ -1161,77 +1142,55 @@ tests/
     │   └── AggregateQueryServiceTest.php
     └── Models/
         └── UnitTypeTest.php
-```
-
----
-
-## Testing Strategy
-
-### Key Test Categories
-
-1. **Unit Tests** - Transformers, helpers, date parsing
-2. **Feature Tests** - Livewire components, authorization, sync jobs
-3. **Browser Tests** (Pest 4) - Drag-drop, theme switching, charts
-
-### Example Tests
-
-```php
-// tests/Feature/Dashboard/CircuitDashboardTest.php
-<?php
-
-use App\Livewire\Dashboard\CircuitDashboard;
-use App\Models\Circuit;
-use App\Models\User;
-use Livewire\Livewire;
-
-it('shows circuits for admin users', function () {
+  `
+  -
+   Testing Strategy
+  # Key Test Categories
+   **Unit Tests** - Transformers, helpers, date parsing
+   **Feature Tests** - Livewire components, authorization, sync jobs
+   **Browser Tests** (Pest 4) - Drag-drop, theme switching, charts
+  # Example Tests
+  `php
+   tests/Feature/Dashboard/CircuitDashboardTest.php
+  php
+  e App\Livewire\Dashboard\CircuitDashboard;
+  e App\Models\Circuit;
+  e App\Models\User;
+  e Livewire\Livewire;
+  ('shows circuits for admin users', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
-
     $circuit = Circuit::factory()->create();
-
     Livewire::actingAs($admin)
         ->test(CircuitDashboard::class)
         ->assertSee($circuit->work_order);
-});
-
-it('filters circuits by region', function () {
+  ;
+  ('filters circuits by region', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
-
     $circuit1 = Circuit::factory()->forRegion('Central')->create();
     $circuit2 = Circuit::factory()->forRegion('Lancaster')->create();
-
     Livewire::actingAs($admin)
         ->test(CircuitDashboard::class)
         ->set('regionFilter', $circuit1->region_id)
         ->assertSee($circuit1->work_order)
         ->assertDontSee($circuit2->work_order);
-});
-
-it('allows workflow stage changes for authorized users', function () {
+  ;
+  ('allows workflow stage changes for authorized users', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
-
     $circuit = Circuit::factory()->create();
-
     Livewire::actingAs($admin)
         ->test(CircuitDashboard::class)
         ->call('handleCircuitMoved', $circuit->id, 'qc', 1)
         ->assertDispatched('circuit-updated');
-
     expect($circuit->fresh()->uiState->workflow_stage)->toBe('qc');
-});
-```
-
----
-
-## Next Steps
-
-After reviewing this plan:
-
-1. **Approve or request changes** to any section
-2. I can then **generate the actual migration files and models**
-3. We'll implement phase by phase with tests
-
-Would you like me to proceed with generating the migration files and models, or do you want to adjust any part of this plan first?
+  ;
+  `
+  -
+   Next Steps
+  ter reviewing this plan:
+   **Approve or request changes** to any section
+   I can then **generate the actual migration files and models**
+   We'll implement phase by phase with tests
+  uld you like me to proceed with generating the migration files and models, or do you want to adjust any part of this plan first?

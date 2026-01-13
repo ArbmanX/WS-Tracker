@@ -1,0 +1,4455 @@
+{
+  "data": {
+    "task": {
+      "ids": [
+        "636a4f33ea8c47a098e72",
+        "0436048537674821a3292",
+        "46e4c77ba6b8403eb5e6c",
+        "93b0f4d2b92d40b88551f",
+        "29e225d42145405cb6811",
+        "a01c0757f6bd49c2a7c3c",
+        "d41c5f6a5101431b8c2ae",
+        "4154f28c96684ffc8bbe5",
+        "1527805b4ec1476cb3a87",
+        "170e02719c0a49c3beaa3",
+        "b0b8846a54874d64b86bc",
+        "461180ea5f16486abb35d",
+        "d5a3c3e05d8f4c9381028",
+        "9ffaafe362a24576aca12",
+        "5a87ce491fce48f4849b6",
+        "b40cb06e4e2a4680a61a5",
+        "0c53fa4b3fbd41618cff7",
+        "d81aaaa23b8b4be7b0832",
+        "8498af708ee34d7fa1db4",
+        "c516b8c9967c44a19899c",
+        "1506c388b2b6467380e84",
+        "b2533617d4e74beba560c",
+        "0fd8609d8cf7445eac190",
+        "063f5a44c0824193abc30",
+        "9e9773597474417e93aed",
+        "8c59d36a6c364f7d932a2",
+        "0f35662bde3d4e2799d2e",
+        "7b4840d511d94ce682862",
+        "1c20fb7692fc45a4916ba",
+        "a92287fd43794bbd8982f",
+        "1ce1dd9cc2be48c1a4480",
+        "fbba6cf875b14c69ad85e",
+        "3c6b61450a9e42c0a2a93",
+        "604afc5a0acf4344ab44a",
+        "985c659ce6b8452c971dc",
+        "15f9e2c50e244d1d93ec8",
+        "a7365ade1bde40c5833ae",
+        "25f978f281a941c9a554e",
+        "196d195e3d3e45dd8ebbc",
+        "9cd935da6732463bbc553",
+        "cdb60ada4a784bce8eb4e",
+        "93b7cb67138c4f28b2ea9",
+        "06e114a76f144ee089eec",
+        "e80ac67869db40efa9d39",
+        "a25b00e05ba242e7bc6dd",
+        "922dce0ff58e480192357",
+        "082c5f2b78b24d84be9fc",
+        "0dc6d181c5364ea1aaa56",
+        "96132cf2a8734a3280f6f",
+        "4fa49f7f0326455fa517a",
+        "f72059a962414399b910a",
+        "d82a13db6d1947ceb274d",
+        "14392a0b12d8466a8ab42",
+        "08e0260512814741b328a",
+        "4ee95aa8739b4e219e96b",
+        "a0777972664940d8a28e3",
+        "32955ca29eec4185b7b8f",
+        "fc978b62f07d4709b38a8",
+        "7ad5692651904171a9ac4",
+        "7c5dc98021a0451599961",
+        "3346d771445e42639c79a",
+        "8d7c8fd1d3bf4b569295d",
+        "7df6b9d972bb4d0eb0685",
+        "b952e07a5f0147e9a5c86",
+        "b58448041bc5479f90580",
+        "0f14a8dffdc94765b399d",
+        "4eec8402c83340208ca78",
+        "a699fe1d28f04f7583b13",
+        "8b05a3df452940338407f",
+        "e527e0d458dc4e26bb507",
+        "6c55a314641c4a8196f3d",
+        "cce020b531024ba9abffb",
+        "42209c6b5e8f48d6a7d61",
+        "29ed08c0daf44c62a5711",
+        "6981d9c5ebf742de88e3c",
+        "f3c7e9ab00f64066b5853",
+        "7792a0fe83fe498984686",
+        "d08b12357e2a4ca19207d",
+        "3385f88a11ec47fc97b86",
+        "cd45ff1e6610468a9366f",
+        "87164bdbb8b4421d8851d",
+        "2df18716e518401a973af",
+        "b5cf3169199340219d2d7",
+        "d6a5c827da884d539e4cc",
+        "ab3cd73ddc044ea8a0453",
+        "06670ae14db641bca02e4",
+        "403511a0075141a9a73b0",
+        "7064348fe47d425eb54c8",
+        "5b20bb21b99f466583dd1",
+        "0cb6e6e682fd4e60967c3",
+        "e0c4d4f898194eb4bd362",
+        "4e9d8ccfe9244cd99b3cf",
+        "dba754bfe22443448e954",
+        "42601509d3a3496187bf2",
+        "14996f10c0d44a11a25a4",
+        "767163d349604fddb6531",
+        "6e05d3551e3e48fd99997",
+        "7294ee7a7fc74aaa9f7fc",
+        "ef8bde1423524b0999c63",
+        "e4eeceea61124d92af031",
+        "52affcdf54114482851ce",
+        "fa99800e967a4c0d9436a",
+        "82924711760b4759bed0d",
+        "129f0fc3182844119739c",
+        "961591cf94bc4e2fa0210",
+        "7ec642725fa346cdb4f6b",
+        "f47f96e5b8094b1fa9534",
+        "66f3684272304492883f5",
+        "eabe406572ee4ad885c6b",
+        "d3293b49e4a14206bb382",
+        "4e81620ac1184fcc9069b",
+        "e31a8c6e74f243c185447",
+        "648ca86e4fdb4e8081fd4",
+        "9eb0a8fce1b844c796d9f",
+        "83af48d3931a48daa5dac",
+        "18d61d0c254c4751ac7ce",
+        "ccfe72d5de04416695861",
+        "b4d5dccbf9ac445b9e510",
+        "8b30a51682b24c4198bca",
+        "c0637ba5fee54c4e9aa05",
+        "0502673b2b9747ef99e3e",
+        "ed647997936b478eb22e2",
+        "80821e9a8fcc4b44b0af5",
+        "93834abd18b1414197b6b",
+        "3de9110d90104f6187607",
+        "21124a8476214c01a1115",
+        "2f7578b97eae4cf8adf5d",
+        "0d2233f48da843918c8a4",
+        "b19d6507df4844f798790",
+        "46f52195a7c34981ba63b",
+        "4d848294670f4925a00bb",
+        "2a885f119ba54ce590a05",
+        "b87cf0605b8d475386c7d",
+        "8c33e39f823441a8a5207",
+        "426999c61b8d4ac8a9bdb",
+        "e3cbaa6356f74faeb5085",
+        "f19f937e4c854b528a35e",
+        "209a4af14ca94a6290b91",
+        "b1015656e6734f3d8eb4c",
+        "5cb029378b5c469ca088d",
+        "28ba4c950ee74584bf45e",
+        "345d3fc6b0c84ca59dcb6",
+        "76f4760f59134df492bf6",
+        "d3924b89eaba4f79b1f0d",
+        "3826e34a1a8a4e308b8b2",
+        "7c31cc50f0874f968e910",
+        "e96fcc86da524697a7d8f",
+        "edab37fbb64443cabad99",
+        "93b4314b14ea43899552a",
+        "8f5c28d1348e4c52b4f1f",
+        "7945cebbfaa54b3db46e1",
+        "8f0c611d0a994f73ab387",
+        "9376d98251794e8eb9f0f",
+        "5543ea19de014498b5486",
+        "30945f60f3c449f3a90fc",
+        "360e968893cb436981663"
+      ],
+      "entities": {
+        "636a4f33ea8c47a098e72": {
+          "id": "636a4f33ea8c47a098e72",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ee0030ae22474955be674",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0436048537674821a3292": {
+          "id": "0436048537674821a3292",
+          "title": "[Confirmed Decisions]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "a005b19adaba48058d506"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "46e4c77ba6b8403eb5e6c": {
+          "id": "46e4c77ba6b8403eb5e6c",
+          "title": "[Brand Colors & Theme System]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "591f0075ff814f04911aa"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "93b0f4d2b92d40b88551f": {
+          "id": "93b0f4d2b92d40b88551f",
+          "title": "[Package Installation]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "691788ac7f2b4bb788326"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "29e225d42145405cb6811": {
+          "id": "29e225d42145405cb6811",
+          "title": "[Database Schema]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "a85a51bdaf234fe08a8eb"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a01c0757f6bd49c2a7c3c": {
+          "id": "a01c0757f6bd49c2a7c3c",
+          "title": "[Migration Order]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "61a895d9a9084387b78ef"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d41c5f6a5101431b8c2ae": {
+          "id": "d41c5f6a5101431b8c2ae",
+          "title": "[API Service Layer]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "cc58efa3bdec4a7192453"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4154f28c96684ffc8bbe5": {
+          "id": "4154f28c96684ffc8bbe5",
+          "title": "[Sync Strategy]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "b25203162c934cecbcdce"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "1527805b4ec1476cb3a87": {
+          "id": "1527805b4ec1476cb3a87",
+          "title": "[Livewire Components]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "7b6e066ce2e64b40b6318"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "170e02719c0a49c3beaa3": {
+          "id": "170e02719c0a49c3beaa3",
+          "title": "[Implementation Phases]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "061ca7c8a7f94fa1a7ab7"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b0b8846a54874d64b86bc": {
+          "id": "b0b8846a54874d64b86bc",
+          "title": "[File Structure]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "cf98531a3c6a431faf1e4"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "461180ea5f16486abb35d": {
+          "id": "461180ea5f16486abb35d",
+          "title": "[Testing Strategy]()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [
+            "1462b94b39cc4ef0bf2fa"
+          ],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d5a3c3e05d8f4c9381028": {
+          "id": "d5a3c3e05d8f4c9381028",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "ff0a5e0727ce4ae1b3b4c",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "9ffaafe362a24576aca12": {
+          "id": "9ffaafe362a24576aca12",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "da70df0f903c4818879b8",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "5a87ce491fce48f4849b6": {
+          "id": "5a87ce491fce48f4849b6",
+          "title": "*Sources:**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "33685eebd6ab4219aa8f2",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b40cb06e4e2a4680a61a5": {
+          "id": "b40cb06e4e2a4680a61a5",
+          "title": "[PPL Brand Standards 2021](https://www.pplweb.com/wp-content/uploads/2021/08/PPL-Corp_External-Brand-Guidelines_2021.pdf)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "33685eebd6ab4219aa8f2",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0c53fa4b3fbd41618cff7": {
+          "id": "0c53fa4b3fbd41618cff7",
+          "title": "[PPL Logo Colors](https://www.schemecolor.com/ppl-logo-colors.php)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "33685eebd6ab4219aa8f2",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d81aaaa23b8b4be7b0832": {
+          "id": "d81aaaa23b8b4be7b0832",
+          "title": "*Source:** [Asplundh Brand - Brandfetch](https://brandfetch.com/asplundh.com)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "bb3bf4b565d6460fa19eb",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8498af708ee34d7fa1db4": {
+          "id": "8498af708ee34d7fa1db4",
+          "title": "-color-base-100: oklch(100% 0 0);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "c516b8c9967c44a19899c": {
+          "id": "c516b8c9967c44a19899c",
+          "title": "-color-base-200: oklch(98% 0.005 250);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "1506c388b2b6467380e84": {
+          "id": "1506c388b2b6467380e84",
+          "title": "-color-base-300: oklch(95% 0.01 250);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b2533617d4e74beba560c": {
+          "id": "b2533617d4e74beba560c",
+          "title": "-color-base-content: oklch(25% 0.02 250);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0fd8609d8cf7445eac190": {
+          "id": "0fd8609d8cf7445eac190",
+          "title": "-color-primary: oklch(55% 0.15 230);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "063f5a44c0824193abc30": {
+          "id": "063f5a44c0824193abc30",
+          "title": "-color-primary-content: oklch(98% 0.01 230);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "9e9773597474417e93aed": {
+          "id": "9e9773597474417e93aed",
+          "title": "-color-secondary: oklch(35% 0.15 270);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108565,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8c59d36a6c364f7d932a2": {
+          "id": "8c59d36a6c364f7d932a2",
+          "title": "-color-secondary-content: oklch(95% 0.02 270);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0f35662bde3d4e2799d2e": {
+          "id": "0f35662bde3d4e2799d2e",
+          "title": "-color-accent: oklch(65% 0.18 50);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7b4840d511d94ce682862": {
+          "id": "7b4840d511d94ce682862",
+          "title": "-color-accent-content: oklch(20% 0.05 50);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "1c20fb7692fc45a4916ba": {
+          "id": "1c20fb7692fc45a4916ba",
+          "title": "-color-neutral: oklch(40% 0.12 240);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a92287fd43794bbd8982f": {
+          "id": "a92287fd43794bbd8982f",
+          "title": "-color-neutral-content: oklch(95% 0.01 240);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "1ce1dd9cc2be48c1a4480": {
+          "id": "1ce1dd9cc2be48c1a4480",
+          "title": "-color-info: oklch(65% 0.15 230);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "fbba6cf875b14c69ad85e": {
+          "id": "fbba6cf875b14c69ad85e",
+          "title": "-color-info-content: oklch(25% 0.05 230);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "3c6b61450a9e42c0a2a93": {
+          "id": "3c6b61450a9e42c0a2a93",
+          "title": "-color-success: oklch(70% 0.17 145);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "604afc5a0acf4344ab44a": {
+          "id": "604afc5a0acf4344ab44a",
+          "title": "-color-success-content: oklch(25% 0.05 145);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "985c659ce6b8452c971dc": {
+          "id": "985c659ce6b8452c971dc",
+          "title": "-color-warning: oklch(80% 0.16 85);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "15f9e2c50e244d1d93ec8": {
+          "id": "15f9e2c50e244d1d93ec8",
+          "title": "-color-warning-content: oklch(30% 0.08 85);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a7365ade1bde40c5833ae": {
+          "id": "a7365ade1bde40c5833ae",
+          "title": "-color-error: oklch(65% 0.2 25);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "25f978f281a941c9a554e": {
+          "id": "25f978f281a941c9a554e",
+          "title": "-color-error-content: oklch(95% 0.02 25);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "196d195e3d3e45dd8ebbc": {
+          "id": "196d195e3d3e45dd8ebbc",
+          "title": "-radius-selector: 0.375rem;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "9cd935da6732463bbc553": {
+          "id": "9cd935da6732463bbc553",
+          "title": "-radius-field: 0.25rem;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "cdb60ada4a784bce8eb4e": {
+          "id": "cdb60ada4a784bce8eb4e",
+          "title": "-radius-box: 0.5rem;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "93b7cb67138c4f28b2ea9": {
+          "id": "93b7cb67138c4f28b2ea9",
+          "title": "-border: 1px;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "06e114a76f144ee089eec": {
+          "id": "06e114a76f144ee089eec",
+          "title": "-depth: 1;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e80ac67869db40efa9d39": {
+          "id": "e80ac67869db40efa9d39",
+          "title": "-noise: 0;",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "fd3b40d67d1240d2abaef",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a25b00e05ba242e7bc6dd": {
+          "id": "a25b00e05ba242e7bc6dd",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "9606440158fb4fb2a7c37",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "922dce0ff58e480192357": {
+          "id": "922dce0ff58e480192357",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "28ae2b03a6044fe398da2",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "082c5f2b78b24d84be9fc": {
+          "id": "082c5f2b78b24d84be9fc",
+          "title": "- Run via migration or raw SQL",
+          "notes": "CREATE TYPE workflow_stage AS ENUM ('active', 'pending_permissions', 'qc', 'rework', 'closed');\nCREATE TYPE assignment_source AS ENUM ('api_sync', 'manual');\nCREATE TYPE snapshot_type AS ENUM ('daily', 'status_change', 'manual');\nCREATE TYPE sync_type AS ENUM ('circuit_list', 'aggregates', 'full');\nCREATE TYPE sync_status AS ENUM ('started', 'completed', 'failed', 'warning');\nCREATE TYPE sync_trigger AS ENUM ('scheduled', 'manual', 'workflow_event');\n```",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "21cded63b15949edbbae4",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0dc6d181c5364ea1aaa56": {
+          "id": "0dc6d181c5364ea1aaa56",
+          "title": "- JSONB indexes for API data queries",
+          "notes": "CREATE INDEX idx_circuits_api_data ON circuits USING gin (api_data_json jsonb_path_ops);\nCREATE INDEX idx_planned_units_api_data ON planned_units USING gin (api_data_json jsonb_path_ops);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "b79b54626a0342c2a63e4",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "96132cf2a8734a3280f6f": {
+          "id": "96132cf2a8734a3280f6f",
+          "title": "- Composite indexes for common queries",
+          "notes": "CREATE INDEX idx_circuits_region_status ON circuits (region_id, api_status);\nCREATE INDEX idx_circuits_active ON circuits (region_id, api_modified_date)\n  WHERE api_status = 'ACTIV' AND deleted_at IS NULL;\nCREATE INDEX idx_ui_states_workflow ON circuit_ui_states (workflow_stage, column_position);\nCREATE INDEX idx_snapshots_circuit_date ON circuit_snapshots (circuit_id, snapshot_date DESC);\n```",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "b79b54626a0342c2a63e4",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4fa49f7f0326455fa517a": {
+          "id": "4fa49f7f0326455fa517a",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "b79b54626a0342c2a63e4",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "f72059a962414399b910a": {
+          "id": "f72059a962414399b910a",
+          "title": "- Normalized metrics (fast filtering)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "beef2b410c4b4bafb82c2",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d82a13db6d1947ceb274d": {
+          "id": "d82a13db6d1947ceb274d",
+          "title": "- Permission counts",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "beef2b410c4b4bafb82c2",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "14392a0b12d8466a8ab42": {
+          "id": "14392a0b12d8466a8ab42",
+          "title": "- JSONB for flexible breakdowns",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "beef2b410c4b4bafb82c2",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "08e0260512814741b328a": {
+          "id": "08e0260512814741b328a",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e17c1785ed584c7eb13fd",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4ee95aa8739b4e219e96b": {
+          "id": "4ee95aa8739b4e219e96b",
+          "title": ">whereIn('VEGUNIT_UNIT', $linearFtCodes)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a0777972664940d8a28e3": {
+          "id": "a0777972664940d8a28e3",
+          "title": ">sum('JOBVEGETATIONUNITS_LENGTHWRK'),",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "32955ca29eec4185b7b8f": {
+          "id": "32955ca29eec4185b7b8f",
+          "title": ">whereIn('VEGUNIT_UNIT', $acresCodes)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "fc978b62f07d4709b38a8": {
+          "id": "fc978b62f07d4709b38a8",
+          "title": ">sum('JOBVEGETATIONUNITS_ACRES'),",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7ad5692651904171a9ac4": {
+          "id": "7ad5692651904171a9ac4",
+          "title": ">whereIn('VEGUNIT_UNIT', $treeCountCodes)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7c5dc98021a0451599961": {
+          "id": "7c5dc98021a0451599961",
+          "title": ">sum('JOBVEGETATIONUNITS_NUMTREES'),",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "77b616e1063c4c4ca832c",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "3346d771445e42639c79a": {
+          "id": "3346d771445e42639c79a",
+          "title": ">get('https://ppl02.geodigital.com:8372');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "deb2a80cf37c4c5daf375",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8d7c8fd1d3bf4b569295d": {
+          "id": "8d7c8fd1d3bf4b569295d",
+          "title": ">withBasicAuth($credentials['username'], $credentials['password'])",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "deb2a80cf37c4c5daf375",
+          "tagIds": [],
+          "created": 1768197108566,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7df6b9d972bb4d0eb0685": {
+          "id": "7df6b9d972bb4d0eb0685",
+          "title": ">post(self::BASE_URL, [",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "deb2a80cf37c4c5daf375",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b952e07a5f0147e9a5c86": {
+          "id": "b952e07a5f0147e9a5c86",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "cf3692d4564d4131bc803",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b58448041bc5479f90580": {
+          "id": "b58448041bc5479f90580",
+          "title": ">weekdays()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0f14a8dffdc94765b399d": {
+          "id": "0f14a8dffdc94765b399d",
+          "title": ">timezone('America/New_York')",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4eec8402c83340208ca78": {
+          "id": "4eec8402c83340208ca78",
+          "title": ">at('04:30');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "a699fe1d28f04f7583b13": {
+          "id": "a699fe1d28f04f7583b13",
+          "title": ">weekdays()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8b05a3df452940338407f": {
+          "id": "8b05a3df452940338407f",
+          "title": ">timezone('America/New_York')",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e527e0d458dc4e26bb507": {
+          "id": "e527e0d458dc4e26bb507",
+          "title": ">at('16:30');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "6c55a314641c4a8196f3d": {
+          "id": "6c55a314641c4a8196f3d",
+          "title": ">weekdays()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "cce020b531024ba9abffb": {
+          "id": "cce020b531024ba9abffb",
+          "title": ">mondays()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "42209c6b5e8f48d6a7d61": {
+          "id": "42209c6b5e8f48d6a7d61",
+          "title": ">timezone('America/New_York')",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "29ed08c0daf44c62a5711": {
+          "id": "29ed08c0daf44c62a5711",
+          "title": ">at('04:30');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "24eb6b50854a417998d97",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "6981d9c5ebf742de88e3c": {
+          "id": "6981d9c5ebf742de88e3c",
+          "title": ">whereNull('deleted_at')",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "425edfad844846c4980c3",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "f3c7e9ab00f64066b5853": {
+          "id": "f3c7e9ab00f64066b5853",
+          "title": ">each(function (Circuit $circuit) {",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "425edfad844846c4980c3",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7792a0fe83fe498984686": {
+          "id": "7792a0fe83fe498984686",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "425edfad844846c4980c3",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d08b12357e2a4ca19207d": {
+          "id": "d08b12357e2a4ca19207d",
+          "title": ">with(['region', 'uiState', 'planners'])",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "3385f88a11ec47fc97b86": {
+          "id": "3385f88a11ec47fc97b86",
+          "title": ">visibleToUser(auth()->user())",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "cd45ff1e6610468a9366f": {
+          "id": "cd45ff1e6610468a9366f",
+          "title": ">when($this->regionFilter, fn($q) => $q->where('region_id', $this->regionFilter))",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "87164bdbb8b4421d8851d": {
+          "id": "87164bdbb8b4421d8851d",
+          "title": ">when($this->plannerFilter, fn($q) => $q->whereHas('planners',",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "2df18716e518401a973af": {
+          "id": "2df18716e518401a973af",
+          "title": ">when($this->dateFrom, fn($q) => $q->where('api_modified_date', '>=', $this->dateFrom))",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b5cf3169199340219d2d7": {
+          "id": "b5cf3169199340219d2d7",
+          "title": ">when($this->dateTo, fn($q) => $q->where('api_modified_date', '<=', $this->dateTo))",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d6a5c827da884d539e4cc": {
+          "id": "d6a5c827da884d539e4cc",
+          "title": ">orderBy('api_modified_date', 'desc')",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "ab3cd73ddc044ea8a0453": {
+          "id": "ab3cd73ddc044ea8a0453",
+          "title": ">get()",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "06670ae14db641bca02e4": {
+          "id": "06670ae14db641bca02e4",
+          "title": ">groupBy(fn($c) => $c->uiState?->workflow_stage ?? 'active');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35def522e957487fb360d",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "403511a0075141a9a73b0": {
+          "id": "403511a0075141a9a73b0",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "36211b6fdc804cbca0e4f",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7064348fe47d425eb54c8": {
+          "id": "7064348fe47d425eb54c8",
+          "title": "Install PostgreSQL locally",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": true,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "doneOn": 1768197108567,
+          "attachments": []
+        },
+        "5b20bb21b99f466583dd1": {
+          "id": "5b20bb21b99f466583dd1",
+          "title": "Configure `.env` for PostgreSQL",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": true,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "doneOn": 1768197108567,
+          "attachments": []
+        },
+        "0cb6e6e682fd4e60967c3": {
+          "id": "0cb6e6e682fd4e60967c3",
+          "title": "Install composer packages (spatie/laravel-permission, spatie/laravel-activitylog)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": true,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "doneOn": 1768197108567,
+          "attachments": []
+        },
+        "e0c4d4f898194eb4bd362": {
+          "id": "e0c4d4f898194eb4bd362",
+          "title": "Install npm packages (livewire-sortable, apexcharts)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4e9d8ccfe9244cd99b3cf": {
+          "id": "4e9d8ccfe9244cd99b3cf",
+          "title": "Set timezone to `America/New_York` in `config/app.php`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "dba754bfe22443448e954": {
+          "id": "dba754bfe22443448e954",
+          "title": "Create `config/workstudio.php`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e3a9c8defa194b22b9499",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "42601509d3a3496187bf2": {
+          "id": "42601509d3a3496187bf2",
+          "title": "Create all migrations in order",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108567,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "14996f10c0d44a11a25a4": {
+          "id": "14996f10c0d44a11a25a4",
+          "title": "Create Eloquent models with relationships",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "767163d349604fddb6531": {
+          "id": "767163d349604fddb6531",
+          "title": "Create factories for testing",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "6e05d3551e3e48fd99997": {
+          "id": "6e05d3551e3e48fd99997",
+          "title": "Create seeders (roles, permissions, regions, statuses)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7294ee7a7fc74aaa9f7fc": {
+          "id": "7294ee7a7fc74aaa9f7fc",
+          "title": "Run migrations and seeders",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "ef8bde1423524b0999c63": {
+          "id": "ef8bde1423524b0999c63",
+          "title": "Add `HasRoles` trait to User model",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "4234d1a8ac9d4cd5a709b",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e4eeceea61124d92af031": {
+          "id": "e4eeceea61124d92af031",
+          "title": "Create `WorkStudioApiService` with health check and retry logic",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "52affcdf54114482851ce": {
+          "id": "52affcdf54114482851ce",
+          "title": "Create `ApiCredentialManager` for credential rotation",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "fa99800e967a4c0d9436a": {
+          "id": "fa99800e967a4c0d9436a",
+          "title": "Create `DDOTableTransformer` for generic response parsing",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "82924711760b4759bed0d": {
+          "id": "82924711760b4759bed0d",
+          "title": "Create `CircuitTransformer` with field mappings",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "129f0fc3182844119739c": {
+          "id": "129f0fc3182844119739c",
+          "title": "Create `PlannedUnitTransformer`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "961591cf94bc4e2fa0210": {
+          "id": "961591cf94bc4e2fa0210",
+          "title": "Write Pest tests for transformers",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "64ebd3ec18cc41ceb5538",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7ec642725fa346cdb4f6b": {
+          "id": "7ec642725fa346cdb4f6b",
+          "title": "Create `SyncCircuitsJob`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "f47f96e5b8094b1fa9534": {
+          "id": "f47f96e5b8094b1fa9534",
+          "title": "Create `SyncPlannedUnitsJob`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "66f3684272304492883f5": {
+          "id": "66f3684272304492883f5",
+          "title": "Implement daily snapshot creation",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "eabe406572ee4ad885c6b": {
+          "id": "eabe406572ee4ad885c6b",
+          "title": "Configure scheduled jobs in `routes/console.php`",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d3293b49e4a14206bb382": {
+          "id": "d3293b49e4a14206bb382",
+          "title": "Create `SyncLog` tracking",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4e81620ac1184fcc9069b": {
+          "id": "4e81620ac1184fcc9069b",
+          "title": "Write Pest tests for sync jobs",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "e0cdc534d5dc4193a5201",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e31a8c6e74f243c185447": {
+          "id": "e31a8c6e74f243c185447",
+          "title": "Create `ppl-brand` theme CSS",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35d5f8989f77404193948",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "648ca86e4fdb4e8081fd4": {
+          "id": "648ca86e4fdb4e8081fd4",
+          "title": "Create theme switcher Alpine component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35d5f8989f77404193948",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "9eb0a8fce1b844c796d9f": {
+          "id": "9eb0a8fce1b844c796d9f",
+          "title": "Add theme selector to user settings",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35d5f8989f77404193948",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "83af48d3931a48daa5dac": {
+          "id": "83af48d3931a48daa5dac",
+          "title": "Implement system preference detection",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35d5f8989f77404193948",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "18d61d0c254c4751ac7ce": {
+          "id": "18d61d0c254c4751ac7ce",
+          "title": "Test dark mode compatibility",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "35d5f8989f77404193948",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "ccfe72d5de04416695861": {
+          "id": "ccfe72d5de04416695861",
+          "title": "Create `CircuitDashboard` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b4d5dccbf9ac445b9e510": {
+          "id": "b4d5dccbf9ac445b9e510",
+          "title": "Create `WorkflowColumn` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8b30a51682b24c4198bca": {
+          "id": "8b30a51682b24c4198bca",
+          "title": "Create `CircuitCard` component with drag handle",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "c0637ba5fee54c4e9aa05": {
+          "id": "c0637ba5fee54c4e9aa05",
+          "title": "Implement drag-drop with livewire-sortable",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0502673b2b9747ef99e3e": {
+          "id": "0502673b2b9747ef99e3e",
+          "title": "Create `FilterPanel` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "ed647997936b478eb22e2": {
+          "id": "ed647997936b478eb22e2",
+          "title": "Create `StatsPanel` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "80821e9a8fcc4b44b0af5": {
+          "id": "80821e9a8fcc4b44b0af5",
+          "title": "Implement role-based visibility",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "93834abd18b1414197b6b": {
+          "id": "93834abd18b1414197b6b",
+          "title": "Write Pest Livewire tests",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "31bfd03425ac431f82da4",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "3de9110d90104f6187607": {
+          "id": "3de9110d90104f6187607",
+          "title": "Create ApexCharts Alpine wrapper",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "387906e6d9b04692b5074",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "21124a8476214c01a1115": {
+          "id": "21124a8476214c01a1115",
+          "title": "Create `MilesByRegionChart` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "387906e6d9b04692b5074",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "2f7578b97eae4cf8adf5d": {
+          "id": "2f7578b97eae4cf8adf5d",
+          "title": "Create `PlannerProgressChart` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "387906e6d9b04692b5074",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "0d2233f48da843918c8a4": {
+          "id": "0d2233f48da843918c8a4",
+          "title": "Create `PermissionStatusChart` component",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "387906e6d9b04692b5074",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b19d6507df4844f798790": {
+          "id": "b19d6507df4844f798790",
+          "title": "Implement Saturday aggregate calculations",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "387906e6d9b04692b5074",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "46f52195a7c34981ba63b": {
+          "id": "46f52195a7c34981ba63b",
+          "title": "Create force sync UI",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "cfb9a57220cb4b3a80f77",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "4d848294670f4925a00bb": {
+          "id": "4d848294670f4925a00bb",
+          "title": "Create unlinked planners management",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "cfb9a57220cb4b3a80f77",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "2a885f119ba54ce590a05": {
+          "id": "2a885f119ba54ce590a05",
+          "title": "Add sync history viewer",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "cfb9a57220cb4b3a80f77",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b87cf0605b8d475386c7d": {
+          "id": "b87cf0605b8d475386c7d",
+          "title": "Implement permission gates",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "cfb9a57220cb4b3a80f77",
+          "tagIds": [],
+          "created": 1768197108568,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8c33e39f823441a8a5207": {
+          "id": "8c33e39f823441a8a5207",
+          "title": "Complete Pest test coverage",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "426999c61b8d4ac8a9bdb": {
+          "id": "426999c61b8d4ac8a9bdb",
+          "title": "Run `vendor/bin/pint` for code style",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e3cbaa6356f74faeb5085": {
+          "id": "e3cbaa6356f74faeb5085",
+          "title": "Test all role-based access",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "f19f937e4c854b528a35e": {
+          "id": "f19f937e4c854b528a35e",
+          "title": "Performance testing with sample data",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "209a4af14ca94a6290b91": {
+          "id": "209a4af14ca94a6290b91",
+          "title": "Browser testing with Pest 4",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "b1015656e6734f3d8eb4c": {
+          "id": "b1015656e6734f3d8eb4c",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "c0809c19c2ef428591797",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "5cb029378b5c469ca088d": {
+          "id": "5cb029378b5c469ca088d",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "84df657cb499464791cf4",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "28ba4c950ee74584bf45e": {
+          "id": "28ba4c950ee74584bf45e",
+          "title": "Unit Tests - Transformers, helpers, date parsing",
+          "notes": "**Unit Tests**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "d10bf2e2577e472196141",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "345d3fc6b0c84ca59dcb6": {
+          "id": "345d3fc6b0c84ca59dcb6",
+          "title": "Feature Tests - Livewire components, authorization, sync jobs",
+          "notes": "**Feature Tests**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "d10bf2e2577e472196141",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "76f4760f59134df492bf6": {
+          "id": "76f4760f59134df492bf6",
+          "title": "Browser Tests (Pest 4) - Drag-drop, theme switching, charts",
+          "notes": "**Browser Tests**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "d10bf2e2577e472196141",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "d3924b89eaba4f79b1f0d": {
+          "id": "d3924b89eaba4f79b1f0d",
+          "title": ">test(CircuitDashboard::class)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "3826e34a1a8a4e308b8b2": {
+          "id": "3826e34a1a8a4e308b8b2",
+          "title": ">assertSee($circuit->work_order);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7c31cc50f0874f968e910": {
+          "id": "7c31cc50f0874f968e910",
+          "title": ">test(CircuitDashboard::class)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "e96fcc86da524697a7d8f": {
+          "id": "e96fcc86da524697a7d8f",
+          "title": ">set('regionFilter', $circuit1->region_id)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "edab37fbb64443cabad99": {
+          "id": "edab37fbb64443cabad99",
+          "title": ">assertSee($circuit1->work_order)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "93b4314b14ea43899552a": {
+          "id": "93b4314b14ea43899552a",
+          "title": ">assertDontSee($circuit2->work_order);",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8f5c28d1348e4c52b4f1f": {
+          "id": "8f5c28d1348e4c52b4f1f",
+          "title": ">test(CircuitDashboard::class)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "7945cebbfaa54b3db46e1": {
+          "id": "7945cebbfaa54b3db46e1",
+          "title": ">call('handleCircuitMoved', $circuit->id, 'qc', 1)",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "8f0c611d0a994f73ab387": {
+          "id": "8f0c611d0a994f73ab387",
+          "title": ">assertDispatched('circuit-updated');",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "9376d98251794e8eb9f0f": {
+          "id": "9376d98251794e8eb9f0f",
+          "title": "--",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "81a03837c921445b90007",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "5543ea19de014498b5486": {
+          "id": "5543ea19de014498b5486",
+          "title": "Approve or request changes to any section",
+          "notes": "**Approve or request changes**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "658596602cde4c14b8510",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "30945f60f3c449f3a90fc": {
+          "id": "30945f60f3c449f3a90fc",
+          "title": "I can then generate the actual migration files and models",
+          "notes": "**generate the actual migration files and models**",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "658596602cde4c14b8510",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        },
+        "360e968893cb436981663": {
+          "id": "360e968893cb436981663",
+          "title": "We'll implement phase by phase with tests",
+          "notes": "Would you like me to proceed with generating the migration files and models, or do you want to adjust any part of this plan first?",
+          "timeEstimate": 0,
+          "timeSpent": 0,
+          "isDone": false,
+          "projectId": "658596602cde4c14b8510",
+          "tagIds": [],
+          "created": 1768197108569,
+          "subTaskIds": [],
+          "timeSpentOnDay": {},
+          "attachments": []
+        }
+      },
+      "currentTaskId": null,
+      "selectedTaskId": "636a4f33ea8c47a098e72",
+      "taskDetailTargetPanel": "Default",
+      "lastCurrentTaskId": null,
+      "isDataLoaded": true
+    },
+    "project": {
+      "ids": [
+        "e376f46c978e46d8bafd1",
+        "ee0030ae22474955be674",
+        "ff0a5e0727ce4ae1b3b4c",
+        "da70df0f903c4818879b8",
+        "33685eebd6ab4219aa8f2",
+        "bb3bf4b565d6460fa19eb",
+        "fd3b40d67d1240d2abaef",
+        "9606440158fb4fb2a7c37",
+        "28ae2b03a6044fe398da2",
+        "21cded63b15949edbbae4",
+        "b79b54626a0342c2a63e4",
+        "beef2b410c4b4bafb82c2",
+        "e17c1785ed584c7eb13fd",
+        "77b616e1063c4c4ca832c",
+        "deb2a80cf37c4c5daf375",
+        "cf3692d4564d4131bc803",
+        "24eb6b50854a417998d97",
+        "425edfad844846c4980c3",
+        "35def522e957487fb360d",
+        "36211b6fdc804cbca0e4f",
+        "e3a9c8defa194b22b9499",
+        "4234d1a8ac9d4cd5a709b",
+        "64ebd3ec18cc41ceb5538",
+        "e0cdc534d5dc4193a5201",
+        "35d5f8989f77404193948",
+        "31bfd03425ac431f82da4",
+        "387906e6d9b04692b5074",
+        "cfb9a57220cb4b3a80f77",
+        "c0809c19c2ef428591797",
+        "84df657cb499464791cf4",
+        "d10bf2e2577e472196141",
+        "81a03837c921445b90007",
+        "658596602cde4c14b8510"
+      ],
+      "entities": {
+        "e376f46c978e46d8bafd1": {
+          "id": "e376f46c978e46d8bafd1",
+          "title": "Imported Tasks",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108562,
+          "updated": null,
+          "taskIds": [],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📥"
+        },
+        "ee0030ae22474955be674": {
+          "id": "ee0030ae22474955be674",
+          "title": "WS-Tracker Implementation Plan",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "636a4f33ea8c47a098e72"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "ff0a5e0727ce4ae1b3b4c": {
+          "id": "ff0a5e0727ce4ae1b3b4c",
+          "title": "Table of Contents",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "0436048537674821a3292",
+            "46e4c77ba6b8403eb5e6c",
+            "93b0f4d2b92d40b88551f",
+            "29e225d42145405cb6811",
+            "a01c0757f6bd49c2a7c3c",
+            "d41c5f6a5101431b8c2ae",
+            "4154f28c96684ffc8bbe5",
+            "1527805b4ec1476cb3a87",
+            "170e02719c0a49c3beaa3",
+            "b0b8846a54874d64b86bc",
+            "461180ea5f16486abb35d",
+            "d5a3c3e05d8f4c9381028"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "da70df0f903c4818879b8": {
+          "id": "da70df0f903c4818879b8",
+          "title": "Confirmed Decisions",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "9ffaafe362a24576aca12"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "33685eebd6ab4219aa8f2": {
+          "id": "33685eebd6ab4219aa8f2",
+          "title": "PPL Electric Utilities Colors",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "5a87ce491fce48f4849b6",
+            "b40cb06e4e2a4680a61a5",
+            "0c53fa4b3fbd41618cff7"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "bb3bf4b565d6460fa19eb": {
+          "id": "bb3bf4b565d6460fa19eb",
+          "title": "Asplundh Colors (Contractor Branding)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "d81aaaa23b8b4be7b0832"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "fd3b40d67d1240d2abaef": {
+          "id": "fd3b40d67d1240d2abaef",
+          "title": "Custom PPL Brand Theme (CSS)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "8498af708ee34d7fa1db4",
+            "c516b8c9967c44a19899c",
+            "1506c388b2b6467380e84",
+            "b2533617d4e74beba560c",
+            "0fd8609d8cf7445eac190",
+            "063f5a44c0824193abc30",
+            "9e9773597474417e93aed",
+            "8c59d36a6c364f7d932a2",
+            "0f35662bde3d4e2799d2e",
+            "7b4840d511d94ce682862",
+            "1c20fb7692fc45a4916ba",
+            "a92287fd43794bbd8982f",
+            "1ce1dd9cc2be48c1a4480",
+            "fbba6cf875b14c69ad85e",
+            "3c6b61450a9e42c0a2a93",
+            "604afc5a0acf4344ab44a",
+            "985c659ce6b8452c971dc",
+            "15f9e2c50e244d1d93ec8",
+            "a7365ade1bde40c5833ae",
+            "25f978f281a941c9a554e",
+            "196d195e3d3e45dd8ebbc",
+            "9cd935da6732463bbc553",
+            "cdb60ada4a784bce8eb4e",
+            "93b7cb67138c4f28b2ea9",
+            "06e114a76f144ee089eec",
+            "e80ac67869db40efa9d39"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "9606440158fb4fb2a7c37": {
+          "id": "9606440158fb4fb2a7c37",
+          "title": "Theme Switcher Alpine Component",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "a25b00e05ba242e7bc6dd"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "28ae2b03a6044fe398da2": {
+          "id": "28ae2b03a6044fe398da2",
+          "title": "Create database",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "922dce0ff58e480192357"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "21cded63b15949edbbae4": {
+          "id": "21cded63b15949edbbae4",
+          "title": "Enums (PostgreSQL Native)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "082c5f2b78b24d84be9fc"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "b79b54626a0342c2a63e4": {
+          "id": "b79b54626a0342c2a63e4",
+          "title": "Key Indexes (PostgreSQL Optimized)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "0dc6d181c5364ea1aaa56",
+            "96132cf2a8734a3280f6f",
+            "4fa49f7f0326455fa517a"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "beef2b410c4b4bafb82c2": {
+          "id": "beef2b410c4b4bafb82c2",
+          "title": "circuit_aggregates Schema",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "f72059a962414399b910a",
+            "d82a13db6d1947ceb274d",
+            "14392a0b12d8466a8ab42"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "e17c1785ed584c7eb13fd": {
+          "id": "e17c1785ed584c7eb13fd",
+          "title": "Phase 7: Seeders",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "08e0260512814741b328a"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "77b616e1063c4c4ca832c": {
+          "id": "77b616e1063c4c4ca832c",
+          "title": "Aggregation Service Layer",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "4ee95aa8739b4e219e96b",
+            "a0777972664940d8a28e3",
+            "32955ca29eec4185b7b8f",
+            "fc978b62f07d4709b38a8",
+            "7ad5692651904171a9ac4",
+            "7c5dc98021a0451599961"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "deb2a80cf37c4c5daf375": {
+          "id": "deb2a80cf37c4c5daf375",
+          "title": "WorkStudioApiService",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108566,
+          "updated": null,
+          "taskIds": [
+            "3346d771445e42639c79a",
+            "8d7c8fd1d3bf4b569295d",
+            "7df6b9d972bb4d0eb0685"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "cf3692d4564d4131bc803": {
+          "id": "cf3692d4564d4131bc803",
+          "title": "View GUIDs",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "b952e07a5f0147e9a5c86"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "24eb6b50854a417998d97": {
+          "id": "24eb6b50854a417998d97",
+          "title": "Scheduled Jobs",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "b58448041bc5479f90580",
+            "0f14a8dffdc94765b399d",
+            "4eec8402c83340208ca78",
+            "a699fe1d28f04f7583b13",
+            "8b05a3df452940338407f",
+            "e527e0d458dc4e26bb507",
+            "6c55a314641c4a8196f3d",
+            "cce020b531024ba9abffb",
+            "42209c6b5e8f48d6a7d61",
+            "29ed08c0daf44c62a5711"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "425edfad844846c4980c3": {
+          "id": "425edfad844846c4980c3",
+          "title": "SyncCircuitsJob",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "6981d9c5ebf742de88e3c",
+            "f3c7e9ab00f64066b5853",
+            "7792a0fe83fe498984686"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "35def522e957487fb360d": {
+          "id": "35def522e957487fb360d",
+          "title": "CircuitDashboard Component",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "d08b12357e2a4ca19207d",
+            "3385f88a11ec47fc97b86",
+            "cd45ff1e6610468a9366f",
+            "87164bdbb8b4421d8851d",
+            "2df18716e518401a973af",
+            "b5cf3169199340219d2d7",
+            "d6a5c827da884d539e4cc",
+            "ab3cd73ddc044ea8a0453",
+            "06670ae14db641bca02e4"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "36211b6fdc804cbca0e4f": {
+          "id": "36211b6fdc804cbca0e4f",
+          "title": "CircuitCard Component",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "403511a0075141a9a73b0"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "e3a9c8defa194b22b9499": {
+          "id": "e3a9c8defa194b22b9499",
+          "title": "Phase 0: Environment Setup (Day 1)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "7064348fe47d425eb54c8",
+            "5b20bb21b99f466583dd1",
+            "0cb6e6e682fd4e60967c3",
+            "e0c4d4f898194eb4bd362",
+            "4e9d8ccfe9244cd99b3cf",
+            "dba754bfe22443448e954"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "4234d1a8ac9d4cd5a709b": {
+          "id": "4234d1a8ac9d4cd5a709b",
+          "title": "Phase 1A: Database Foundation (Days 2-3)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108567,
+          "updated": null,
+          "taskIds": [
+            "42601509d3a3496187bf2",
+            "14996f10c0d44a11a25a4",
+            "767163d349604fddb6531",
+            "6e05d3551e3e48fd99997",
+            "7294ee7a7fc74aaa9f7fc",
+            "ef8bde1423524b0999c63"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "64ebd3ec18cc41ceb5538": {
+          "id": "64ebd3ec18cc41ceb5538",
+          "title": "Phase 1B: API Service Layer (Days 4-5)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "e4eeceea61124d92af031",
+            "52affcdf54114482851ce",
+            "fa99800e967a4c0d9436a",
+            "82924711760b4759bed0d",
+            "129f0fc3182844119739c",
+            "961591cf94bc4e2fa0210"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "e0cdc534d5dc4193a5201": {
+          "id": "e0cdc534d5dc4193a5201",
+          "title": "Phase 1C: Sync Jobs (Days 6-7)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "7ec642725fa346cdb4f6b",
+            "f47f96e5b8094b1fa9534",
+            "66f3684272304492883f5",
+            "eabe406572ee4ad885c6b",
+            "d3293b49e4a14206bb382",
+            "4e81620ac1184fcc9069b"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "35d5f8989f77404193948": {
+          "id": "35d5f8989f77404193948",
+          "title": "Phase 1D: Theme System (Day 8)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "e31a8c6e74f243c185447",
+            "648ca86e4fdb4e8081fd4",
+            "9eb0a8fce1b844c796d9f",
+            "83af48d3931a48daa5dac",
+            "18d61d0c254c4751ac7ce"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "31bfd03425ac431f82da4": {
+          "id": "31bfd03425ac431f82da4",
+          "title": "Phase 1E: Dashboard UI (Days 9-12)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "ccfe72d5de04416695861",
+            "b4d5dccbf9ac445b9e510",
+            "8b30a51682b24c4198bca",
+            "c0637ba5fee54c4e9aa05",
+            "0502673b2b9747ef99e3e",
+            "ed647997936b478eb22e2",
+            "80821e9a8fcc4b44b0af5",
+            "93834abd18b1414197b6b"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "387906e6d9b04692b5074": {
+          "id": "387906e6d9b04692b5074",
+          "title": "Phase 1F: Charts & Visualization (Days 13-14)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "3de9110d90104f6187607",
+            "21124a8476214c01a1115",
+            "2f7578b97eae4cf8adf5d",
+            "0d2233f48da843918c8a4",
+            "b19d6507df4844f798790"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "cfb9a57220cb4b3a80f77": {
+          "id": "cfb9a57220cb4b3a80f77",
+          "title": "Phase 1G: Admin Features (Day 15)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108568,
+          "updated": null,
+          "taskIds": [
+            "46f52195a7c34981ba63b",
+            "4d848294670f4925a00bb",
+            "2a885f119ba54ce590a05",
+            "b87cf0605b8d475386c7d"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "c0809c19c2ef428591797": {
+          "id": "c0809c19c2ef428591797",
+          "title": "Phase 1H: Testing & Polish (Days 16-17)",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108569,
+          "updated": null,
+          "taskIds": [
+            "8c33e39f823441a8a5207",
+            "426999c61b8d4ac8a9bdb",
+            "e3cbaa6356f74faeb5085",
+            "f19f937e4c854b528a35e",
+            "209a4af14ca94a6290b91",
+            "b1015656e6734f3d8eb4c"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "84df657cb499464791cf4": {
+          "id": "84df657cb499464791cf4",
+          "title": "File Structure",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108569,
+          "updated": null,
+          "taskIds": [
+            "5cb029378b5c469ca088d"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "d10bf2e2577e472196141": {
+          "id": "d10bf2e2577e472196141",
+          "title": "Key Test Categories",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108569,
+          "updated": null,
+          "taskIds": [
+            "28ba4c950ee74584bf45e",
+            "345d3fc6b0c84ca59dcb6",
+            "76f4760f59134df492bf6"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "81a03837c921445b90007": {
+          "id": "81a03837c921445b90007",
+          "title": "Example Tests",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108569,
+          "updated": null,
+          "taskIds": [
+            "d3924b89eaba4f79b1f0d",
+            "3826e34a1a8a4e308b8b2",
+            "7c31cc50f0874f968e910",
+            "e96fcc86da524697a7d8f",
+            "edab37fbb64443cabad99",
+            "93b4314b14ea43899552a",
+            "8f5c28d1348e4c52b4f1f",
+            "7945cebbfaa54b3db46e1",
+            "8f0c611d0a994f73ab387",
+            "9376d98251794e8eb9f0f"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        },
+        "658596602cde4c14b8510": {
+          "id": "658596602cde4c14b8510",
+          "title": "Next Steps",
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "isArchived": false,
+          "isHiddenFromMenu": false,
+          "isEnableBacklog": true,
+          "created": 1768197108569,
+          "updated": null,
+          "taskIds": [
+            "5543ea19de014498b5486",
+            "30945f60f3c449f3a90fc",
+            "360e968893cb436981663"
+          ],
+          "backlogTaskIds": [],
+          "noteIds": [],
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          },
+          "icon": "📁"
+        }
+      }
+    },
+    "tag": {
+      "ids": [
+        "a005b19adaba48058d506",
+        "591f0075ff814f04911aa",
+        "691788ac7f2b4bb788326",
+        "a85a51bdaf234fe08a8eb",
+        "61a895d9a9084387b78ef",
+        "cc58efa3bdec4a7192453",
+        "b25203162c934cecbcdce",
+        "7b6e066ce2e64b40b6318",
+        "061ca7c8a7f94fa1a7ab7",
+        "cf98531a3c6a431faf1e4",
+        "1462b94b39cc4ef0bf2fa"
+      ],
+      "entities": {
+        "a005b19adaba48058d506": {
+          "id": "a005b19adaba48058d506",
+          "title": "confirmed-decisions",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "0436048537674821a3292"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "591f0075ff814f04911aa": {
+          "id": "591f0075ff814f04911aa",
+          "title": "brand-colors--theme-system",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "46e4c77ba6b8403eb5e6c"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "691788ac7f2b4bb788326": {
+          "id": "691788ac7f2b4bb788326",
+          "title": "package-installation",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "93b0f4d2b92d40b88551f"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "a85a51bdaf234fe08a8eb": {
+          "id": "a85a51bdaf234fe08a8eb",
+          "title": "database-schema",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "29e225d42145405cb6811"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "61a895d9a9084387b78ef": {
+          "id": "61a895d9a9084387b78ef",
+          "title": "migration-order",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "a01c0757f6bd49c2a7c3c"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "cc58efa3bdec4a7192453": {
+          "id": "cc58efa3bdec4a7192453",
+          "title": "api-service-layer",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "d41c5f6a5101431b8c2ae"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "b25203162c934cecbcdce": {
+          "id": "b25203162c934cecbcdce",
+          "title": "sync-strategy",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "4154f28c96684ffc8bbe5"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "7b6e066ce2e64b40b6318": {
+          "id": "7b6e066ce2e64b40b6318",
+          "title": "livewire-components",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "1527805b4ec1476cb3a87"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "061ca7c8a7f94fa1a7ab7": {
+          "id": "061ca7c8a7f94fa1a7ab7",
+          "title": "implementation-phases",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "170e02719c0a49c3beaa3"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "cf98531a3c6a431faf1e4": {
+          "id": "cf98531a3c6a431faf1e4",
+          "title": "file-structure",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "b0b8846a54874d64b86bc"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        },
+        "1462b94b39cc4ef0bf2fa": {
+          "id": "1462b94b39cc4ef0bf2fa",
+          "title": "testing-strategy",
+          "color": "#007acc",
+          "created": 1768197108565,
+          "updated": null,
+          "taskIds": [
+            "461180ea5f16486abb35d"
+          ],
+          "icon": null,
+          "theme": {
+            "isAutoContrast": true,
+            "isDisableBackgroundGradient": false,
+            "primary": "#9ea03b",
+            "huePrimary": "500",
+            "accent": "#ff4081",
+            "hueAccent": "500",
+            "warn": "#e11826",
+            "hueWarn": "500",
+            "backgroundImageDark": null,
+            "backgroundImageLight": null
+          },
+          "advancedCfg": {
+            "worklogExportSettings": {
+              "cols": [
+                "DATE",
+                "START",
+                "END",
+                "TIME_CLOCK",
+                "TITLES_INCLUDING_SUB"
+              ],
+              "roundWorkTimeTo": null,
+              "roundStartTimeTo": null,
+              "roundEndTimeTo": null,
+              "separateTasksBy": " | ",
+              "groupBy": "DATE"
+            }
+          }
+        }
+      }
+    },
+    "timeTracking": {
+      "project": {},
+      "tag": {}
+    },
+    "note": {
+      "ids": [],
+      "entities": {},
+      "todayOrder": []
+    },
+    "taskRepeatCfg": {
+      "ids": [],
+      "entities": {}
+    },
+    "reminders": [],
+    "planner": {
+      "days": {}
+    },
+    "simpleCounter": {
+      "ids": [],
+      "entities": {}
+    },
+    "boards": {
+      "boardCfgs": []
+    },
+    "pluginUserData": [],
+    "pluginMetadata": [],
+    "globalConfig": {
+      "lang": {
+        "lng": "en",
+        "timeLocale": "en-US"
+      },
+      "misc": {
+        "isConfirmBeforeExit": false,
+        "isConfirmBeforeExitWithoutFinishDay": true,
+        "isAutMarkParentAsDone": false,
+        "isTurnOffMarkdown": false,
+        "isAutoAddWorkedOnToToday": true,
+        "isMinimizeToTray": false,
+        "isTrayShowCurrentTask": true,
+        "isTrayShowCurrentCountdown": true,
+        "defaultProjectId": "INBOX_PROJECT",
+        "firstDayOfWeek": 1,
+        "startOfNextDay": 0,
+        "isUseMinimalNav": false,
+        "isDisableAnimations": false,
+        "isShowTipLonger": false,
+        "taskNotesTpl": "",
+        "isOverlayIndicatorEnabled": false,
+        "customTheme": "default"
+      },
+      "shortSyntax": {
+        "isEnableProject": true,
+        "isEnableDue": true,
+        "isEnableTag": true
+      },
+      "evaluation": {
+        "isHideEvaluationSheet": false
+      },
+      "idle": {
+        "isOnlyOpenIdleWhenCurrentTask": false,
+        "isEnableIdleTimeTracking": true,
+        "minIdleTime": 300000
+      },
+      "takeABreak": {
+        "isTakeABreakEnabled": false,
+        "isLockScreen": false,
+        "isTimedFullScreenBlocker": false,
+        "timedFullScreenBlockerDuration": 8000,
+        "isFocusWindow": false,
+        "takeABreakMessage": "",
+        "takeABreakMinWorkingTime": 3600000,
+        "takeABreakSnoozeTime": 900000,
+        "motivationalImgs": []
+      },
+      "dominaMode": {
+        "isEnabled": false,
+        "interval": 300000,
+        "volume": 75,
+        "text": "",
+        "voice": null
+      },
+      "focusMode": {
+        "isAlwaysUseFocusMode": false,
+        "isSkipPreparation": false
+      },
+      "pomodoro": {
+        "isEnabled": false,
+        "duration": 1500000,
+        "breakDuration": 300000,
+        "longerBreakDuration": 900000,
+        "cyclesBeforeLongerBreak": 4,
+        "isStopTrackingOnBreak": true,
+        "isStopTrackingOnLongBreak": true,
+        "isManualContinue": false,
+        "isManualContinueBreak": false,
+        "isPlaySound": false,
+        "isPlaySoundAfterBreak": false,
+        "isPlayTick": false
+      },
+      "keyboard": {},
+      "localBackup": {
+        "isEnabled": true
+      },
+      "sound": {
+        "volume": 75,
+        "isIncreaseDoneSoundPitch": true,
+        "doneSound": "ding-small-bell.mp3",
+        "breakReminderSound": null,
+        "trackTimeSound": null
+      },
+      "timeTracking": {
+        "trackingInterval": 1000,
+        "defaultEstimate": 0,
+        "defaultEstimateSubTasks": 0,
+        "isNotifyWhenTimeEstimateExceeded": true,
+        "isAutoStartNextTask": false,
+        "isTrackingReminderEnabled": false,
+        "isTrackingReminderShowOnMobile": false,
+        "trackingReminderMinTime": 300000,
+        "isTrackingReminderNotify": false,
+        "isTrackingReminderFocusWindow": false
+      },
+      "reminder": {
+        "isCountdownBannerEnabled": true,
+        "countdownDuration": 600000
+      },
+      "schedule": {
+        "isWorkStartEndEnabled": false,
+        "workStart": "9:00",
+        "workEnd": "17:00",
+        "isLunchBreakEnabled": false,
+        "lunchBreakStart": "13:00",
+        "lunchBreakEnd": "14:00"
+      },
+      "sync": {
+        "isEnabled": false,
+        "isCompressionEnabled": false,
+        "isEncryptionEnabled": false,
+        "encryptKey": null,
+        "syncProvider": null,
+        "syncInterval": 60000,
+        "webDav": {
+          "baseUrl": null,
+          "userName": null,
+          "password": null,
+          "syncFolderPath": "super-productivity"
+        },
+        "localFileSync": {
+          "syncFolderPath": ""
+        }
+      }
+    },
+    "issueProvider": {
+      "ids": [],
+      "entities": {}
+    },
+    "metric": {
+      "ids": [],
+      "entities": {}
+    },
+    "improvement": {
+      "ids": [],
+      "entities": {},
+      "hideDay": null,
+      "hiddenImprovementBannerItems": []
+    },
+    "obstruction": {
+      "ids": [],
+      "entities": {}
+    },
+    "archiveYoung": {
+      "task": {
+        "ids": [],
+        "entities": {}
+      },
+      "timeTracking": {
+        "project": {},
+        "tag": {}
+      },
+      "lastTimeTrackingFlush": 1768197108565,
+      "lastFlush": 1768197108565
+    },
+    "archiveOld": {
+      "task": {
+        "ids": [],
+        "entities": {}
+      },
+      "timeTracking": {
+        "project": {},
+        "tag": {}
+      },
+      "lastTimeTrackingFlush": 1768197108565
+    }
+  },
+  "crossModelVersion": 4.2,
+  "lastUpdate": 1768197108565,
+  "timestamp": 1768197108565
+}

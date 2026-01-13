@@ -8,17 +8,17 @@
 
 ## Status: 10% Complete
 
-| Item | Status | Notes |
-|------|--------|-------|
-| PostgreSQL enums | Needed | workflow_stage, sync_type, etc. |
-| regions table | Needed | 4 PPL regions |
-| unit_types table | Done | 44 unit types seeded |
-| permission_statuses table | Needed | Approved, Refused, Pending |
-| api_status_configs table | Needed | ACTIV, QC, REWORK, CLOSE |
-| Spatie permissions | Needed | Publish and migrate |
-| User extensions | Needed | WS credential columns |
-| circuits table | Needed | Core domain table |
-| Aggregate tables | Needed | circuit_aggregates, planner_daily_aggregates |
+| Item                      | Status | Notes                                        |
+| ------------------------- | ------ | -------------------------------------------- |
+| PostgreSQL enums          | Needed | workflow_stage, sync_type, etc.              |
+| regions table             | Needed | 4 PPL regions                                |
+| unit_types table          | Done   | 44 unit types seeded                         |
+| permission_statuses table | Needed | Approved, Refused, Pending                   |
+| api_status_configs table  | Needed | ACTIV, QC, REWORK, CLOSE                     |
+| Spatie permissions        | Needed | Publish and migrate                          |
+| User extensions           | Needed | WS credential columns                        |
+| circuits table            | Needed | Core domain table                            |
+| Aggregate tables          | Needed | circuit_aggregates, planner_daily_aggregates |
 
 ---
 
@@ -27,6 +27,7 @@
 Create migrations in this exact order to respect dependencies:
 
 ### Phase 1: Foundation (No Dependencies)
+
 ```
 2026_01_XX_000001_create_postgres_enums.php
 2026_01_XX_000002_create_regions_table.php
@@ -36,11 +37,13 @@ Create migrations in this exact order to respect dependencies:
 ```
 
 ### Phase 2: Spatie Permissions
+
 ```
 2026_01_XX_000005_create_permission_tables.php (vendor publish)
 ```
 
 ### Phase 3: User Extensions
+
 ```
 2026_01_XX_000006_add_ws_columns_to_users_table.php
 2026_01_XX_000007_create_user_ws_credentials_table.php
@@ -49,6 +52,7 @@ Create migrations in this exact order to respect dependencies:
 ```
 
 ### Phase 4: Core Domain
+
 ```
 2026_01_XX_000010_create_circuits_table.php
 2026_01_XX_000011_create_circuit_ui_states_table.php
@@ -57,6 +61,7 @@ Create migrations in this exact order to respect dependencies:
 ```
 
 ### Phase 5: Aggregates
+
 ```
 2026_01_XX_000014_create_circuit_aggregates_table.php
 2026_01_XX_000015_create_planner_daily_aggregates_table.php
@@ -64,6 +69,7 @@ Create migrations in this exact order to respect dependencies:
 ```
 
 ### Phase 6: Sync Management
+
 ```
 2026_01_XX_000017_create_sync_logs_table.php
 ```
@@ -73,11 +79,15 @@ Create migrations in this exact order to respect dependencies:
 ## Checklist
 
 ### Enums
+
 - [ ] Create PostgreSQL enum migration
+  
   ```bash
   sail artisan make:migration create_postgres_enums --no-interaction
   ```
+  
   Enums to create:
+  
   - `workflow_stage`: active, pending_permissions, qc, rework, closed
   - `assignment_source`: api_sync, manual
   - `snapshot_type`: daily, status_change, manual
@@ -86,6 +96,7 @@ Create migrations in this exact order to respect dependencies:
   - `sync_trigger`: scheduled, manual, workflow_event
 
 ### Migrations
+
 - [ ] Create regions table migration
 - [ ] Create permission_statuses table migration
 - [ ] Create api_status_configs table migration
@@ -104,6 +115,7 @@ Create migrations in this exact order to respect dependencies:
 - [ ] Create sync_logs table migration
 
 ### Models
+
 - [ ] Create Region model with relationships
 - [ ] Create PermissionStatus model
 - [ ] Create ApiStatusConfig model
@@ -119,6 +131,7 @@ Create migrations in this exact order to respect dependencies:
 - [ ] Extend User model with HasRoles trait
 
 ### Enums (PHP)
+
 - [ ] Create WorkflowStage enum
 - [ ] Create AssignmentSource enum
 - [ ] Create SnapshotType enum
@@ -127,6 +140,7 @@ Create migrations in this exact order to respect dependencies:
 - [ ] Create SyncTrigger enum
 
 ### Factories
+
 - [ ] Create RegionFactory
 - [ ] Create CircuitFactory
 - [ ] Create CircuitUiStateFactory
@@ -136,6 +150,7 @@ Create migrations in this exact order to respect dependencies:
 - [ ] Create SyncLogFactory
 
 ### Seeders
+
 - [ ] Create RolesAndPermissionsSeeder
 - [ ] Create RegionsSeeder (Central, Lancaster, Lehigh, Harrisburg)
 - [ ] Create ApiStatusConfigsSeeder
@@ -143,6 +158,7 @@ Create migrations in this exact order to respect dependencies:
 - [ ] Update DatabaseSeeder with call order
 
 ### Final Steps
+
 - [ ] Run migrations: `sail artisan migrate:fresh --seed`
 - [ ] Verify: `sail artisan tinker` → `Region::count()`
 
@@ -268,6 +284,7 @@ Schema::create('circuit_aggregates', function (Blueprint $table) {
 ## Seeder Data
 
 ### Regions
+
 ```php
 ['name' => 'Central', 'code' => 'CENTRAL'],
 ['name' => 'Lancaster', 'code' => 'LANCASTER'],
@@ -276,6 +293,7 @@ Schema::create('circuit_aggregates', function (Blueprint $table) {
 ```
 
 ### Roles & Permissions
+
 ```php
 // Roles
 'sudo_admin', 'admin', 'planner', 'general_foreman'
@@ -287,6 +305,7 @@ Schema::create('circuit_aggregates', function (Blueprint $table) {
 ```
 
 ### Permission Statuses
+
 ```php
 ['name' => 'Pending', 'code' => '', 'color' => 'warning'],
 ['name' => 'Approved', 'code' => 'Approved', 'color' => 'success'],
