@@ -9,6 +9,7 @@ return [
 
     'base_url' => env('WORKSTUDIO_BASE_URL', 'https://ppl02.geodigital.com:8372/DDOProtocol/'),
     'timeout' => env('WORKSTUDIO_TIMEOUT', 60),
+    'connect_timeout' => env('WORKSTUDIO_CONNECT_TIMEOUT', 10),
     'max_retries' => 5,
 
     /*

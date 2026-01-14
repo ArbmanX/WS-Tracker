@@ -278,15 +278,14 @@ class DumpApiData extends Command
         }
 
         try {
-            // WorkStudio API requires the protocol in the URL path
             $url = rtrim(config('workstudio.base_url'), '/').'/'.($payload['Protocol'] ?? 'GETVIEWDATA');
 
-            $response = Http::timeout(config('workstudio.timeout', 60))
-                ->withOptions(['verify' => false])
+            $response = Http::workstudio()
                 ->withBasicAuth($credentials['username'], $credentials['password'])
+                ->retry(3, 1000)
                 ->post($url, $payload);
 
-            if (! $response->successful()) {
+            if ($response->failed()) {
                 $this->error("API returned status: {$response->status()}");
                 $this->error($response->body());
 

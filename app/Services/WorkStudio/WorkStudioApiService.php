@@ -5,7 +5,9 @@ namespace App\Services\WorkStudio;
 use App\Services\WorkStudio\Contracts\WorkStudioApiInterface;
 use App\Services\WorkStudio\Transformers\CircuitTransformer;
 use App\Services\WorkStudio\Transformers\DDOTableTransformer;
+use Exception;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -27,14 +29,12 @@ class WorkStudioApiService implements WorkStudioApiInterface
     public function healthCheck(): bool
     {
         try {
-            /** @var Response $response */
-            $response = Http::timeout(10)
-                ->withOptions(['verify' => false]) // Handle self-signed certs
-                ->get($this->getBaseUrlWithoutPath());
+            $response = Http::workstudio()->get($this->getBaseUrlWithoutPath());
 
-            return $response->status() < 500;
+            return ! $response->serverError();
         } catch (ConnectionException $e) {
             Log::warning('WorkStudio API health check failed', [
+                'url' => $this->getBaseUrlWithoutPath(),
                 'error' => $e->getMessage(),
             ]);
 
@@ -60,10 +60,7 @@ class WorkStudioApiService implements WorkStudioApiInterface
             'ResultFormat' => 'DDOTable',
         ];
 
-        return $this->executeWithRetry(
-            fn () => $this->makeRequest($payload, $credentials),
-            $credentials['user_id']
-        );
+        return $this->makeRequest($payload, $credentials, $userId);
     }
 
     /**
@@ -116,86 +113,55 @@ class WorkStudioApiService implements WorkStudioApiInterface
     }
 
     /**
-     * Execute a request with retry logic and exponential backoff.
+     * Make the actual HTTP request to WorkStudio with retry logic.
      */
-    private function executeWithRetry(callable $request, ?int $userId): array
+    private function makeRequest(array $payload, array $credentials, ?int $userId): array
     {
+        $url = rtrim(config('workstudio.base_url'), '/').'/'.($payload['Protocol'] ?? 'GETVIEWDATA');
         $maxRetries = config('workstudio.max_retries', 5);
-        $attempts = 0;
-        $lastException = null;
 
-        while ($attempts < $maxRetries) {
-            try {
-                $response = $request();
+        $response = Http::workstudio()
+            ->withBasicAuth($credentials['username'], $credentials['password'])
+            ->retry(
+                $maxRetries,
+                function (int $attempt, Exception $exception) use ($url) {
+                    // Exponential backoff: 1s, 2s, 4s, 8s... capped at 30s
+                    $delay = min(1000 * pow(2, $attempt - 1), 30000);
 
-                // Mark successful authentication
-                $this->credentialManager->markSuccess($userId);
-
-                return $response;
-
-            } catch (RequestException $e) {
-                $lastException = $e;
-
-                // Handle authentication failures
-                if ($e->response && $e->response->status() === 401) {
-                    $this->credentialManager->markFailed($userId);
-
-                    Log::error('WorkStudio API authentication failed', [
-                        'user_id' => $userId,
-                        'attempt' => $attempts + 1,
+                    Log::warning('WorkStudio API request failed, retrying', [
+                        'url' => $url,
+                        'attempt' => $attempt,
+                        'max_retries' => config('workstudio.max_retries', 5),
+                        'delay_ms' => $delay,
+                        'error' => $exception->getMessage(),
+                        'exception_class' => get_class($exception),
                     ]);
 
-                    // Don't retry auth failures
-                    throw new \RuntimeException('WorkStudio authentication failed', 401, $e);
+                    return $delay;
+                },
+                function (Exception $exception, PendingRequest $request) use ($userId) {
+                    // Don't retry 401 authentication errors
+                    if ($exception instanceof RequestException && $exception->response?->status() === 401) {
+                        $this->credentialManager->markFailed($userId);
+
+                        Log::error('WorkStudio API authentication failed', [
+                            'user_id' => $userId,
+                        ]);
+
+                        return false;
+                    }
+
+                    return true;
                 }
-
-                $attempts++;
-                $this->handleRetryDelay($attempts);
-
-            } catch (ConnectionException $e) {
-                $lastException = $e;
-                $attempts++;
-
-                Log::warning('WorkStudio API connection failed', [
-                    'attempt' => $attempts,
-                    'error' => $e->getMessage(),
-                ]);
-
-                $this->handleRetryDelay($attempts);
-            }
-        }
-
-        Log::error('WorkStudio API request failed after all retries', [
-            'max_retries' => $maxRetries,
-            'last_error' => $lastException?->getMessage(),
-        ]);
-
-        throw new \RuntimeException(
-            'WorkStudio API request failed after '.$maxRetries.' attempts',
-            0,
-            $lastException
-        );
-    }
-
-    /**
-     * Make the actual HTTP request to WorkStudio.
-     */
-    private function makeRequest(array $payload, array $credentials): array
-    {
-        // WorkStudio API requires the protocol in the URL path
-        $url = rtrim(config('workstudio.base_url'), '/').'/'.($payload['Protocol'] ?? 'GETVIEWDATA');
-
-        /** @var Response $response */
-        $response = Http::timeout(config('workstudio.timeout', 60))
-            ->withOptions(['verify' => false]) // Handle self-signed certs
-            ->withBasicAuth($credentials['username'], $credentials['password'])
+            )
             ->post($url, $payload);
 
         $response->throw();
 
+        $this->credentialManager->markSuccess($userId);
+
         $data = $response->json();
 
-        // Validate response format
         if (! isset($data['Protocol']) || $data['Protocol'] !== 'DATASET') {
             Log::warning('Unexpected WorkStudio API response format', [
                 'protocol' => $data['Protocol'] ?? 'missing',
@@ -203,20 +169,6 @@ class WorkStudioApiService implements WorkStudioApiInterface
         }
 
         return $data;
-    }
-
-    /**
-     * Handle delay between retry attempts with exponential backoff.
-     */
-    private function handleRetryDelay(int $attempt): void
-    {
-        $baseDelay = 1000000; // 1 second in microseconds
-        $delay = $baseDelay * pow(2, $attempt - 1);
-
-        // Cap at 30 seconds
-        $delay = min($delay, 30000000);
-
-        usleep($delay);
     }
 
     /**

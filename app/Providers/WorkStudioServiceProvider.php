@@ -12,6 +12,7 @@ use App\Services\WorkStudio\Transformers\CircuitTransformer;
 use App\Services\WorkStudio\Transformers\DDOTableTransformer;
 use App\Services\WorkStudio\Transformers\PlannedUnitAggregateTransformer;
 use App\Services\WorkStudio\WorkStudioApiService;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class WorkStudioServiceProvider extends ServiceProvider
@@ -59,6 +60,10 @@ class WorkStudioServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Config is already published to config/workstudio.php
+        Http::macro('workstudio', function () {
+            return Http::timeout(config('workstudio.timeout', 60))
+                ->connectTimeout(config('workstudio.connect_timeout', 10))
+                ->withOptions(['verify' => false]);
+        });
     }
 }
