@@ -11,7 +11,7 @@
 @source "../../storage/framework/views/*.php";
 
 @plugin "daisyui" {
-    themes: light --default, dark, ppl-light, ppl-dark;
+    themes: light, dark, ppl-light, ppl-dark, cupcake, forest, synthwave, retro, cyberpunk, dracula, night, winter, emerald, silk, autumn, corporate, garden, coffee;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -29,14 +29,14 @@
     color-scheme: light;
 
     /* Base colors */
-    --color-base-100: oklch(99% 0.005 240);
-    --color-base-200: oklch(96% 0.01 240);
-    --color-base-300: oklch(92% 0.015 240);
+    --color-base-100: oklch(90% 0.02 240);
+    --color-base-200: oklch(85% 0.03 240);
+    --color-base-300: oklch(82% 0.035 240);
     --color-base-content: oklch(25% 0.02 240);
 
     /* PPL Primary - Cyan Cornflower Blue #1882C5 */
     --color-primary: oklch(55% 0.15 230);
-    --color-primary-content: oklch(98% 0.01 230);
+    --color-primary-content: oklch(95% 0.02 270);
 
     /* PPL Secondary - St. Patrick's Blue #28317E */
     --color-secondary: oklch(35% 0.12 270);
@@ -48,13 +48,13 @@
 
     /* Neutral - Asplundh Orient Blue #00598D */
     --color-neutral: oklch(40% 0.10 240);
-    --color-neutral-content: oklch(95% 0.01 240);
+    --color-neutral-content: oklch(95% 0.03 240);
 
     /* Semantic colors */
     --color-info: oklch(60% 0.15 230);
-    --color-info-content: oklch(98% 0.01 230);
+    --color-info-content: oklch(98% 0.02 230);
     --color-success: oklch(65% 0.20 145);
-    --color-success-content: oklch(98% 0.01 145);
+    --color-success-content: oklch(98% 0.03 145);
     --color-warning: oklch(78% 0.16 85);
     --color-warning-content: oklch(25% 0.05 85);
     --color-error: oklch(60% 0.22 25);

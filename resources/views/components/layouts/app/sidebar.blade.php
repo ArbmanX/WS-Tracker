@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="ppl-light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="ppl-dark" >
     <head>
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-base-100">
+         {{-- {{ dd(session()->all()) }} --}}
         <flux:sidebar sticky collapsible="mobile" class="border-e border-base-300 bg-base-200">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />

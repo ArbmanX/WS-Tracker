@@ -125,10 +125,11 @@ class DumpApiData extends Command
             ]
         );
 
-        $this->info(
-            (new CircuitTransformer)->transformCollection(collect($response))
-        );
-        exit;
+        // $this->info(
+        //     (new CircuitTransformer)->transformCollection(collect($response))
+        // );
+        // exit;'
+        // Carbon\Carbon::setTimezone('America/New_York');
 
         if (! $response) {
             return Command::FAILURE;

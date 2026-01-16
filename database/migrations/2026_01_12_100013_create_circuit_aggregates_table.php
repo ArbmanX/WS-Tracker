@@ -21,6 +21,14 @@ return new class extends Migration
             $table->date('aggregate_date');
             $table->boolean('is_rollup')->default(false)->comment('True for EOD consolidated record');
 
+            // Miles tracking (snapshot from circuits table)
+            $table->decimal('total_miles', 10, 2)->default(0)
+                ->comment('Circuit total miles (snapshot from circuits table)');
+            $table->decimal('miles_planned', 10, 2)->default(0)
+                ->comment('Miles planned as of this date');
+            $table->decimal('miles_remaining', 10, 2)->default(0)
+                ->comment('Miles remaining (total - planned)');
+
             // Normalized metrics for efficient querying/filtering
             $table->integer('total_units')->default(0);
             $table->decimal('total_linear_ft', 12, 2)->default(0);

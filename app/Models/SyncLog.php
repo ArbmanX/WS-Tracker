@@ -92,7 +92,7 @@ class SyncLog extends Model
         $this->update([
             'sync_status' => SyncStatus::Completed,
             'completed_at' => now(),
-            'duration_seconds' => now()->diffInSeconds($this->started_at),
+            'duration_seconds' => $this->calculateDurationSeconds(),
             'circuits_processed' => $results['circuits_processed'] ?? 0,
             'circuits_created' => $results['circuits_created'] ?? 0,
             'circuits_updated' => $results['circuits_updated'] ?? 0,
@@ -108,7 +108,7 @@ class SyncLog extends Model
         $this->update([
             'sync_status' => SyncStatus::Failed,
             'completed_at' => now(),
-            'duration_seconds' => now()->diffInSeconds($this->started_at),
+            'duration_seconds' => $this->calculateDurationSeconds(),
             'error_message' => $message,
             'error_details' => $details,
         ]);
@@ -122,13 +122,26 @@ class SyncLog extends Model
         $this->update([
             'sync_status' => SyncStatus::Warning,
             'completed_at' => now(),
-            'duration_seconds' => now()->diffInSeconds($this->started_at),
+            'duration_seconds' => $this->calculateDurationSeconds(),
             'error_message' => $message,
             'circuits_processed' => $results['circuits_processed'] ?? 0,
             'circuits_created' => $results['circuits_created'] ?? 0,
             'circuits_updated' => $results['circuits_updated'] ?? 0,
             'aggregates_created' => $results['aggregates_created'] ?? 0,
         ]);
+    }
+
+    /**
+     * Calculate duration in seconds since sync started.
+     * Returns integer for database compatibility.
+     */
+    protected function calculateDurationSeconds(): int
+    {
+        if (! $this->started_at) {
+            return 0;
+        }
+
+        return (int) abs($this->started_at->diffInSeconds(now()));
     }
 
     /**

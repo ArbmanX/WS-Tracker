@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreignId('region_id')->constrained();
             $table->string('title')->comment('Full circuit/line name');
             $table->string('contractor', 50)->nullable()->comment('Assigned contractor');
-            $table->string('cycle_type', 20)->nullable()->comment('Cycle type from API');
+            $table->string('cycle_type', 100)->nullable()->comment('Cycle type from API');
 
             // Metrics
             $table->decimal('total_miles', 10, 2)->default(0);
@@ -44,10 +44,32 @@ return new class extends Migration
             $table->string('api_status', 20)->comment('ACTIV, QC, REWORK, CLOSE');
             $table->jsonb('api_data_json')->nullable()->comment('Raw API response for reference');
 
+            // User modification tracking for smart sync
+            // Format: {"field_name": {"modified_at": "...", "modified_by": 123, "original_value": "..."}}
+            $table->jsonb('user_modified_fields')->nullable()->comment('Tracks user-modified fields');
+            $table->timestamp('last_user_modified_at')->nullable();
+            $table->foreignId('last_user_modified_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
             // Sync tracking
             $table->timestamp('last_synced_at')->nullable();
             $table->timestamp('last_planned_units_synced_at')->nullable();
             $table->boolean('planned_units_sync_enabled')->default(true);
+
+            // Exclusion tracking
+            $table->boolean('is_excluded')->default(false)
+                ->comment('User-set flag to exclude from reporting/aggregates');
+            $table->string('exclusion_reason')->nullable()
+                ->comment('Optional reason why circuit is excluded');
+            $table->foreignId('excluded_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->comment('User who marked circuit as excluded');
+            $table->timestamp('excluded_at')->nullable()
+                ->comment('When circuit was marked as excluded');
 
             $table->timestamps();
             $table->softDeletes();
@@ -56,6 +78,8 @@ return new class extends Migration
             $table->index(['region_id', 'api_status']);
             $table->index('api_modified_date');
             $table->index(['api_status', 'deleted_at']);
+            $table->index('last_user_modified_at');
+            $table->index('is_excluded');
         });
     }
 
