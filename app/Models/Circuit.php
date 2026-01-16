@@ -110,6 +110,23 @@ class Circuit extends Model
     }
 
     /**
+     * Planned units snapshots for this circuit.
+     */
+    public function plannedUnitsSnapshots(): HasMany
+    {
+        return $this->hasMany(PlannedUnitsSnapshot::class);
+    }
+
+    /**
+     * Get the latest planned units snapshot for this circuit.
+     */
+    public function latestPlannedUnitsSnapshot(): HasOne
+    {
+        return $this->hasOne(PlannedUnitsSnapshot::class)
+            ->latestOfMany();
+    }
+
+    /**
      * Aggregates for this circuit.
      */
     public function aggregates(): HasMany

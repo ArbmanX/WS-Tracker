@@ -3,6 +3,7 @@
 > **Purpose:** This document provides context for AI assistants working on this project.
 > **Last Updated:** January 13, 2026
 > **Status:** Active Development - Phases 0, 1A, 1B Complete (Environment, Database, API Services)
+> **Latest Review:** See `CODE_REVIEW_REPORT.md` for recent code quality assessment
 
 ---
 
@@ -25,7 +26,8 @@
 - **Seeders** - Reference data (4 regions, 44 unit types, 4 roles, 14 permissions)
 
 #### Phase 1B: API Service Layer ✅
-- **WorkStudioApiService** - HTTP client with retry logic and health checks
+- **WorkStudioApiService** - HTTP client with Laravel's native retry logic, exponential backoff, and health checks
+- **Http::workstudio() Macro** - Centralized HTTP configuration (timeouts, SSL, connect timeout) in WorkStudioServiceProvider
 - **ApiCredentialManager** - Credential rotation and failure tracking
 - **DDOTableTransformer** - Generic DDOTable response parsing
 - **CircuitTransformer** - Circuit field mapping with date parsing
@@ -216,6 +218,7 @@ Reference table for vegetation work unit types.
 - **Base URL:** `https://ppl02.geodigital.com:8372/ddoprotocol/`
 - **Auth:** Basic authentication (service account + optional user credentials)
 - **Format:** DDOTable (proprietary JSON format)
+- **Timeouts:** 60s request, 10s connect, 5 retries with exponential backoff (max 30s)
 
 ### Key View GUIDs
 ```php
@@ -258,8 +261,8 @@ UnitType::workUnits()     // Excludes NW, NOT, SENSI
 
 ```
 app/Services/WorkStudio/
-├── WorkStudioApiService.php           # ✅ HTTP client, auth, retry
-├── ApiCredentialManager.php           # ✅ Credential rotation
+├── WorkStudioApiService.php           # ✅ HTTP client, auth, native retry with exponential backoff
+├── ApiCredentialManager.php           # ✅ Credential rotation, success/failure tracking
 ├── Contracts/
 │   └── WorkStudioApiInterface.php     # ✅ Service contract
 ├── Aggregation/
@@ -474,6 +477,7 @@ PlannerDailyAggregate::where('user_id', $userId)
 
 | Document | Location | Purpose |
 |----------|----------|---------|
+| `CODE_REVIEW_REPORT.md` | docs/ | **NEW** - Code quality assessment & recommendations |
 | `IMPLEMENTATION_PLAN.md` | docs/ | Detailed phase-by-phase implementation |
 | `IMPLEMENTATION_PHASES.md` | docs/ | Phase breakdown with task lists |
 | `UI_DESIGN_SYSTEM.md` | docs/ | **NEW** - DaisyUI component library & patterns |
@@ -486,6 +490,19 @@ PlannerDailyAggregate::where('user_id', $userId)
 
 ---
 <!-- TODO -->
+## Known Technical Debt
+
+From the latest code review (`CODE_REVIEW_REPORT.md`):
+
+| Priority | Issue | Location |
+|----------|-------|----------|
+| High | SSL verification disabled (`verify => false`) | `WorkStudioServiceProvider.php` |
+| High | No tests for `WorkStudioApiService` retry logic | `tests/` |
+| Medium | Default credentials in config file | `config/workstudio.php` |
+| Medium | `$currentUserId` singleton state (potential leak) | `WorkStudioApiService.php` |
+
+---
+
 ## Questions to Ask Before Making Changes
 
 1. Does this change affect the aggregate-only architecture?

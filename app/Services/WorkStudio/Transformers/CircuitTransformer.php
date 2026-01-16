@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Cache;
  */
 class CircuitTransformer
 {
+    public $excludedForesters;
+
+    public function __construct()
+    {
+        $this->excludedForesters = collect([
+            'Derek Cinicola',
+            'Jeremy Compton',
+        ]);
+    }
+
     /**
      * API field name to database column mapping.
      */
@@ -55,7 +65,7 @@ class CircuitTransformer
         'VEGJOB_LINENAME' => 'line_name',
         'VEGJOB_CIRCCOMNTS' => 'comments',
         'VEGJOB_COSTMETHOD' => 'cost_method',
-        'WSREQ_BOUNDSGEOM' => 'bounds_geometry',
+        // Note: WSREQ_BOUNDSGEOM (bounds_geometry) intentionally excluded - not needed
     ];
 
     /**
@@ -79,6 +89,9 @@ class CircuitTransformer
                 $mapped[$dbColumn] = $apiRow[$apiField];
             }
         }
+
+        // Using this to make try to see if DumpApiData changes things.
+        // dd($mapped);
 
         // Transform region name to ID
         if (isset($mapped['region_name'])) {
@@ -136,6 +149,7 @@ class CircuitTransformer
             'percent_complete',
             'projected_acres',
             'total_linear_ft',
+            // TODO total trees should be updated by the planned units aggregate
             'total_trees',
         ];
 
@@ -226,7 +240,10 @@ class CircuitTransformer
 
         // Primary planner from forester field
         if (! empty($apiRow['VEGJOB_FORESTER'])) {
-            $planners[] = trim($apiRow['VEGJOB_FORESTER']);
+            $this->excludedForesters->dd();
+            if ($apiRow['VEGJOB_FORESTER']) {
+                $planners[] = trim($apiRow['VEGJOB_FORESTER']);
+            }
         }
 
         // Assigned user

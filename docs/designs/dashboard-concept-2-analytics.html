@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="ppl-light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Concept 2 - Analytics Focus | WS-Tracker</title>
+
+    <!-- DaisyUI + Tailwind CDN for standalone preview -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        /* PPL Light Theme Colors */
+        [data-theme="ppl-light"] {
+            --color-primary: oklch(55% 0.15 230);
+            --color-primary-content: oklch(98% 0.01 230);
+            --color-secondary: oklch(35% 0.12 270);
+            --color-secondary-content: oklch(95% 0.02 270);
+            --color-accent: oklch(65% 0.18 50);
+            --color-accent-content: oklch(15% 0.03 50);
+            --color-neutral: oklch(40% 0.10 240);
+            --color-base-100: oklch(99% 0.005 240);
+            --color-base-200: oklch(96% 0.01 240);
+            --color-base-300: oklch(92% 0.015 240);
+            --color-base-content: oklch(25% 0.02 240);
+        }
+
+        /* Chart placeholder styling */
+        .chart-placeholder {
+            background: linear-gradient(135deg, var(--color-base-200) 0%, var(--color-base-100) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                var(--color-base-300) 20px,
+                var(--color-base-300) 21px
+            );
+            opacity: 0.3;
+        }
+
+        /* Animated bar chart */
+        .bar-animate {
+            animation: bar-grow 1s ease-out forwards;
+            transform-origin: bottom;
+        }
+
+        @keyframes bar-grow {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        /* Metric card hover */
+        .metric-card {
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Top nav tab active state */
+        .nav-tab.active {
+            border-bottom: 2px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        /* Regional card */
+        .region-card {
+            transition: all 0.15s ease;
+        }
+
+        .region-card:hover {
+            border-color: var(--color-primary);
+            background: var(--color-base-200);
+        }
+    </style>
+</head>
+<body class="bg-base-100 min-h-screen">
+    <!-- CONCEPT 2: ANALYTICS-FOCUSED DASHBOARD -->
+    <!-- Design Philosophy: Data-first with prominent charts and metrics -->
+    <!-- Key Features: Top navigation, large chart area, metric cards, data tables -->
+
+    <!-- Top Header Bar -->
+    <header class="bg-secondary text-secondary-content">
+        <div class="container mx-auto px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="/" class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L8 8h3v4H8l4 6 4-6h-3V8h3L12 2z"/>
+                        <path d="M12 18v4"/>
+                        <path d="M8 22h8"/>
+                    </svg>
+                    <span class="font-bold text-xl">WS-Tracker</span>
+                </a>
+                <div class="divider divider-horizontal mx-2 h-6 opacity-30"></div>
+                <span class="text-sm opacity-80">Vegetation Management Dashboard</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Date Range Picker -->
+                <div class="join">
+                    <input type="date" class="input input-sm join-item bg-secondary-content/10 border-secondary-content/20 text-secondary-content" value="2026-01-07" />
+                    <span class="join-item bg-secondary-content/10 px-2 flex items-center text-sm">to</span>
+                    <input type="date" class="input input-sm join-item bg-secondary-content/10 border-secondary-content/20 text-secondary-content" value="2026-01-13" />
+                </div>
+
+                <!-- User -->
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="flex items-center gap-2 cursor-pointer hover:opacity-80">
+                        <div class="avatar placeholder">
+                            <div class="bg-accent text-accent-content w-8 rounded-full">
+                                <span class="text-sm">JD</span>
+                            </div>
+                        </div>
+                        <span class="text-sm">John Doe</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 text-base-content rounded-box z-[1] w-52 p-2 shadow-lg mt-2">
+                        <li><a>Profile</a></li>
+                        <li><a>Settings</a></li>
+                        <li class="border-t border-base-200 mt-2 pt-2"><a class="text-error">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-base-100 border-b border-base-200 sticky top-0 z-30">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between">
+                <div class="flex gap-1">
+                    <a href="#" class="nav-tab active px-4 py-4 text-sm font-medium hover:bg-base-200 transition-colors">
+                        Overview
+                    </a>
+                    <a href="#" class="nav-tab px-4 py-4 text-sm font-medium text-base-content/70 hover:bg-base-200 transition-colors">
+                        Circuits
+                    </a>
+                    <a href="#" class="nav-tab px-4 py-4 text-sm font-medium text-base-content/70 hover:bg-base-200 transition-colors">
+                        Planners
+                    </a>
+                    <a href="#" class="nav-tab px-4 py-4 text-sm font-medium text-base-content/70 hover:bg-base-200 transition-colors">
+                        Regions
+                    </a>
+                    <a href="#" class="nav-tab px-4 py-4 text-sm font-medium text-base-content/70 hover:bg-base-200 transition-colors">
+                        Reports
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Sync Status -->
+                    <div class="flex items-center gap-2 text-sm text-base-content/60">
+                        <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                        <span>Last sync: 5 min ago</span>
+                    </div>
+
+                    <!-- Actions -->
+                    <button class="btn btn-primary btn-sm gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Page Header -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-base-content">Dashboard Overview</h1>
+                <p class="text-base-content/60 mt-1">Weekly progress summary for all regions</p>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="flex gap-2">
+                <select class="select select-bordered select-sm">
+                    <option selected>All Regions</option>
+                    <option>Harrisburg</option>
+                    <option>Lehigh</option>
+                    <option>Scranton</option>
+                    <option>Susquehanna</option>
+                </select>
+                <select class="select select-bordered select-sm">
+                    <option selected>This Week</option>
+                    <option>Last Week</option>
+                    <option>This Month</option>
+                    <option>Last Month</option>
+                    <option>This Quarter</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Key Metrics Row -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Metric 1: Total Miles -->
+            <div class="metric-card card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-base-content/60 mb-1">Miles Planned</p>
+                            <p class="text-3xl font-bold text-base-content">1,247.5</p>
+                            <div class="flex items-center gap-1 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                </svg>
+                                <span class="text-sm text-success font-medium">+12.5%</span>
+                                <span class="text-xs text-base-content/50">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 2: Active Circuits -->
+            <div class="metric-card card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-base-content/60 mb-1">Active Circuits</p>
+                            <p class="text-3xl font-bold text-base-content">47</p>
+                            <div class="flex items-center gap-1 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                </svg>
+                                <span class="text-sm text-success font-medium">+3</span>
+                                <span class="text-xs text-base-content/50">new this week</span>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 3: Completion Rate -->
+            <div class="metric-card card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-base-content/60 mb-1">Avg Completion</p>
+                            <p class="text-3xl font-bold text-base-content">68.4%</p>
+                            <div class="flex items-center gap-1 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                </svg>
+                                <span class="text-sm text-success font-medium">+5.2%</span>
+                                <span class="text-xs text-base-content/50">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 4: Units Assessed -->
+            <div class="metric-card card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm text-base-content/60 mb-1">Units Assessed</p>
+                            <p class="text-3xl font-bold text-base-content">8,432</p>
+                            <div class="flex items-center gap-1 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                                </svg>
+                                <span class="text-sm text-error font-medium">-2.1%</span>
+                                <span class="text-xs text-base-content/50">vs last week</span>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Main Chart: Weekly Progress -->
+            <div class="lg:col-span-2 card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">Weekly Progress</h3>
+                        <div class="flex gap-4 text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" checked />
+                                <span class="text-base-content/70">Miles</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="checkbox checkbox-secondary checkbox-xs" checked />
+                                <span class="text-base-content/70">Units</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Chart Placeholder (would be ApexCharts in real implementation) -->
+                    <div class="chart-placeholder h-64 rounded-lg flex items-end justify-around px-4 pb-4 gap-2">
+                        <!-- Simulated bar chart -->
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary rounded-t bar-animate" style="height: 60%; animation-delay: 0s;"></div>
+                            <span class="text-xs text-base-content/60">Mon</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary rounded-t bar-animate" style="height: 75%; animation-delay: 0.1s;"></div>
+                            <span class="text-xs text-base-content/60">Tue</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary rounded-t bar-animate" style="height: 45%; animation-delay: 0.2s;"></div>
+                            <span class="text-xs text-base-content/60">Wed</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary rounded-t bar-animate" style="height: 90%; animation-delay: 0.3s;"></div>
+                            <span class="text-xs text-base-content/60">Thu</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary rounded-t bar-animate" style="height: 70%; animation-delay: 0.4s;"></div>
+                            <span class="text-xs text-base-content/60">Fri</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary/30 rounded-t bar-animate" style="height: 20%; animation-delay: 0.5s;"></div>
+                            <span class="text-xs text-base-content/60">Sat</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 flex-1">
+                            <div class="w-full bg-primary/30 rounded-t bar-animate" style="height: 10%; animation-delay: 0.6s;"></div>
+                            <span class="text-xs text-base-content/60">Sun</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Distribution -->
+            <div class="card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body">
+                    <h3 class="font-semibold text-lg mb-4">Circuit Status</h3>
+
+                    <!-- Donut chart placeholder -->
+                    <div class="flex justify-center mb-4">
+                        <div class="radial-progress text-primary" style="--value:68; --size:10rem; --thickness:1rem;" role="progressbar">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">148</div>
+                                <div class="text-xs text-base-content/60">Total</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-primary"></div>
+                                <span class="text-sm">Active</span>
+                            </div>
+                            <span class="text-sm font-medium">47 (32%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-warning"></div>
+                                <span class="text-sm">Pending</span>
+                            </div>
+                            <span class="text-sm font-medium">8 (5%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-info"></div>
+                                <span class="text-sm">QC Review</span>
+                            </div>
+                            <span class="text-sm font-medium">12 (8%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-error"></div>
+                                <span class="text-sm">Rework</span>
+                            </div>
+                            <span class="text-sm font-medium">3 (2%)</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-success"></div>
+                                <span class="text-sm">Closed</span>
+                            </div>
+                            <span class="text-sm font-medium">78 (53%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regional Performance & Top Planners -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Regional Performance -->
+            <div class="card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">Regional Performance</h3>
+                        <button class="btn btn-ghost btn-sm">View All</button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Region Card: Harrisburg -->
+                        <div class="region-card p-4 rounded-lg border border-base-200 cursor-pointer transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                        <span class="text-sm font-bold text-primary">H</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Harrisburg</h4>
+                                        <p class="text-xs text-base-content/60">12 active circuits</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-primary">342.5 mi</p>
+                                    <p class="text-xs text-success">+15%</p>
+                                </div>
+                            </div>
+                            <progress class="progress progress-primary h-2" value="72" max="100"></progress>
+                        </div>
+
+                        <!-- Region Card: Lehigh -->
+                        <div class="region-card p-4 rounded-lg border border-base-200 cursor-pointer transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+                                        <span class="text-sm font-bold text-secondary">L</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Lehigh</h4>
+                                        <p class="text-xs text-base-content/60">15 active circuits</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-secondary">398.2 mi</p>
+                                    <p class="text-xs text-success">+8%</p>
+                                </div>
+                            </div>
+                            <progress class="progress progress-secondary h-2" value="65" max="100"></progress>
+                        </div>
+
+                        <!-- Region Card: Scranton -->
+                        <div class="region-card p-4 rounded-lg border border-base-200 cursor-pointer transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                                        <span class="text-sm font-bold text-accent">S</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Scranton</h4>
+                                        <p class="text-xs text-base-content/60">11 active circuits</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-accent">287.8 mi</p>
+                                    <p class="text-xs text-error">-3%</p>
+                                </div>
+                            </div>
+                            <progress class="progress progress-accent h-2" value="58" max="100"></progress>
+                        </div>
+
+                        <!-- Region Card: Susquehanna -->
+                        <div class="region-card p-4 rounded-lg border border-base-200 cursor-pointer transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+                                        <span class="text-sm font-bold text-info">SQ</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Susquehanna</h4>
+                                        <p class="text-xs text-base-content/60">9 active circuits</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-info">219.0 mi</p>
+                                    <p class="text-xs text-success">+22%</p>
+                                </div>
+                            </div>
+                            <progress class="progress progress-info h-2" value="78" max="100"></progress>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Planners -->
+            <div class="card bg-base-100 border border-base-200 shadow-sm">
+                <div class="card-body">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">Top Planners This Week</h3>
+                        <button class="btn btn-ghost btn-sm">View All</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Planner</th>
+                                    <th class="text-right">Units</th>
+                                    <th class="text-right">Linear Ft</th>
+                                    <th class="text-right">Circuits</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-primary text-primary-content w-8 rounded-full">
+                                                    <span class="text-xs">JD</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">John Doe</div>
+                                                <div class="text-xs text-base-content/60">Harrisburg</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-medium">847</td>
+                                    <td class="text-right">42,350</td>
+                                    <td class="text-right">4</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-secondary text-secondary-content w-8 rounded-full">
+                                                    <span class="text-xs">MS</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Mary Smith</div>
+                                                <div class="text-xs text-base-content/60">Lehigh</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-medium">756</td>
+                                    <td class="text-right">38,920</td>
+                                    <td class="text-right">3</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-accent text-accent-content w-8 rounded-full">
+                                                    <span class="text-xs">RK</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Robert King</div>
+                                                <div class="text-xs text-base-content/60">Scranton</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-medium">698</td>
+                                    <td class="text-right">35,100</td>
+                                    <td class="text-right">5</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-info text-info-content w-8 rounded-full">
+                                                    <span class="text-xs">AJ</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Alice Johnson</div>
+                                                <div class="text-xs text-base-content/60">Susquehanna</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-medium">621</td>
+                                    <td class="text-right">31,450</td>
+                                    <td class="text-right">3</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-3">
+                                            <div class="avatar placeholder">
+                                                <div class="bg-success text-success-content w-8 rounded-full">
+                                                    <span class="text-xs">TB</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">Tom Brown</div>
+                                                <div class="text-xs text-base-content/60">Harrisburg</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-right font-medium">589</td>
+                                    <td class="text-right">29,780</td>
+                                    <td class="text-right">4</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card bg-base-100 border border-base-200 shadow-sm">
+            <div class="card-body">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-lg">Recent Circuit Activity</h3>
+                    <div class="flex gap-2">
+                        <button class="btn btn-ghost btn-sm btn-active">All</button>
+                        <button class="btn btn-ghost btn-sm">Status Changes</button>
+                        <button class="btn btn-ghost btn-sm">Completions</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Circuit</th>
+                                <th>Region</th>
+                                <th>Status</th>
+                                <th>Progress</th>
+                                <th>Miles</th>
+                                <th>Last Updated</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover">
+                                <td>
+                                    <div class="font-medium">2025-0142</div>
+                                    <div class="text-xs text-base-content/60">Harrisburg North Circuit A</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-outline badge-sm">Harrisburg</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-primary badge-sm">Active</div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <progress class="progress progress-primary w-20 h-2" value="67" max="100"></progress>
+                                        <span class="text-sm">67%</span>
+                                    </div>
+                                </td>
+                                <td>12.4</td>
+                                <td class="text-sm text-base-content/60">2 hours ago</td>
+                                <td>
+                                    <button class="btn btn-ghost btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr class="hover">
+                                <td>
+                                    <div class="font-medium">2025-0098</div>
+                                    <div class="text-xs text-base-content/60">Lehigh Downtown Grid</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-outline badge-sm">Lehigh</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-info badge-sm">QC Review</div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <progress class="progress progress-info w-20 h-2" value="100" max="100"></progress>
+                                        <span class="text-sm">100%</span>
+                                    </div>
+                                </td>
+                                <td>8.9</td>
+                                <td class="text-sm text-base-content/60">4 hours ago</td>
+                                <td>
+                                    <button class="btn btn-ghost btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr class="hover">
+                                <td>
+                                    <div class="font-medium">2025-0134</div>
+                                    <div class="text-xs text-base-content/60">Susquehanna River Trail</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-outline badge-sm">Susquehanna</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-warning badge-sm">Pending</div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <progress class="progress progress-warning w-20 h-2" value="45" max="100"></progress>
+                                        <span class="text-sm">45%</span>
+                                    </div>
+                                </td>
+                                <td>15.7</td>
+                                <td class="text-sm text-base-content/60">6 hours ago</td>
+                                <td>
+                                    <button class="btn btn-ghost btn-xs">View</button>
+                                </td>
+                            </tr>
+                            <tr class="hover">
+                                <td>
+                                    <div class="font-medium">2025-0045</div>
+                                    <div class="text-xs text-base-content/60">Harrisburg South</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-outline badge-sm">Harrisburg</div>
+                                </td>
+                                <td>
+                                    <div class="badge badge-success badge-sm">Closed</div>
+                                </td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <progress class="progress progress-success w-20 h-2" value="100" max="100"></progress>
+                                        <span class="text-sm">100%</span>
+                                    </div>
+                                </td>
+                                <td>11.2</td>
+                                <td class="text-sm text-base-content/60">Yesterday</td>
+                                <td>
+                                    <button class="btn btn-ghost btn-xs">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-4">
+                    <p class="text-sm text-base-content/60">Showing 1-4 of 148 circuits</p>
+                    <div class="join">
+                        <button class="join-item btn btn-sm">«</button>
+                        <button class="join-item btn btn-sm btn-active">1</button>
+                        <button class="join-item btn btn-sm">2</button>
+                        <button class="join-item btn btn-sm">3</button>
+                        <button class="join-item btn btn-sm">»</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-base-200 border-t border-base-300 mt-8">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-base-content/60">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L8 8h3v4H8l4 6 4-6h-3V8h3L12 2z"/>
+                        <path d="M12 18v4"/>
+                        <path d="M8 22h8"/>
+                    </svg>
+                    <span>WS-Tracker &copy; 2026</span>
+                </div>
+                <div class="flex gap-6">
+                    <span>PPL Electric Utilities</span>
+                    <span>&bull;</span>
+                    <span>Asplundh Tree Expert Co.</span>
+                </div>
+                <div>
+                    <span>v1.0.0</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

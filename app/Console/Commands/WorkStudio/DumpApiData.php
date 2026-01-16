@@ -3,6 +3,7 @@
 namespace App\Console\Commands\WorkStudio;
 
 use App\Services\WorkStudio\ApiCredentialManager;
+use App\Services\WorkStudio\Transformers\CircuitTransformer;
 use App\Services\WorkStudio\Transformers\DDOTableTransformer;
 use App\Services\WorkStudio\Transformers\PlannedUnitAggregateTransformer;
 use App\Services\WorkStudio\WorkStudioApiService;
@@ -123,6 +124,11 @@ class DumpApiData extends Command
                 'FilterCaption' => 'In Progress',
             ]
         );
+
+        $this->info(
+            (new CircuitTransformer)->transformCollection(collect($response))
+        );
+        exit;
 
         if (! $response) {
             return Command::FAILURE;

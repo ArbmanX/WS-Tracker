@@ -103,6 +103,47 @@ routes/
 
 ---
 
+## Existing Model Helpers
+
+These models already exist with helper methods that **must be used** during implementation:
+
+### SyncLog Model
+| Method | Purpose |
+|--------|---------|
+| `SyncLog::start(type, trigger, regionId?, apiStatusFilter?, triggeredBy?, context?)` | Create a new sync log with `sync_status = Started` |
+| `$syncLog->complete(['circuits_processed' => n, ...])` | Mark sync as completed, auto-calculates duration |
+| `$syncLog->fail($message, $details?)` | Mark sync as failed |
+| `$syncLog->completeWithWarning($message, $results)` | Mark sync as completed with warning |
+
+**Important field names:** `sync_status`, `sync_trigger` (not `status`, `triggered_by` enum)
+
+### Circuit Model
+| Method | Purpose |
+|--------|---------|
+| `$circuit->getOrCreateUiState()` | Get or create UI state for a circuit |
+| `$circuit->scopeNeedsSync($query)` | Scope for circuits needing aggregate sync |
+
+### User Model
+| Field | Purpose |
+|-------|---------|
+| `ws_username` | WorkStudio username (use this for planner matching) |
+| `ws_user_guid` | WorkStudio GUID |
+| `is_ws_linked` | Whether user is linked to WorkStudio |
+
+### UnlinkedPlanner Model
+| Field | Purpose |
+|-------|---------|
+| `ws_username` | WorkStudio username (NOT `api_username`) |
+| `linkToUser($user)` | Link this planner to a user |
+
+### CircuitTransformer
+| Method | Purpose |
+|--------|---------|
+| `transformCollection($response)` | Transform API response to array of circuit data |
+| `extractPlanners($circuitData)` | Extract planner usernames from circuit |
+
+---
+
 ## Key Implementation Details
 
 ### SyncCircuitsJob
@@ -141,13 +182,13 @@ class SyncCircuitsJob implements ShouldQueue
         WorkStudioApiService $api,
         CircuitTransformer $transformer
     ): void {
-        $syncLog = SyncLog::create([
-            'sync_type' => SyncType::CircuitList,
-            'status' => SyncStatus::Started,
-            'triggered_by' => $this->triggerType,
-            'triggered_by_user_id' => $this->triggeredByUserId,
-            'started_at' => now(),
-        ]);
+        // Use SyncLog::start() helper - it sets sync_status, sync_trigger, started_at
+        $syncLog = SyncLog::start(
+            type: SyncType::CircuitList,
+            trigger: $this->triggerType,
+            apiStatusFilter: implode(',', $this->statuses),
+            triggeredBy: $this->triggeredByUserId
+        );
 
         try {
             if (!$api->healthCheck()) {
@@ -182,20 +223,16 @@ class SyncCircuitsJob implements ShouldQueue
             // Create daily snapshots for non-closed circuits
             dispatch(new CreateDailySnapshotsJob());
 
-            $syncLog->update([
-                'status' => SyncStatus::Completed,
+            // Use complete() helper - handles sync_status, completed_at, duration_seconds
+            $syncLog->complete([
                 'circuits_processed' => $processedCount,
-                'completed_at' => now(),
             ]);
 
             event(new \App\Events\SyncCompletedEvent($syncLog));
 
         } catch (\Exception $e) {
-            $syncLog->update([
-                'status' => SyncStatus::Failed,
-                'error_message' => $e->getMessage(),
-                'completed_at' => now(),
-            ]);
+            // Use fail() helper - handles sync_status, completed_at, duration_seconds
+            $syncLog->fail($e->getMessage());
 
             event(new \App\Events\SyncFailedEvent($syncLog, $e));
 
@@ -210,33 +247,33 @@ class SyncCircuitsJob implements ShouldQueue
             $data
         );
 
-        // Create UI state if new circuit
+        // Use getOrCreateUiState() helper on Circuit model
         if ($circuit->wasRecentlyCreated) {
-            $circuit->uiState()->create([
-                'workflow_stage' => \App\Enums\WorkflowStage::Active,
-                'column_position' => 0,
-            ]);
+            $circuit->getOrCreateUiState();
         }
 
-        // Handle planner linkage
+        // Handle planner linkage (ws_username is the field name in User model)
         $this->linkPlanner($circuit, $data['planner_username'] ?? null);
     }
 
-    private function linkPlanner(Circuit $circuit, ?string $apiUsername): void
+    private function linkPlanner(Circuit $circuit, ?string $wsUsername): void
     {
-        if (empty($apiUsername)) {
+        if (empty($wsUsername)) {
             return;
         }
 
-        $user = \App\Models\User::where('api_username', $apiUsername)->first();
+        // Match by ws_username (WorkStudio username field on User model)
+        $user = \App\Models\User::where('ws_username', $wsUsername)->first();
 
         if ($user) {
             $circuit->planners()->syncWithoutDetaching([
                 $user->id => ['assignment_source' => \App\Enums\AssignmentSource::ApiSync],
             ]);
         } else {
+            // Track unlinked planners for later manual linking
+            // Uses ws_username field (not api_username)
             UnlinkedPlanner::updateOrCreate(
-                ['api_username' => $apiUsername],
+                ['ws_username' => $wsUsername],
                 [
                     'last_seen_at' => now(),
                     'occurrence_count' => \DB::raw('occurrence_count + 1'),
@@ -271,9 +308,8 @@ Schedule::job(new SyncCircuitsJob(['ACTIV']))
     ->name('sync-circuits-activ-afternoon')
     ->withoutOverlapping();
 
-// QC, REWORK, CLOSE - weekly on Monday
+// QC, REWORK, CLOSE - weekly on Monday (Monday is already a weekday)
 Schedule::job(new SyncCircuitsJob(['QC', 'REWRK', 'CLOSE']))
-    ->weekdays()
     ->mondays()
     ->timezone('America/New_York')
     ->at('04:30')
@@ -426,7 +462,8 @@ it('creates ui state for new circuits', function () {...});
 it('logs sync completion', function () {
     // ... run job ...
 
-    expect(SyncLog::where('status', SyncStatus::Completed)->exists())->toBeTrue();
+    // Use sync_status field (not status)
+    expect(SyncLog::where('sync_status', SyncStatus::Completed)->exists())->toBeTrue();
 });
 
 it('handles API failures gracefully', function () {
@@ -437,7 +474,8 @@ it('handles API failures gracefully', function () {
     expect(fn () => (new SyncCircuitsJob(['ACTIV']))->handle(...))
         ->toThrow(\Exception::class);
 
-    expect(SyncLog::where('status', SyncStatus::Failed)->exists())->toBeTrue();
+    // Use sync_status field (not status)
+    expect(SyncLog::where('sync_status', SyncStatus::Failed)->exists())->toBeTrue();
 });
 
 // tests/Feature/Sync/SyncCircuitAggregatesJobTest.php
