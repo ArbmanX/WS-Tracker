@@ -1,4 +1,4 @@
-import 'livewire-sortable';
+
 import ApexCharts from 'apexcharts';
 window.ApexCharts = ApexCharts;
 
@@ -187,3 +187,6 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 });
+
+
+import 'livewire-sortable';

@@ -28,8 +28,10 @@ class RegionalDailyAggregate extends Model
         'units_refused',
         'units_pending',
         'active_planners',
+        'total_planners',
         'unit_counts_by_type',
         'status_breakdown',
+        'permission_counts',
     ];
 
     protected function casts(): array
@@ -43,6 +45,7 @@ class RegionalDailyAggregate extends Model
             'total_acres' => 'decimal:4',
             'unit_counts_by_type' => 'array',
             'status_breakdown' => 'array',
+            'permission_counts' => 'array',
         ];
     }
 

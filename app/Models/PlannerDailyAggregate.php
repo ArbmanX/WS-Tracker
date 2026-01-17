@@ -25,6 +25,7 @@ class PlannerDailyAggregate extends Model
         'units_pending',
         'unit_counts_by_type',
         'circuit_breakdown',
+        'circuits_list',
     ];
 
     protected function casts(): array
@@ -36,6 +37,7 @@ class PlannerDailyAggregate extends Model
             'miles_planned' => 'decimal:2',
             'unit_counts_by_type' => 'array',
             'circuit_breakdown' => 'array',
+            'circuits_list' => 'array',
         ];
     }
 

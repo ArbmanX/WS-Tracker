@@ -37,6 +37,25 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                @if(auth()->user()?->hasAnyRole(['sudo_admin', 'admin']))
+                    <flux:sidebar.group :heading="__('Administration')" class="grid">
+                        <flux:sidebar.item icon="arrow-path" :href="route('admin.sync')" :current="request()->routeIs('admin.sync')" wire:navigate>
+                            {{ __('Sync Control') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="clock" :href="route('admin.sync.history')" :current="request()->routeIs('admin.sync.history')" wire:navigate>
+                            {{ __('Sync History') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="link" :href="route('admin.planners.unlinked')" :current="request()->routeIs('admin.planners.unlinked')" wire:navigate>
+                            {{ __('Unlinked Planners') }}
+                        </flux:sidebar.item>
+                        @if(auth()->user()?->hasRole('sudo_admin'))
+                            <flux:sidebar.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.users')" wire:navigate>
+                                {{ __('User Management') }}
+                            </flux:sidebar.item>
+                        @endif
+                    </flux:sidebar.group>
+                @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
