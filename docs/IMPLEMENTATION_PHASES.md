@@ -13,9 +13,9 @@
 | [0](./phases/PHASE_0_ENVIRONMENT_SETUP.md) | Environment Setup | 1 day | ✅ Complete |
 | [1A](./phases/PHASE_1A_DATABASE_FOUNDATION.md) | Database Foundation | 2-3 days | ✅ Complete |
 | [1B](./phases/PHASE_1B_API_SERVICE_LAYER.md) | API Service Layer | 2 days | ✅ Complete |
-| [1C](./phases/PHASE_1C_SYNC_JOBS.md) | Sync Jobs | 2 days | Not Started |
-| [1D](./phases/PHASE_1D_THEME_SYSTEM.md) | Theme System | 1 day | Not Started |
-| [1E](./phases/PHASE_1E_DASHBOARD_UI.md) | Dashboard UI | 4 days | Not Started |
+| [1C](./phases/PHASE_1C_SYNC_JOBS.md) | Sync Jobs | 2 days | ✅ Complete |
+| [1D](./phases/PHASE_1D_THEME_SYSTEM.md) | Theme System | 1 day | ✅ Complete |
+| [1E](./phases/PHASE_1E_DASHBOARD_UI.md) | Dashboard UI | 4 days | ⚠️ Partial (mock data) |
 | [1F](./phases/PHASE_1F_CHARTS.md) | Charts & Visualization | 2 days | Not Started |
 | [1G](./phases/PHASE_1G_ADMIN_FEATURES.md) | Admin Features | 2 days | Not Started |
 | [1H](./phases/PHASE_1H_TESTING.md) | Testing & Polish | 2 days | Partial |
@@ -116,14 +116,22 @@ circuit_aggregates table (daily totals)
 - [x] All aggregation services (4 services)
 - [x] All transformers (3 transformers)
 - [x] WorkStudioServiceProvider registered
+- [x] SyncCircuitsJob with rate limiting, events, error handling
+- [x] SyncCircuitAggregatesJob with milestone detection
+- [x] CreateDailySnapshotsJob
+- [x] Sync events (SyncStartedEvent, SyncCompletedEvent, SyncFailedEvent)
+- [x] Scheduled sync in routes/console.php (ACTIV 2x daily, QC/REWORK/CLOSE weekly)
+- [x] Theme system with PPL brand themes (ppl-light, ppl-dark)
+- [x] Dynamic theme switching with localStorage + database sync
+- [x] ThemeListener component for global event handling
+- [x] FOUC prevention in layout
+- [x] 12 theme-related tests
 
 ### In Progress
-- [ ] <!--7uhKH1L7FKk8T8nKFldV2--> Sync jobs
-- [ ] <!--KSNdKmXkF3TbY04z_mBKz--> Dashboard components
+- [ ] <!--KSNdKmXkF3TbY04z_mBKz--> Dashboard components (mock data → real data)
 - [ ] <!--XgiTNUk-c0bQHeJA2sZYH--> Admin features
 
 ### Not Started
-- [ ] Theme system (Phase 1D)
 - [ ] Charts & visualization (Phase 1F)
   -
    Getting Started

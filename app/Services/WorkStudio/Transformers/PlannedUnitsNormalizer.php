@@ -144,6 +144,7 @@ class PlannedUnitsNormalizer
         $byStation = [];
 
         foreach ($units as $unit) {
+            // TODO: this needs to count the actual number of removal units (ie rem6-12 )
             $totalTrees += $unit['trees'] ?? 0;
             $totalLinearFt += $unit['linear_ft'] ?? 0;
             $totalAcres += $unit['acres'] ?? 0;

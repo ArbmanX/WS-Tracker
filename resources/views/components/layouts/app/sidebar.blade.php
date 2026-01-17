@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="ppl-dark" >
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    x-data="themeManager"
+    x-init="initTheme()"
+    :data-theme="effectiveTheme"
+>
     <head>
         @include('partials.head')
+        <script>
+            // Inline script to prevent flash of unstyled content (FOUC)
+            (function() {
+                const savedTheme = localStorage.getItem('theme') || '{{ auth()->user()?->theme_preference ?? 'system' }}';
+                let theme = savedTheme;
+                if (savedTheme === 'system') {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+            })();
+        </script>
     </head>
     <body class="min-h-screen bg-base-100">
-         {{-- {{ dd(session()->all()) }} --}}
+        {{-- Global theme listener for syncing preferences to database --}}
+        @auth
+            <livewire:theme-listener />
+        @endauth
+
         <flux:sidebar sticky collapsible="mobile" class="border-e border-base-300 bg-base-200">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />

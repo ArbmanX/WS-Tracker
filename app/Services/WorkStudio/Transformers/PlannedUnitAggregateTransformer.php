@@ -173,6 +173,9 @@ class PlannedUnitAggregateTransformer
             ->toArray();
     }
 
+    // TODO Will need to use the username of the taken by field to assign the forester names correctly in future. WS
+    // does retuern the forester name but it has to be assigned properly otherwise it will be the user the assessments were assigned
+    //  to when it was created.
     /**
      * Extract unique planner names from units.
      */

@@ -32,6 +32,7 @@ class User extends Authenticatable
         'is_ws_linked',
         'ws_linked_at',
         'default_region_id',
+        'theme_preference',
     ];
 
     /**

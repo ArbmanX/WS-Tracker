@@ -240,7 +240,6 @@ class CircuitTransformer
 
         // Primary planner from forester field
         if (! empty($apiRow['VEGJOB_FORESTER'])) {
-            $this->excludedForesters->dd();
             if ($apiRow['VEGJOB_FORESTER']) {
                 $planners[] = trim($apiRow['VEGJOB_FORESTER']);
             }

@@ -515,3 +515,36 @@
     </script>
 </body>
 </html>
+
+            </div>
+        </nav>
+        <aside>
+            <p class="text-sm text-base-content/50">
+                &copy; {{ date('Y') }} WS-Tracker. Internal use only.
+            </p>
+        </aside>
+    </footer>
+
+    <!-- Theme Controller (hidden, for JS control) -->
+    <script>
+        // Check for system preference or saved preference
+        const savedTheme = localStorage.getItem('theme') || 'ppl-light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+ 

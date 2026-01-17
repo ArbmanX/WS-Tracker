@@ -2,6 +2,12 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Enums\WorkflowStage;
+use App\Models\Circuit;
+use App\Models\PlannerDailyAggregate;
+use App\Models\Region;
+use App\Models\RegionalDailyAggregate;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -22,336 +28,129 @@ class CircuitDashboard extends Component
     #[Url(as: 'to', history: true)]
     public ?string $dateTo = null;
 
+    // View selection (kanban or analytics)
+    #[Url(as: 'view', history: true)]
+    public string $activeView = 'kanban';
+
     // Local state
     public bool $showClosedCircuits = false;
 
     /**
-     * Mock regions for the filter dropdown.
+     * Get regions for the filter dropdown.
      */
     #[Computed]
     public function regions(): Collection
     {
-        return collect([
-            ['id' => 'central', 'name' => 'Central', 'code' => 'CTR', 'circuits_count' => 12],
-            ['id' => 'lancaster', 'name' => 'Lancaster', 'code' => 'LAN', 'circuits_count' => 18],
-            ['id' => 'lehigh', 'name' => 'Lehigh', 'code' => 'LEH', 'circuits_count' => 15],
-            ['id' => 'harrisburg', 'name' => 'Harrisburg', 'code' => 'HAR', 'circuits_count' => 9],
-        ]);
+        return Region::query()
+            ->active()
+            ->ordered()
+            ->withCount(['circuits' => fn ($q) => $q->notExcluded()])
+            ->get()
+            ->map(fn ($region) => [
+                'id' => $region->id,
+                'name' => $region->name,
+                'code' => $region->code,
+                'circuits_count' => $region->circuits_count,
+            ]);
     }
 
     /**
-     * Mock planners for the filter dropdown.
+     * Get planners for the filter dropdown.
      */
     #[Computed]
     public function planners(): Collection
     {
-        return collect([
-            ['id' => 1, 'name' => 'Derek Cinicola', 'initials' => 'DC'],
-            ['id' => 2, 'name' => 'Paul Longenecker', 'initials' => 'PL'],
-            ['id' => 3, 'name' => 'Mike Johnson', 'initials' => 'MJ'],
-            ['id' => 4, 'name' => 'Sarah Williams', 'initials' => 'SW'],
-            ['id' => 5, 'name' => 'Tom Anderson', 'initials' => 'TA'],
-        ]);
+        return User::query()
+            ->whereHas('circuits', fn ($q) => $q->notExcluded())
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'initials' => $user->initials(),
+            ]);
     }
 
     /**
-     * Mock circuits organized by workflow stage.
+     * Get circuits organized by workflow stage.
      */
     #[Computed]
     public function circuits(): Collection
     {
-        // sample data TODO: Replace with real data from the database
-        $allCircuits = collect(
-            [
-                // Active circuits
-                [
-                    'id' => 1,
-                    'work_order' => '2025-1930',
-                    'extension' => '@',
-                    'title' => 'HATFIELD 69/12 KV 20-01 LINE',
-                    'region' => ['name' => 'Lehigh', 'code' => 'LEH'],
-                    'percent_complete' => 35,
-                    'miles_planned' => 4.38,
-                    'total_miles' => 14.93,
-                    'api_modified_date' => '12/05',
-                    'workflow_stage' => 'active',
-                    'planners' => [
-                        ['name' => 'Derek Cinicola', 'initials' => 'DC'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 127,
-                        'total_linear_ft' => 12880,
-                        'total_acres' => 1.42,
-                        'units_approved' => 89,
-                        'units_pending' => 32,
-                        'units_refused' => 6,
-                    ],
-                ],
-                [
-                    'id' => 2,
-                    'work_order' => '2025-2077',
-                    'extension' => '@',
-                    'title' => 'EAST PETERSBURG 69/12 KV 15-05 LINE',
-                    'region' => ['name' => 'Lancaster', 'code' => 'LAN'],
-                    'percent_complete' => 100,
-                    'miles_planned' => 8.56,
-                    'total_miles' => 8.56,
-                    'api_modified_date' => '12/05',
-                    'workflow_stage' => 'active',
-                    'planners' => [
-                        ['name' => 'Paul Longenecker', 'initials' => 'PL'],
-                        ['name' => 'Derek Cinicola', 'initials' => 'DC'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 243,
-                        'total_linear_ft' => 13896,
-                        'total_acres' => 0.53,
-                        'units_approved' => 198,
-                        'units_pending' => 41,
-                        'units_refused' => 4,
-                    ],
-                ],
-                [
-                    'id' => 3,
-                    'work_order' => '2025-1845',
-                    'extension' => 'A',
-                    'title' => 'MILLERSBURG 69/12 KV 12-03 LINE',
-                    'region' => ['name' => 'Central', 'code' => 'CTR'],
-                    'percent_complete' => 67,
-                    'miles_planned' => 6.2,
-                    'total_miles' => 9.25,
-                    'api_modified_date' => '12/04',
-                    'workflow_stage' => 'active',
-                    'planners' => [
-                        ['name' => 'Mike Johnson', 'initials' => 'MJ'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 156,
-                        'total_linear_ft' => 9840,
-                        'total_acres' => 2.1,
-                        'units_approved' => 112,
-                        'units_pending' => 38,
-                        'units_refused' => 6,
-                    ],
-                ],
-                [
-                    'id' => 4,
-                    'work_order' => '2025-2134',
-                    'extension' => '@',
-                    'title' => 'PALMYRA 138/12 KV 08-02 LINE',
-                    'region' => ['name' => 'Harrisburg', 'code' => 'HAR'],
-                    'percent_complete' => 22,
-                    'miles_planned' => 2.8,
-                    'total_miles' => 12.7,
-                    'api_modified_date' => '12/06',
-                    'workflow_stage' => 'active',
-                    'planners' => [
-                        ['name' => 'Sarah Williams', 'initials' => 'SW'],
-                        ['name' => 'Tom Anderson', 'initials' => 'TA'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 78,
-                        'total_linear_ft' => 4200,
-                        'total_acres' => 0.8,
-                        'units_approved' => 45,
-                        'units_pending' => 28,
-                        'units_refused' => 5,
-                    ],
-                ],
-
-                // Pending Permissions
-                [
-                    'id' => 5,
-                    'work_order' => '2025-1756',
-                    'extension' => '@',
-                    'title' => 'ALLENTOWN 69/12 KV 04-01 LINE',
-                    'region' => ['name' => 'Lehigh', 'code' => 'LEH'],
-                    'percent_complete' => 85,
-                    'miles_planned' => 11.2,
-                    'total_miles' => 13.2,
-                    'api_modified_date' => '12/03',
-                    'workflow_stage' => 'pending_permissions',
-                    'planners' => [
-                        ['name' => 'Derek Cinicola', 'initials' => 'DC'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 312,
-                        'total_linear_ft' => 18400,
-                        'total_acres' => 3.2,
-                        'units_approved' => 156,
-                        'units_pending' => 142,
-                        'units_refused' => 14,
-                    ],
-                ],
-                [
-                    'id' => 6,
-                    'work_order' => '2025-1892',
-                    'extension' => 'B',
-                    'title' => 'MANHEIM 69/12 KV 11-04 LINE',
-                    'region' => ['name' => 'Lancaster', 'code' => 'LAN'],
-                    'percent_complete' => 92,
-                    'miles_planned' => 7.4,
-                    'total_miles' => 8.0,
-                    'api_modified_date' => '12/02',
-                    'workflow_stage' => 'pending_permissions',
-                    'planners' => [
-                        ['name' => 'Paul Longenecker', 'initials' => 'PL'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 189,
-                        'total_linear_ft' => 11200,
-                        'total_acres' => 1.8,
-                        'units_approved' => 134,
-                        'units_pending' => 48,
-                        'units_refused' => 7,
-                    ],
-                ],
-
-                // QC
-                [
-                    'id' => 7,
-                    'work_order' => '2025-1623',
-                    'extension' => '@',
-                    'title' => 'HUMMELSTOWN 69/12 KV 07-02 LINE',
-                    'region' => ['name' => 'Harrisburg', 'code' => 'HAR'],
-                    'percent_complete' => 100,
-                    'miles_planned' => 5.8,
-                    'total_miles' => 5.8,
-                    'api_modified_date' => '11/28',
-                    'workflow_stage' => 'qc',
-                    'planners' => [
-                        ['name' => 'Tom Anderson', 'initials' => 'TA'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 145,
-                        'total_linear_ft' => 8600,
-                        'total_acres' => 1.2,
-                        'units_approved' => 138,
-                        'units_pending' => 5,
-                        'units_refused' => 2,
-                    ],
-                ],
-                [
-                    'id' => 8,
-                    'work_order' => '2025-1534',
-                    'extension' => '@',
-                    'title' => 'EPHRATA 138/12 KV 09-03 LINE',
-                    'region' => ['name' => 'Lancaster', 'code' => 'LAN'],
-                    'percent_complete' => 100,
-                    'miles_planned' => 10.3,
-                    'total_miles' => 10.3,
-                    'api_modified_date' => '11/25',
-                    'workflow_stage' => 'qc',
-                    'planners' => [
-                        ['name' => 'Mike Johnson', 'initials' => 'MJ'],
-                        ['name' => 'Sarah Williams', 'initials' => 'SW'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 267,
-                        'total_linear_ft' => 15800,
-                        'total_acres' => 2.4,
-                        'units_approved' => 254,
-                        'units_pending' => 10,
-                        'units_refused' => 3,
-                    ],
-                ],
-
-                // Rework
-                [
-                    'id' => 9,
-                    'work_order' => '2025-1412',
-                    'extension' => '@',
-                    'title' => 'KUTZTOWN 69/12 KV 06-01 LINE',
-                    'region' => ['name' => 'Lehigh', 'code' => 'LEH'],
-                    'percent_complete' => 78,
-                    'miles_planned' => 4.9,
-                    'total_miles' => 6.3,
-                    'api_modified_date' => '12/01',
-                    'workflow_stage' => 'rework',
-                    'planners' => [
-                        ['name' => 'Derek Cinicola', 'initials' => 'DC'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 134,
-                        'total_linear_ft' => 7200,
-                        'total_acres' => 1.1,
-                        'units_approved' => 98,
-                        'units_pending' => 24,
-                        'units_refused' => 12,
-                    ],
-                ],
-
-                // Closed
-                [
-                    'id' => 10,
-                    'work_order' => '2025-1289',
-                    'extension' => '@',
-                    'title' => 'LITITZ 69/12 KV 05-02 LINE',
-                    'region' => ['name' => 'Lancaster', 'code' => 'LAN'],
-                    'percent_complete' => 100,
-                    'miles_planned' => 7.2,
-                    'total_miles' => 7.2,
-                    'api_modified_date' => '11/15',
-                    'workflow_stage' => 'closed',
-                    'planners' => [
-                        ['name' => 'Paul Longenecker', 'initials' => 'PL'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 189,
-                        'total_linear_ft' => 10800,
-                        'total_acres' => 1.6,
-                        'units_approved' => 182,
-                        'units_pending' => 0,
-                        'units_refused' => 7,
-                    ],
-                ],
-                [
-                    'id' => 11,
-                    'work_order' => '2025-1156',
-                    'extension' => '@',
-                    'title' => 'CARLISLE 138/12 KV 03-01 LINE',
-                    'region' => ['name' => 'Central', 'code' => 'CTR'],
-                    'percent_complete' => 100,
-                    'miles_planned' => 9.1,
-                    'total_miles' => 9.1,
-                    'api_modified_date' => '11/10',
-                    'workflow_stage' => 'closed',
-                    'planners' => [
-                        ['name' => 'Mike Johnson', 'initials' => 'MJ'],
-                        ['name' => 'Tom Anderson', 'initials' => 'TA'],
-                    ],
-                    'aggregate' => [
-                        'total_units' => 234,
-                        'total_linear_ft' => 13400,
-                        'total_acres' => 2.0,
-                        'units_approved' => 228,
-                        'units_pending' => 0,
-                        'units_refused' => 6,
-                    ],
-                ],
-            ]
-        );
+        $query = Circuit::query()
+            ->notExcluded()
+            ->with([
+                'region',
+                'uiState',
+                'planners',
+                'latestAggregate',
+            ]);
 
         // Apply region filter
         if ($this->regionFilter) {
-            $allCircuits = $allCircuits->filter(
-                fn ($c) => strtolower($c['region']['name']) === strtolower($this->regionFilter)
-            );
+            $query->whereHas('region', fn ($q) => $q->where('name', $this->regionFilter));
         }
 
         // Apply planner filter
         if ($this->plannerFilter) {
-            $allCircuits = $allCircuits->filter(
-                fn ($c) => collect($c['planners'])->contains('name', $this->plannerFilter)
-            );
+            $query->whereHas('planners', fn ($q) => $q->where('name', $this->plannerFilter));
         }
+
+        // Apply date filters
+        if ($this->dateFrom) {
+            $query->where('api_modified_date', '>=', $this->dateFrom);
+        }
+        if ($this->dateTo) {
+            $query->where('api_modified_date', '<=', $this->dateTo);
+        }
+
+        $circuits = $query->get();
+
+        // Transform circuits to array format expected by views
+        $transformedCircuits = $circuits->map(function (Circuit $circuit) {
+            $uiState = $circuit->uiState;
+            $aggregate = $circuit->latestAggregate;
+
+            // Determine workflow stage (default to active if no UI state)
+            $workflowStage = $uiState?->workflow_stage?->value ?? WorkflowStage::Active->value;
+
+            return [
+                'id' => $circuit->id,
+                'work_order' => $circuit->work_order,
+                'extension' => $circuit->extension ?? '@',
+                'title' => $circuit->title,
+                'region' => [
+                    'name' => $circuit->region?->name ?? 'Unknown',
+                    'code' => $circuit->region?->code ?? '?',
+                ],
+                'percent_complete' => (int) round($circuit->percent_complete ?? 0),
+                'miles_planned' => (float) ($circuit->miles_planned ?? 0),
+                'total_miles' => (float) ($circuit->total_miles ?? 0),
+                'api_modified_date' => $circuit->api_modified_date?->format('m/d') ?? '',
+                'workflow_stage' => $workflowStage,
+                'planners' => $circuit->planners->map(fn ($planner) => [
+                    'name' => $planner->name,
+                    'initials' => $planner->initials(),
+                ])->toArray(),
+                'aggregate' => [
+                    'total_units' => $aggregate?->total_units ?? 0,
+                    'total_linear_ft' => (float) ($aggregate?->total_linear_ft ?? 0),
+                    'total_acres' => (float) ($aggregate?->total_acres ?? 0),
+                    'units_approved' => $aggregate?->units_approved ?? 0,
+                    'units_pending' => $aggregate?->units_pending ?? 0,
+                    'units_refused' => $aggregate?->units_refused ?? 0,
+                ],
+            ];
+        });
 
         // Filter closed circuits unless showing them
         if (! $this->showClosedCircuits) {
-            $allCircuits = $allCircuits->filter(fn ($c) => $c['workflow_stage'] !== 'closed');
+            $transformedCircuits = $transformedCircuits->filter(
+                fn ($c) => $c['workflow_stage'] !== WorkflowStage::Closed->value
+            );
         }
 
-        return $allCircuits->groupBy('workflow_stage');
+        return $transformedCircuits->groupBy('workflow_stage');
     }
 
     /**
@@ -400,6 +199,137 @@ class CircuitDashboard extends Component
     public function toggleClosedCircuits(): void
     {
         $this->showClosedCircuits = ! $this->showClosedCircuits;
+    }
+
+    /**
+     * Switch between kanban and analytics views.
+     */
+    public function setView(string $view): void
+    {
+        $this->activeView = $view;
+    }
+
+    /**
+     * Get regional performance data for analytics view.
+     */
+    #[Computed]
+    public function regionalPerformance(): Collection
+    {
+        $colors = ['primary', 'secondary', 'accent', 'info', 'success', 'warning'];
+
+        // Get latest aggregate for each region
+        $latestAggregates = RegionalDailyAggregate::query()
+            ->latestPerRegion()
+            ->with('region')
+            ->get()
+            ->keyBy('region_id');
+
+        // Get aggregates from 7 days ago for comparison
+        $weekAgoDate = now()->subDays(7)->toDateString();
+        $weekAgoAggregates = RegionalDailyAggregate::query()
+            ->forDate($weekAgoDate)
+            ->get()
+            ->keyBy('region_id');
+
+        return Region::query()
+            ->active()
+            ->ordered()
+            ->get()
+            ->values()
+            ->map(function ($region, $index) use ($latestAggregates, $weekAgoAggregates, $colors) {
+                $latest = $latestAggregates->get($region->id);
+                $weekAgo = $weekAgoAggregates->get($region->id);
+
+                // Calculate progress percentage
+                $progress = 0;
+                if ($latest && $latest->total_miles > 0) {
+                    $progress = (int) round(($latest->miles_planned / $latest->total_miles) * 100);
+                }
+
+                // Calculate week-over-week change
+                $change = 0;
+                if ($weekAgo && $weekAgo->miles_planned > 0 && $latest) {
+                    $change = (int) round((($latest->miles_planned - $weekAgo->miles_planned) / $weekAgo->miles_planned) * 100);
+                }
+
+                return [
+                    'name' => $region->name,
+                    'code' => substr($region->code ?? $region->name, 0, 2),
+                    'color' => $colors[$index % count($colors)],
+                    'active_circuits' => $latest?->active_circuits ?? 0,
+                    'miles_planned' => round((float) ($latest?->miles_planned ?? 0), 1),
+                    'progress' => $progress,
+                    'change' => ($change >= 0 ? '+' : '').$change.'%',
+                    'positive' => $change >= 0,
+                ];
+            });
+    }
+
+    /**
+     * Get top planners data for analytics view.
+     */
+    #[Computed]
+    public function topPlanners(): Collection
+    {
+        $colors = ['primary', 'secondary', 'accent', 'info', 'success'];
+
+        // Get planners with the most units assessed in the last 30 days
+        $startDate = now()->subDays(30)->toDateString();
+        $endDate = now()->toDateString();
+
+        return PlannerDailyAggregate::query()
+            ->betweenDates($startDate, $endDate)
+            ->selectRaw('user_id, SUM(total_units_assessed) as total_units, SUM(total_linear_ft) as total_linear_ft, SUM(circuits_worked) as total_circuits')
+            ->groupBy('user_id')
+            ->orderByDesc('total_units')
+            ->limit(5)
+            ->with('user.defaultRegion')
+            ->get()
+            ->values()
+            ->map(function ($agg, $index) use ($colors) {
+                $user = $agg->user;
+
+                return [
+                    'name' => $user?->name ?? 'Unknown',
+                    'initials' => $user?->initials() ?? '?',
+                    'region' => $user?->defaultRegion?->name ?? 'Multiple',
+                    'color' => $colors[$index % count($colors)],
+                    'units' => (int) $agg->total_units,
+                    'linear_ft' => (int) round($agg->total_linear_ft),
+                    'circuits' => (int) $agg->total_circuits,
+                ];
+            });
+    }
+
+    /**
+     * Get recent circuit activity for analytics view.
+     */
+    #[Computed]
+    public function recentActivity(): Collection
+    {
+        return Circuit::query()
+            ->notExcluded()
+            ->with(['region', 'uiState'])
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get()
+            ->map(function (Circuit $circuit) {
+                $stage = $circuit->uiState?->workflow_stage ?? WorkflowStage::Active;
+                if (is_string($stage)) {
+                    $stage = WorkflowStage::from($stage);
+                }
+
+                return [
+                    'work_order' => $circuit->work_order,
+                    'title' => $circuit->title,
+                    'region' => $circuit->region?->name ?? 'Unknown',
+                    'status' => $stage->label(),
+                    'status_color' => $stage->color(),
+                    'progress' => (int) round($circuit->percent_complete ?? 0),
+                    'miles' => round((float) ($circuit->total_miles ?? 0), 1),
+                    'updated' => $circuit->updated_at?->diffForHumans() ?? '',
+                ];
+            });
     }
 
     public function render()
