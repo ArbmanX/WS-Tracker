@@ -3,7 +3,7 @@
     @if($step === 1)
         <div class="text-center mb-6">
             <h2 class="text-2xl font-bold text-base-content">Welcome to {{ config('app.name') }}</h2>
-            <p class="text-base-content/60 mt-2">Please verify your credentials to continue</p>
+            <p class="text-base-content/60 mt-2">Enter your credentials to get started</p>
         </div>
 
         <form wire:submit="verifyCredentials" class="space-y-4">
@@ -11,10 +11,18 @@
                 <label class="label">
                     <span class="label-text">Email Address</span>
                 </label>
-                <input type="email" value="{{ $email }}" class="input input-bordered bg-base-200" disabled />
-                <label class="label">
-                    <span class="label-text-alt text-base-content/50">This was set by your administrator</span>
-                </label>
+                <input
+                    type="email"
+                    wire:model="email"
+                    class="input input-bordered @error('email') input-error @enderror"
+                    placeholder="Enter your email address"
+                    autofocus
+                />
+                @error('email')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
             </div>
 
             <div class="form-control">
@@ -26,19 +34,31 @@
                     wire:model="temporaryPassword"
                     class="input input-bordered @error('temporaryPassword') input-error @enderror"
                     placeholder="Enter your temporary password"
-                    autofocus
                 />
                 @error('temporaryPassword')
                     <label class="label">
                         <span class="label-text-alt text-error">{{ $message }}</span>
                     </label>
                 @enderror
+                <label class="label">
+                    <span class="label-text-alt text-base-content/50">This was provided by your administrator</span>
+                </label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-full">
-                Continue
-                <x-heroicon-o-arrow-right class="size-5" />
+            <button type="submit" class="btn btn-primary w-full" wire:loading.attr="disabled">
+                <span wire:loading.remove wire:target="verifyCredentials">
+                    Continue
+                    <x-heroicon-o-arrow-right class="size-5" />
+                </span>
+                <span wire:loading wire:target="verifyCredentials" class="loading loading-spinner loading-sm"></span>
             </button>
+
+            <div class="divider text-xs text-base-content/50">OR</div>
+
+            <p class="text-center text-sm text-base-content/60">
+                Already set up your account?
+                <a href="{{ route('login') }}" class="link link-primary">Sign in here</a>
+            </p>
         </form>
     @endif
 
@@ -108,8 +128,97 @@
         </form>
     @endif
 
-    {{-- Step 3: Theme Selection --}}
+    {{-- Step 3: WorkStudio Credentials --}}
     @if($step === 3)
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-base-content">WorkStudio Credentials</h2>
+            <p class="text-base-content/60 mt-2">Link your WorkStudio account for personalized tracking</p>
+        </div>
+
+        <form wire:submit="saveWsCredentials" class="space-y-4">
+            @if($wsValidationError)
+                <div role="alert" class="alert alert-error">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{{ $wsValidationError }}</span>
+                </div>
+            @endif
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">WorkStudio Username</span>
+                </label>
+                <input
+                    type="text"
+                    wire:model="wsUsername"
+                    class="input input-bordered @error('wsUsername') input-error @enderror"
+                    placeholder="DOMAIN\username"
+                />
+                @error('wsUsername')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
+                <label class="label">
+                    <span class="label-text-alt text-base-content/50">Use the format: DOMAIN\username</span>
+                </label>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">WorkStudio Password</span>
+                </label>
+                <input
+                    type="password"
+                    wire:model="wsPassword"
+                    class="input input-bordered @error('wsPassword') input-error @enderror"
+                    placeholder="Your WorkStudio password"
+                />
+                @error('wsPassword')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
+            </div>
+
+            <div class="bg-base-200 rounded-lg p-4 text-sm">
+                <div class="flex items-start gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-info shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-base-content/70">
+                        <p class="font-medium text-base-content">Why do we need this?</p>
+                        <p class="mt-1">Your credentials allow the system to fetch your assigned circuits and track your productivity. They are stored securely using encryption.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button type="button" wire:click="previousStep" class="btn btn-ghost flex-1">
+                    <x-heroicon-o-arrow-left class="size-5" />
+                    Back
+                </button>
+                <button type="submit" class="btn btn-primary flex-1" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="saveWsCredentials">
+                        Validate & Continue
+                    </span>
+                    <span wire:loading wire:target="saveWsCredentials" class="loading loading-spinner loading-sm"></span>
+                    <x-heroicon-o-arrow-right class="size-5" wire:loading.remove wire:target="saveWsCredentials" />
+                </button>
+            </div>
+
+            <div class="divider text-xs text-base-content/50">OR</div>
+
+            <button type="button" wire:click="skipWsStep" class="btn btn-ghost w-full">
+                Skip for now
+                <span class="text-xs text-base-content/50">(You can add credentials later in Settings)</span>
+            </button>
+        </form>
+    @endif
+
+    {{-- Step 4: Theme Selection --}}
+    @if($step === 4)
         <div class="text-center mb-6">
             <h2 class="text-2xl font-bold text-base-content">Choose Your Theme</h2>
             <p class="text-base-content/60 mt-2">Select how you want the app to look</p>
@@ -131,8 +240,8 @@
         </form>
     @endif
 
-    {{-- Step 4: Dashboard Preferences --}}
-    @if($step === 4)
+    {{-- Step 5: Dashboard Preferences --}}
+    @if($step === 5)
         <div class="text-center mb-6">
             <h2 class="text-2xl font-bold text-base-content">Dashboard Preferences</h2>
             <p class="text-base-content/60 mt-2">Customize your default dashboard view</p>
@@ -203,8 +312,8 @@
         </form>
     @endif
 
-    {{-- Step 5: Complete --}}
-    @if($step === 5)
+    {{-- Step 6: Complete --}}
+    @if($step === 6)
         <div class="text-center py-4">
             <div class="mb-6">
                 <div class="w-20 h-20 mx-auto bg-success/20 rounded-full flex items-center justify-center">

@@ -21,7 +21,7 @@
             tabindex="0"
             @click="open = !open"
             @click.outside="open = false"
-            class="btn btn-ghost btn-circle avatar placeholder"
+            class="btn btn-ghost btn-circle avatar avatar-placeholder"
             data-test="user-menu-button"
         >
             <div class="w-10 rounded-full bg-neutral text-neutral-content">

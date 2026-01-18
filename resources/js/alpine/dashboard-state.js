@@ -44,6 +44,19 @@ export function registerThemeStore(Alpine) {
             // Apply theme immediately
             this.applyTheme();
 
+            // Re-apply theme during Livewire SPA navigation
+            // This is critical because wire:navigate keeps the <html> element
+            // but the FOUC prevention script doesn't re-run
+            document.addEventListener('livewire:navigating', () => {
+                // Ensure theme persists during navigation transition
+                this.applyTheme();
+            });
+
+            document.addEventListener('livewire:navigated', () => {
+                // Re-apply after navigation completes
+                this.applyTheme();
+            });
+
             // Listen for theme sync from Livewire (on page load with user preference)
             window.addEventListener('theme-sync', (e) => {
                 if (e.detail?.theme && e.detail.theme !== this.current) {

@@ -11,6 +11,96 @@ beforeEach(function () {
     ]);
 });
 
+// ============================================
+// Guest Access Tests
+// ============================================
+
+test('guest can access onboarding page', function () {
+    $this->get(route('onboarding'))
+        ->assertOk()
+        ->assertSeeLivewire(OnboardingWizard::class);
+});
+
+test('guest sees step 1 on onboarding page', function () {
+    Livewire::test(OnboardingWizard::class)
+        ->assertSet('step', 1)
+        ->assertSee('Enter your credentials');
+});
+
+test('guest can authenticate via step 1 with valid credentials', function () {
+    Livewire::test(OnboardingWizard::class)
+        ->assertSet('step', 1)
+        ->set('email', $this->user->email)
+        ->set('temporaryPassword', 'temp-password')
+        ->call('verifyCredentials')
+        ->assertHasNoErrors()
+        ->assertSet('step', 2);
+
+    // User should now be authenticated
+    expect(auth()->check())->toBeTrue();
+    expect(auth()->id())->toBe($this->user->id);
+});
+
+test('guest with invalid email sees error', function () {
+    Livewire::test(OnboardingWizard::class)
+        ->assertSet('step', 1)
+        ->set('email', 'nonexistent@example.com')
+        ->set('temporaryPassword', 'temp-password')
+        ->call('verifyCredentials')
+        ->assertHasErrors('email')
+        ->assertSet('step', 1);
+});
+
+test('guest with wrong password sees error', function () {
+    Livewire::test(OnboardingWizard::class)
+        ->assertSet('step', 1)
+        ->set('email', $this->user->email)
+        ->set('temporaryPassword', 'wrong-password')
+        ->call('verifyCredentials')
+        ->assertHasErrors('temporaryPassword')
+        ->assertSet('step', 1);
+});
+
+test('guest authenticating with already onboarded account sees error', function () {
+    $onboardedUser = User::factory()->onboarded()->create([
+        'password' => Hash::make('password'),
+    ]);
+
+    Livewire::test(OnboardingWizard::class)
+        ->assertSet('step', 1)
+        ->set('email', $onboardedUser->email)
+        ->set('temporaryPassword', 'password')
+        ->call('verifyCredentials')
+        ->assertHasErrors('email')
+        ->assertSee('already been set up')
+        ->assertSet('step', 1);
+});
+
+// ============================================
+// Authenticated User Tests
+// ============================================
+
+test('authenticated pending user starts at step 2', function () {
+    Livewire::actingAs($this->user)
+        ->test(OnboardingWizard::class)
+        ->assertSet('step', 2);
+});
+
+test('authenticated pending user can access onboarding page', function () {
+    $this->actingAs($this->user)
+        ->get(route('onboarding'))
+        ->assertOk()
+        ->assertSeeLivewire(OnboardingWizard::class);
+});
+
+test('onboarded user is redirected away from onboarding', function () {
+    $onboardedUser = User::factory()->onboarded()->create();
+
+    $this->actingAs($onboardedUser)
+        ->get(route('onboarding'))
+        ->assertRedirect(route('dashboard'));
+});
+
 test('unonboarded user is redirected to onboarding from dashboard', function () {
     $this->actingAs($this->user)
         ->get(route('dashboard'))
@@ -26,40 +116,9 @@ test('onboarded user can access dashboard', function () {
         ->assertRedirect(route('assessments.overview'));
 });
 
-test('onboarding page loads for unonboarded user', function () {
-    $this->actingAs($this->user)
-        ->get(route('onboarding'))
-        ->assertOk()
-        ->assertSeeLivewire(OnboardingWizard::class);
-});
-
-test('onboarded user is redirected away from onboarding', function () {
-    $onboardedUser = User::factory()->onboarded()->create();
-
-    $this->actingAs($onboardedUser)
-        ->get(route('onboarding'))
-        ->assertRedirect(route('dashboard'));
-});
-
-test('step 1 validates temporary password', function () {
-    Livewire::actingAs($this->user)
-        ->test(OnboardingWizard::class)
-        ->assertSet('step', 1)
-        ->set('temporaryPassword', 'wrong-password')
-        ->call('verifyCredentials')
-        ->assertHasErrors('temporaryPassword')
-        ->assertSet('step', 1);
-});
-
-test('step 1 proceeds to step 2 with correct password', function () {
-    Livewire::actingAs($this->user)
-        ->test(OnboardingWizard::class)
-        ->assertSet('step', 1)
-        ->set('temporaryPassword', 'temp-password')
-        ->call('verifyCredentials')
-        ->assertHasNoErrors()
-        ->assertSet('step', 2);
-});
+// ============================================
+// Step 2: Set Password & Name
+// ============================================
 
 test('step 2 validates name and new password', function () {
     Livewire::actingAs($this->user)
@@ -99,38 +158,73 @@ test('step 2 updates user and proceeds to step 3', function () {
     expect(Hash::check('securepassword123', $this->user->password))->toBeTrue();
 });
 
-test('step 3 saves theme preference', function () {
+// ============================================
+// Step 3: WorkStudio Credentials
+// ============================================
+
+test('step 3 can skip ws credentials', function () {
     Livewire::actingAs($this->user)
         ->test(OnboardingWizard::class)
         ->set('step', 3)
+        ->call('skipWsStep')
+        ->assertSet('skipWsCredentials', true)
+        ->assertSet('step', 4);
+});
+
+test('step 3 validates ws credentials fields', function () {
+    Livewire::actingAs($this->user)
+        ->test(OnboardingWizard::class)
+        ->set('step', 3)
+        ->set('wsUsername', '')
+        ->set('wsPassword', '')
+        ->call('saveWsCredentials')
+        ->assertHasErrors(['wsUsername', 'wsPassword']);
+});
+
+// ============================================
+// Step 4: Theme Selection
+// ============================================
+
+test('step 4 saves theme preference', function () {
+    Livewire::actingAs($this->user)
+        ->test(OnboardingWizard::class)
+        ->set('step', 4)
         ->set('selectedTheme', 'dark')
         ->call('saveTheme')
         ->assertHasNoErrors()
-        ->assertSet('step', 4);
+        ->assertSet('step', 5);
 
     $this->user->refresh();
     expect($this->user->theme_preference)->toBe('dark');
 });
 
-test('step 4 saves dashboard preferences', function () {
+// ============================================
+// Step 5: Dashboard Preferences
+// ============================================
+
+test('step 5 saves dashboard preferences', function () {
     Livewire::actingAs($this->user)
         ->test(OnboardingWizard::class)
-        ->set('step', 4)
+        ->set('step', 5)
         ->set('defaultView', 'table')
         ->set('showAllRegions', true)
         ->call('savePreferences')
         ->assertHasNoErrors()
-        ->assertSet('step', 5);
+        ->assertSet('step', 6);
 
     $this->user->refresh();
     expect($this->user->dashboard_preferences['default_view'])->toBe('table');
     expect($this->user->dashboard_preferences['show_all_regions'])->toBeTrue();
 });
 
-test('step 5 completes onboarding and marks user as onboarded', function () {
+// ============================================
+// Step 6: Complete
+// ============================================
+
+test('step 6 completes onboarding and marks user as onboarded', function () {
     Livewire::actingAs($this->user)
         ->test(OnboardingWizard::class)
-        ->set('step', 5)
+        ->set('step', 6)
         ->call('complete')
         ->assertRedirect(route('dashboard'));
 
@@ -138,6 +232,10 @@ test('step 5 completes onboarding and marks user as onboarded', function () {
     expect($this->user->isOnboarded())->toBeTrue();
     expect($this->user->onboarded_at)->not->toBeNull();
 });
+
+// ============================================
+// Navigation
+// ============================================
 
 test('can navigate back to previous steps', function () {
     Livewire::actingAs($this->user)
@@ -150,14 +248,8 @@ test('can navigate back to previous steps', function () {
 });
 
 test('cannot go back from step 1', function () {
-    Livewire::actingAs($this->user)
-        ->test(OnboardingWizard::class)
+    Livewire::test(OnboardingWizard::class)
         ->assertSet('step', 1)
         ->call('previousStep')
         ->assertSet('step', 1);
-});
-
-test('guest cannot access onboarding', function () {
-    $this->get(route('onboarding'))
-        ->assertRedirect(route('login'));
 });

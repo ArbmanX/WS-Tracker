@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'sudo_admin' => \App\Http\Middleware\EnsureSudoAdmin::class,
             'onboarded' => \App\Http\Middleware\EnsureUserIsOnboarded::class,
+            'guest.or.pending' => \App\Http\Middleware\GuestOrPendingOnboarding::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -28,8 +28,8 @@
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     x-data
-    x-init="$store.theme.init()"
-    :data-theme="$store.theme.effective"
+    x-init="$store.theme?.init()"
+    :data-theme="$store.theme?.effective || document.documentElement.getAttribute('data-theme') || 'corporate'"
 >
     <head>
         <meta charset="utf-8" />

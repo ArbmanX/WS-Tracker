@@ -153,6 +153,7 @@
                         </svg>
                     </a>
                 @else
+                    <a href="{{ route('onboarding') }}" class="btn btn-ghost btn-sm">First Time?</a>
                     <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Sign In</a>
                 @endauth
             @endif
@@ -214,14 +215,18 @@
                                 </svg>
                             </a>
                         @else
-                            <a href="{{ route('login') }}"
+                            <a href="{{ route('onboarding') }}"
                                 class="btn btn-lg bg-white text-secondary hover:bg-white/90 border-0 gap-2">
-                                Get Started
+                                First Time? Set Up Account
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
+                            </a>
+                            <a href="{{ route('login') }}"
+                                class="btn btn-lg btn-outline border-white/30 text-white hover:bg-white/10 hover:border-white/50">
+                                Sign In
                             </a>
                         @endauth
                         <a href="#features"

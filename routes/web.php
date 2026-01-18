@@ -5,6 +5,11 @@ use App\Livewire\Admin\SyncHistory;
 use App\Livewire\Admin\UnlinkedPlanners;
 use App\Livewire\Admin\UserManagement;
 use App\Livewire\Assessments\Dashboard\Overview;
+use App\Livewire\DataManagement\CircuitBrowser;
+use App\Livewire\DataManagement\Endpoints;
+use App\Livewire\DataManagement\Exclusions;
+use App\Livewire\DataManagement\Index as DataManagementIndex;
+use App\Livewire\DataManagement\SyncLogs;
 use App\Livewire\Onboarding\OnboardingWizard;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +24,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Onboarding wizard - auth required but NOT onboarded check
+// Onboarding wizard - accessible to guests (for first-time setup) and pending users
 Route::get('/onboarding', OnboardingWizard::class)
-    ->middleware(['auth'])
+    ->middleware(['guest.or.pending'])
     ->name('onboarding');
 
 // Dashboard redirects to assessments overview
@@ -44,6 +49,13 @@ Route::middleware(['auth', 'verified', 'onboarded', 'admin'])->prefix('admin')->
 // Sudo admin only routes
 Route::middleware(['auth', 'verified', 'onboarded', 'sudo_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', UserManagement::class)->name('users');
+
+    // Data Management
+    Route::get('/data', DataManagementIndex::class)->name('data');
+    Route::get('/data/circuits', CircuitBrowser::class)->name('data.circuits');
+    Route::get('/data/sync-logs', SyncLogs::class)->name('data.sync-logs');
+    Route::get('/data/exclusions', Exclusions::class)->name('data.exclusions');
+    Route::get('/data/endpoints', Endpoints::class)->name('data.endpoints');
 });
 
 require __DIR__.'/settings.php';

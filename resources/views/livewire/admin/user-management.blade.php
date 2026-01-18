@@ -73,7 +73,7 @@
                                 <tr class="hover" wire:key="user-{{ $user->id }}">
                                     <td>
                                         <div class="flex items-center gap-3">
-                                            <div class="avatar placeholder">
+                                            <div class="avatar avatar-placeholder">
                                                 <div class="bg-primary text-primary-content w-10 rounded-full">
                                                     <span>{{ $user->initials() }}</span>
                                                 </div>
