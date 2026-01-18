@@ -21,3 +21,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.claude 
+/.cursor
+/.FinalDrafts
+.mcp.json
+boost.json
+CLAUDE.md
