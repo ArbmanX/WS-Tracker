@@ -8,7 +8,33 @@
  * - theme: Theme preference with localStorage + system detection
  * - sidebar: Sidebar open/collapsed state per breakpoint
  * - dashboard: Region filter, view preferences
+ *
+ * Persistence:
+ * - localStorage: Immediate cache for fast page loads
+ * - Database: Cross-device sync via Livewire events (debounced)
+ * - window.__userPreferences: Server-rendered DB values for initialization
  */
+
+/**
+ * Debounced preference sync to database via Livewire
+ *
+ * Only syncs for authenticated users (when window.__userPreferences is set)
+ */
+let syncTimeout = null;
+function syncToDatabase(key, value) {
+    // Only sync for authenticated users
+    if (window.__userPreferences === null) {
+        return;
+    }
+
+    // Debounce to prevent excessive DB writes
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(() => {
+        if (typeof Livewire !== 'undefined') {
+            Livewire.dispatch('sync-preference', { key, value });
+        }
+    }, 1500);
+}
 
 /**
  * Theme Store
@@ -154,6 +180,13 @@ export function registerSidebarStore(Alpine) {
         breakpoint: 'desktop',
 
         init() {
+            // Restore from database if available (DB wins over localStorage)
+            const dbPrefs = window.__userPreferences?.dashboard ?? {};
+            if (dbPrefs.sidebar_collapsed !== undefined) {
+                this.isCollapsed = dbPrefs.sidebar_collapsed;
+                localStorage.setItem('ws-sidebar-collapsed', String(dbPrefs.sidebar_collapsed));
+            }
+
             this.detectBreakpoint();
             window.addEventListener('resize', () => this.detectBreakpoint());
         },
@@ -206,6 +239,8 @@ export function registerSidebarStore(Alpine) {
             // Only persist on desktop (tablet is always collapsed)
             if (this.breakpoint === 'desktop') {
                 localStorage.setItem('ws-sidebar-collapsed', this.isCollapsed);
+                // Sync to database for cross-device persistence
+                syncToDatabase('sidebar_collapsed', this.isCollapsed);
             }
         },
 
@@ -271,6 +306,22 @@ export function registerDashboardStore(Alpine) {
         regions: [],
 
         init() {
+            // Restore from database if available (DB wins over localStorage)
+            const dbPrefs = window.__userPreferences?.dashboard ?? {};
+
+            // Restore view preference
+            if (dbPrefs.default_view) {
+                this.viewPreference = dbPrefs.default_view;
+                localStorage.setItem('ws-view-preference', dbPrefs.default_view);
+            }
+
+            // Restore default region
+            const defaultRegion = window.__userPreferences?.defaultRegionId;
+            if (defaultRegion) {
+                this.selectedRegion = String(defaultRegion);
+                localStorage.setItem('ws-region', String(defaultRegion));
+            }
+
             // Listen for region updates from Livewire
             window.addEventListener('regions-loaded', (e) => {
                 this.regions = e.detail?.regions || [];
@@ -296,6 +347,8 @@ export function registerDashboardStore(Alpine) {
         setViewPreference(preference) {
             this.viewPreference = preference;
             localStorage.setItem('ws-view-preference', preference);
+            // Sync to database for cross-device persistence
+            syncToDatabase('default_view', preference);
         },
 
         /**

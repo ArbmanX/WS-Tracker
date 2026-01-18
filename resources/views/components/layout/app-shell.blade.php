@@ -50,6 +50,9 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        {{-- User Preferences - Makes DB preferences available to Alpine stores --}}
+        <x-layout.preferences-init />
+
         {{-- FOUC Prevention - Runs before Alpine loads --}}
         <script>
             (function() {
@@ -98,9 +101,9 @@
     </head>
 
     <body class="min-h-screen bg-base-100">
-        {{-- Global theme listener for syncing preferences to database --}}
+        {{-- Global preference sync for persisting changes to database --}}
         @auth
-            <livewire:theme-listener />
+            <livewire:preference-sync />
         @endauth
 
         {{-- Drawer Container --}}
