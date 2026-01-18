@@ -4,7 +4,6 @@ namespace App\Livewire\Settings;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 #[Layout('components.layout.app-shell', ['title' => 'Appearance Settings'])]
@@ -48,16 +47,6 @@ class Appearance extends Component
     public function updatedTheme(string $value): void
     {
         $this->saveTheme($value);
-    }
-
-    /**
-     * Handle theme changes from the color-changer dropdown component.
-     */
-    #[On('theme-changed')]
-    public function handleThemeChanged(string $theme): void
-    {
-        $this->theme = $theme;
-        $this->saveTheme($theme);
     }
 
     /**
