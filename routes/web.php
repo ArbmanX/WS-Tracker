@@ -14,6 +14,11 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Shell test route (temporary - for testing new app shell layout)
+Route::view('shell-test', 'pages.shell-test')
+    ->middleware(['auth', 'verified'])
+    ->name('shell-test');
+
 // Admin routes (requires admin or sudo_admin role)
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/sync', SyncControl::class)->name('sync');
