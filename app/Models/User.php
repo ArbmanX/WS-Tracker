@@ -33,6 +33,8 @@ class User extends Authenticatable
         'ws_linked_at',
         'default_region_id',
         'theme_preference',
+        'onboarded_at',
+        'dashboard_preferences',
     ];
 
     /**
@@ -59,6 +61,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_ws_linked' => 'boolean',
             'ws_linked_at' => 'datetime',
+            'onboarded_at' => 'datetime',
+            'dashboard_preferences' => 'array',
         ];
     }
 
@@ -165,5 +169,45 @@ class User extends Authenticatable
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('regions.id', $regionId);
         });
+    }
+
+    /**
+     * Check if user has completed onboarding.
+     */
+    public function isOnboarded(): bool
+    {
+        return $this->onboarded_at !== null;
+    }
+
+    /**
+     * Check if user is pending onboarding.
+     */
+    public function isPendingOnboarding(): bool
+    {
+        return $this->onboarded_at === null;
+    }
+
+    /**
+     * Mark user as onboarded.
+     */
+    public function markAsOnboarded(): void
+    {
+        $this->update(['onboarded_at' => now()]);
+    }
+
+    /**
+     * Scope to users who have completed onboarding.
+     */
+    public function scopeOnboarded($query)
+    {
+        return $query->whereNotNull('onboarded_at');
+    }
+
+    /**
+     * Scope to users who are pending onboarding.
+     */
+    public function scopePendingOnboarding($query)
+    {
+        return $query->whereNull('onboarded_at');
     }
 }

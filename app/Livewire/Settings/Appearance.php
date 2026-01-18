@@ -3,9 +3,11 @@
 namespace App\Livewire\Settings;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
+#[Layout('components.layout.app-shell', ['title' => 'Appearance Settings'])]
 class Appearance extends Component
 {
     public string $theme = 'system';

@@ -1,41 +1,66 @@
-<section class="w-full">
+<div class="w-full">
     @include('partials.settings-heading')
 
-    <flux:heading class="sr-only">{{ __('Password Settings') }}</flux:heading>
-
     <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-            />
+        <form wire:submit="updatePassword" class="space-y-4">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ __('Current password') }}</span>
+                </label>
+                <input
+                    type="password"
+                    wire:model="current_password"
+                    class="input input-bordered @error('current_password') input-error @enderror"
+                    required
+                    autocomplete="current-password"
+                />
+                @error('current_password')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
+            </div>
 
-            <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
-                </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ __('New password') }}</span>
+                </label>
+                <input
+                    type="password"
+                    wire:model="password"
+                    class="input input-bordered @error('password') input-error @enderror"
+                    required
+                    autocomplete="new-password"
+                />
+                @error('password')
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ $message }}</span>
+                    </label>
+                @enderror
+            </div>
 
-                <x-action-message class="me-3" on="password-updated">
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">{{ __('Confirm password') }}</span>
+                </label>
+                <input
+                    type="password"
+                    wire:model="password_confirmation"
+                    class="input input-bordered"
+                    required
+                    autocomplete="new-password"
+                />
+            </div>
+
+            <div class="flex items-center gap-4 pt-2">
+                <button type="submit" class="btn btn-primary">
+                    {{ __('Save') }}
+                </button>
+
+                <x-action-message class="text-success" on="password-updated">
                     {{ __('Saved.') }}
                 </x-action-message>
             </div>
         </form>
     </x-settings.layout>
-</section>
+</div>

@@ -154,7 +154,8 @@ return [
     | System Theme Mapping
     |--------------------------------------------------------------------------
     |
-    | When user selects "Follow system", map to these themes.
+    | When user selects "Follow system", map to these themes based on
+    | their OS preference (light/dark mode).
     |
     */
     'system_mapping' => [

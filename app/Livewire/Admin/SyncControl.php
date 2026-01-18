@@ -8,11 +8,9 @@ use App\Jobs\SyncCircuitsJob;
 use App\Models\SyncLog;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('components.layouts.app')]
-#[Title('Sync Control')]
+#[Layout('components.layout.app-shell', ['title' => 'Sync Control'])]
 class SyncControl extends Component
 {
     public array $selectedStatuses = ['ACTIV'];

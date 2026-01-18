@@ -1,92 +1,118 @@
-<section class="w-full" x-data="{
-    theme: $wire.entangle('theme'),
-    applyTheme(newTheme) {
-        if (newTheme === 'system') {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-        } else {
-            document.documentElement.setAttribute('data-theme', newTheme);
+<div
+    class="w-full"
+    x-data="{
+        theme: $wire.entangle('theme'),
+        applyTheme(newTheme) {
+            let effective = newTheme;
+            if (newTheme === 'system') {
+                effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'corporate';
+            }
+            document.documentElement.setAttribute('data-theme', effective);
+            localStorage.setItem('ws-theme', newTheme);
         }
-        localStorage.setItem('theme', newTheme);
-    }
-}" x-init="$watch('theme', val => applyTheme(val))"
-@theme-updated.window="applyTheme($event.detail.theme)">
+    }"
+    x-init="$watch('theme', val => applyTheme(val))"
+    @theme-updated.window="applyTheme($event.detail.theme)"
+>
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Appearance')" :subheading="__('Customize the appearance of the application')">
         <div class="space-y-6">
-            {{-- Quick Toggle: Light / Dark / System --}}
+            {{-- System Option --}}
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text font-medium">{{ __('Color Scheme') }}</span>
+                </label>
+                <label class="flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all
+                    {{ $theme === 'system' ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/20' }}">
+                    <input
+                        type="radio"
+                        wire:model.live="theme"
+                        value="system"
+                        class="radio radio-primary"
+                    />
+                    <div>
+                        <span class="font-medium">{{ __('Follow System') }}</span>
+                        <p class="text-sm text-base-content/60">{{ __('Automatically match your device settings') }}</p>
+                    </div>
+                </label>
+            </div>
+
+            {{-- Quick Toggle: Light / Dark --}}
             <div>
-                <flux:label class="mb-3">{{ __('Color Scheme') }}</flux:label>
-                <flux:radio.group variant="segmented" wire:model.live="theme">
-                    <flux:radio value="light" icon="sun">{{ __('Light') }}</flux:radio>
-                    <flux:radio value="dark" icon="moon">{{ __('Dark') }}</flux:radio>
-                    <flux:radio value="system" icon="computer-desktop">{{ __('System') }}</flux:radio>
-                </flux:radio.group>
+                <label class="label">
+                    <span class="label-text font-medium">{{ __('Manual Selection') }}</span>
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex flex-col items-center gap-2 p-4 rounded-lg border-2 cursor-pointer transition-all
+                        {{ $theme === 'light' ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/20' }}">
+                        <x-heroicon-o-sun class="size-8" />
+                        <input type="radio" wire:model.live="theme" value="light" class="radio radio-primary" />
+                        <span class="text-sm">{{ __('Light') }}</span>
+                    </label>
+                    <label class="flex flex-col items-center gap-2 p-4 rounded-lg border-2 cursor-pointer transition-all
+                        {{ $theme === 'dark' ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/20' }}">
+                        <x-heroicon-o-moon class="size-8" />
+                        <input type="radio" wire:model.live="theme" value="dark" class="radio radio-primary" />
+                        <span class="text-sm">{{ __('Dark') }}</span>
+                    </label>
+                </div>
             </div>
 
             {{-- PPL Brand Themes --}}
             <div>
-                <flux:label class="mb-3">{{ __('PPL Brand Themes') }}</flux:label>
+                <label class="label">
+                    <span class="label-text font-medium">{{ __('PPL Brand Themes') }}</span>
+                </label>
                 <div class="grid grid-cols-2 gap-3">
-                    <button
-                        type="button"
-                        wire:click="$set('theme', 'ppl-light')"
-                        class="btn btn-outline {{ $theme === 'ppl-light' ? 'btn-primary' : '' }}"
-                    >
-                        <span class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                            PPL Light
-                        </span>
-                        @if($theme === 'ppl-light')
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                        @endif
-                    </button>
-                    <button
-                        type="button"
-                        wire:click="$set('theme', 'ppl-dark')"
-                        class="btn btn-outline {{ $theme === 'ppl-dark' ? 'btn-primary' : '' }}"
-                    >
-                        <span class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
-                            PPL Dark
-                        </span>
-                        @if($theme === 'ppl-dark')
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-4 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                        @endif
-                    </button>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all
+                        {{ $theme === 'ppl-light' ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/20' }}">
+                        <input type="radio" wire:model.live="theme" value="ppl-light" class="radio radio-primary" />
+                        <div class="flex items-center gap-2">
+                            <x-heroicon-o-building-office class="size-5" />
+                            <span class="text-sm">PPL Light</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all
+                        {{ $theme === 'ppl-dark' ? 'border-primary bg-primary/10' : 'border-base-300 hover:border-base-content/20' }}">
+                        <input type="radio" wire:model.live="theme" value="ppl-dark" class="radio radio-primary" />
+                        <div class="flex items-center gap-2">
+                            <x-heroicon-o-moon class="size-5" />
+                            <span class="text-sm">PPL Dark</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
             {{-- Additional Themes --}}
-            <div>
-                <flux:label class="mb-3">{{ __('Additional Themes') }}</flux:label>
-                <div class="grid grid-cols-3 gap-2">
-                    @foreach(['corporate' => 'Corporate', 'forest' => 'Forest', 'dracula' => 'Dracula', 'night' => 'Night', 'winter' => 'Winter', 'cupcake' => 'Cupcake'] as $value => $label)
-                        <button
-                            type="button"
-                            wire:click="$set('theme', '{{ $value }}')"
-                            class="btn btn-sm btn-ghost {{ $theme === $value ? 'btn-active' : '' }}"
-                        >
-                            {{ $label }}
-                        </button>
-                    @endforeach
+            <div class="collapse collapse-arrow bg-base-200 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title text-sm font-medium">{{ __('More themes') }}</div>
+                <div class="collapse-content">
+                    <div class="grid grid-cols-3 gap-2 pt-2">
+                        @foreach(['corporate' => 'Corporate', 'forest' => 'Forest', 'dracula' => 'Dracula', 'night' => 'Night', 'winter' => 'Winter', 'synthwave' => 'Synthwave', 'cyberpunk' => 'Cyberpunk', 'cupcake' => 'Cupcake'] as $value => $label)
+                            <label class="flex flex-col items-center gap-1 p-2 rounded cursor-pointer transition-all
+                                {{ $theme === $value ? 'bg-primary/20 ring-2 ring-primary' : 'hover:bg-base-300' }}">
+                                <div class="w-full h-8 rounded overflow-hidden" data-theme="{{ $value }}">
+                                    <div class="h-full bg-base-100 flex items-center justify-center gap-0.5">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                                        <div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+                                    </div>
+                                </div>
+                                <input type="radio" wire:model.live="theme" value="{{ $value }}" class="hidden" />
+                                <span class="text-xs truncate w-full text-center">{{ $label }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
             {{-- Theme Preview --}}
-            <div class="divider"></div>
             <div>
-                <flux:label class="mb-3">{{ __('Preview') }}</flux:label>
-                <div class="rounded-box border border-base-300 p-4 bg-base-200">
+                <label class="label">
+                    <span class="label-text font-medium">{{ __('Preview') }}</span>
+                </label>
+                <div class="rounded-lg border border-base-300 p-4 bg-base-200">
                     <div class="flex flex-wrap gap-2">
                         <span class="badge badge-primary">Primary</span>
                         <span class="badge badge-secondary">Secondary</span>
@@ -98,12 +124,12 @@
                         <span class="badge badge-error">Error</span>
                     </div>
                     <div class="flex gap-2 mt-3">
-                        <button class="btn btn-primary btn-sm">Primary</button>
-                        <button class="btn btn-secondary btn-sm">Secondary</button>
-                        <button class="btn btn-accent btn-sm">Accent</button>
+                        <button type="button" class="btn btn-primary btn-sm">Primary</button>
+                        <button type="button" class="btn btn-secondary btn-sm">Secondary</button>
+                        <button type="button" class="btn btn-accent btn-sm">Accent</button>
                     </div>
                 </div>
             </div>
         </div>
     </x-settings.layout>
-</section>
+</div>

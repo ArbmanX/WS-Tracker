@@ -1,22 +1,82 @@
-<div class="flex items-start max-md:flex-col">
-    <div class="me-10 w-full pb-4 md:w-[220px]">
-        <flux:navlist aria-label="{{ __('Settings') }}">
-            <flux:navlist.item :href="route('profile.edit')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
-            <flux:navlist.item :href="route('user-password.edit')" wire:navigate>{{ __('Password') }}</flux:navlist.item>
+@props([
+    'heading' => '',
+    'subheading' => '',
+])
+
+{{--
+    Settings Layout Component (DaisyUI)
+
+    Provides sidebar navigation and content area for settings pages.
+
+    Usage:
+    <x-settings.layout :heading="__('Profile')" :subheading="__('Update your profile information')">
+        <!-- Settings form content -->
+    </x-settings.layout>
+--}}
+
+<div class="flex flex-col md:flex-row gap-6">
+    {{-- Sidebar Navigation --}}
+    <div class="w-full md:w-56 shrink-0">
+        <ul class="menu bg-base-200 rounded-lg w-full">
+            <li>
+                <a
+                    href="{{ route('profile.edit') }}"
+                    wire:navigate
+                    class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}"
+                >
+                    <x-heroicon-o-user class="size-5" />
+                    {{ __('Profile') }}
+                </a>
+            </li>
+            <li>
+                <a
+                    href="{{ route('user-password.edit') }}"
+                    wire:navigate
+                    class="{{ request()->routeIs('user-password.edit') ? 'active' : '' }}"
+                >
+                    <x-heroicon-o-key class="size-5" />
+                    {{ __('Password') }}
+                </a>
+            </li>
             @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
-                <flux:navlist.item :href="route('two-factor.show')" wire:navigate>{{ __('Two-Factor Auth') }}</flux:navlist.item>
+                <li>
+                    <a
+                        href="{{ route('two-factor.show') }}"
+                        wire:navigate
+                        class="{{ request()->routeIs('two-factor.show') ? 'active' : '' }}"
+                    >
+                        <x-heroicon-o-shield-check class="size-5" />
+                        {{ __('Two-Factor Auth') }}
+                    </a>
+                </li>
             @endif
-            <flux:navlist.item :href="route('appearance.edit')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
-        </flux:navlist>
+            <li>
+                <a
+                    href="{{ route('appearance.edit') }}"
+                    wire:navigate
+                    class="{{ request()->routeIs('appearance.edit') ? 'active' : '' }}"
+                >
+                    <x-heroicon-o-paint-brush class="size-5" />
+                    {{ __('Appearance') }}
+                </a>
+            </li>
+        </ul>
     </div>
 
-    <flux:separator class="md:hidden" />
+    {{-- Content Area --}}
+    <div class="flex-1 min-w-0">
+        @if($heading || $subheading)
+            <div class="mb-6">
+                @if($heading)
+                    <h2 class="text-xl font-semibold text-base-content">{{ $heading }}</h2>
+                @endif
+                @if($subheading)
+                    <p class="text-sm text-base-content/60 mt-1">{{ $subheading }}</p>
+                @endif
+            </div>
+        @endif
 
-    <div class="flex-1 self-stretch max-md:pt-6">
-        <flux:heading>{{ $heading ?? '' }}</flux:heading>
-        <flux:subheading>{{ $subheading ?? '' }}</flux:subheading>
-
-        <div class="mt-5 w-full max-w-lg">
+        <div class="max-w-lg">
             {{ $slot }}
         </div>
     </div>

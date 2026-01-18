@@ -7,14 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 
-#[Layout('components.layouts.app')]
-#[Title('User Management')]
+#[Layout('components.layout.app-shell', ['title' => 'User Management'])]
 class UserManagement extends Component
 {
     use WithPagination;

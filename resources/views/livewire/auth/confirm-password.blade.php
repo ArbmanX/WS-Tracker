@@ -1,28 +1,44 @@
-<x-layouts.auth>
-    <div class="flex flex-col gap-6">
-        <x-auth-header
-            :title="__('Confirm password')"
-            :description="__('This is a secure area of the application. Please confirm your password before continuing.')"
-        />
+<x-layout.auth title="Confirm Password">
+    <div class="text-center mb-6">
+        <div class="mb-4">
+            <div class="w-16 h-16 mx-auto bg-warning/20 rounded-full flex items-center justify-center">
+                <x-heroicon-o-shield-exclamation class="size-8 text-warning" />
+            </div>
+        </div>
+        <h2 class="text-2xl font-bold text-base-content">{{ __('Confirm password') }}</h2>
+        <p class="text-base-content/60 mt-2">
+            {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+        </p>
+    </div>
 
-        <x-auth-session-status class="text-center" :status="session('status')" />
+    <!-- Session Status -->
+    <x-auth-session-status :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
-            @csrf
+    <form method="POST" action="{{ route('password.confirm.store') }}" class="space-y-4">
+        @csrf
 
-            <flux:input
-                name="password"
-                :label="__('Password')"
+        <div class="form-control">
+            <label class="label">
+                <span class="label-text">{{ __('Password') }}</span>
+            </label>
+            <input
                 type="password"
+                name="password"
+                class="input input-bordered @error('password') input-error @enderror"
+                placeholder="{{ __('Password') }}"
                 required
                 autocomplete="current-password"
-                :placeholder="__('Password')"
-                viewable
+                autofocus
             />
+            @error('password')
+                <label class="label">
+                    <span class="label-text-alt text-error">{{ $message }}</span>
+                </label>
+            @enderror
+        </div>
 
-            <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">
-                {{ __('Confirm') }}
-            </flux:button>
-        </form>
-    </div>
-</x-layouts.auth>
+        <button type="submit" class="btn btn-primary w-full" data-test="confirm-password-button">
+            {{ __('Confirm') }}
+        </button>
+    </form>
+</x-layout.auth>

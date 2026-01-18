@@ -153,10 +153,7 @@
                         </svg>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-ghost btn-sm">Log in</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Register</a>
-                    @endif
+                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">Sign In</a>
                 @endauth
             @endif
         </div>
@@ -603,27 +600,6 @@
             });
         });
     </script>
-</body>
-
-</html>
-
-<footer class="footer footer-center bg-base-200 text-base-content p-10">
-    <aside>
-        <div class="flex items-center gap-2 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L8 8h3v4H8l4 6 4-6h-3V8h3L12 2z" />
-                <path d="M12 18v4" />
-                <path d="M8 22h8" />
-            </svg>
-            <span class="text-xl font-bold text-secondary">WS-Tracker</span>
-        </div>
-
-        <p class="text-sm text-base-content/50">
-            &copy; {{ date('Y') }} WS-Tracker. Internal use only.
-        </p>
-    </aside>
-</footer>
 </body>
 
 </html>

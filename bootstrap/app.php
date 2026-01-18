@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'sudo_admin' => \App\Http\Middleware\EnsureSudoAdmin::class,
+            'onboarded' => \App\Http\Middleware\EnsureUserIsOnboarded::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -5,8 +5,10 @@ namespace App\Livewire\Settings;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.layout.app-shell', ['title' => 'Password Settings'])]
 class Password extends Component
 {
     public string $current_password = '';

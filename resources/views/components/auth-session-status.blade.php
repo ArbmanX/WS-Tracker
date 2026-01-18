@@ -3,7 +3,8 @@
 ])
 
 @if ($status)
-    <div {{ $attributes->merge(['class' => 'font-medium text-sm text-green-600']) }}>
-        {{ $status }}
+    <div role="alert" class="alert alert-success">
+        <x-heroicon-o-check-circle class="size-5" />
+        <span>{{ $status }}</span>
     </div>
 @endif

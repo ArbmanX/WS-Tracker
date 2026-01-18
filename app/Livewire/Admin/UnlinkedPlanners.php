@@ -5,12 +5,10 @@ namespace App\Livewire\Admin;
 use App\Models\UnlinkedPlanner;
 use App\Models\User;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Layout('components.layouts.app')]
-#[Title('Unlinked Planners')]
+#[Layout('components.layout.app-shell', ['title' => 'Unlinked Planners'])]
 class UnlinkedPlanners extends Component
 {
     use WithPagination;

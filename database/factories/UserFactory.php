@@ -32,6 +32,10 @@ class UserFactory extends Factory
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
+            'default_region_id' => null,
+            'theme_preference' => null,
+            'onboarded_at' => now(),
+            'dashboard_preferences' => null,
         ];
     }
 
@@ -54,6 +58,32 @@ class UserFactory extends Factory
             'two_factor_secret' => encrypt('secret'),
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
             'two_factor_confirmed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Indicate that the user is pending onboarding.
+     */
+    public function pendingOnboarding(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'onboarded_at' => null,
+            'dashboard_preferences' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user has completed onboarding.
+     */
+    public function onboarded(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'onboarded_at' => now(),
+            'dashboard_preferences' => [
+                'default_view' => 'cards',
+                'show_all_regions' => true,
+                'default_region_id' => null,
+            ],
         ]);
     }
 }

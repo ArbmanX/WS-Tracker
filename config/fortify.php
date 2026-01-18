@@ -144,7 +144,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Features::registration(), // Disabled - admins create users via User Management
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([
