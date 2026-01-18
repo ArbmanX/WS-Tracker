@@ -1,3 +1,22 @@
+/**
+ * WS-Tracker Frontend Application
+ *
+ * Entry point for all frontend JavaScript.
+ */
+
+// Alpine.js Dashboard State Stores
+// Must be imported before Alpine starts (loaded via Livewire)
+import './alpine/dashboard-state.js';
+
+/**
+ * Livewire Sortable Plugin
+ *
+ * Must be loaded AFTER Livewire is initialized.
+ * We use dynamic import triggered by livewire:init event.
+ */
+document.addEventListener('livewire:init', () => {
+    import('livewire-sortable');
+});
 
 import ApexCharts from 'apexcharts';
 window.ApexCharts = ApexCharts;
@@ -109,84 +128,3 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 
-/**
- * Theme Manager - Alpine.js Component
- *
- * Handles theme switching with:
- * - localStorage persistence
- * - System preference detection
- * - Server-side sync via Livewire events
- */
-document.addEventListener('alpine:init', () => {
-    Alpine.data('themeManager', () => ({
-        theme: 'system',
-        systemPreference: 'light',
-
-        init() {
-            // Detect system preference
-            this.systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-
-            // Listen for system preference changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                this.systemPreference = e.matches ? 'dark' : 'light';
-                if (this.theme === 'system') {
-                    this.applyTheme();
-                }
-            });
-
-            // Listen for theme updates from Livewire
-            window.addEventListener('theme-updated', (e) => {
-                this.theme = e.detail.theme;
-                this.applyTheme();
-            });
-        },
-
-        initTheme() {
-            // Get theme from localStorage or use default
-            this.theme = localStorage.getItem('theme') || this.getServerTheme();
-            this.applyTheme();
-        },
-
-        getServerTheme() {
-            // Get the theme from the server-rendered value
-            return document.querySelector('meta[name="user-theme"]')?.content || 'system';
-        },
-
-        get effectiveTheme() {
-            if (this.theme === 'system') {
-                return this.systemPreference;
-            }
-            return this.theme;
-        },
-
-        setTheme(newTheme) {
-            this.theme = newTheme;
-            localStorage.setItem('theme', newTheme);
-            this.applyTheme();
-
-            // Dispatch event for Livewire to sync to database
-            if (typeof Livewire !== 'undefined') {
-                Livewire.dispatch('theme-changed', { theme: newTheme });
-            }
-        },
-
-        applyTheme() {
-            document.documentElement.setAttribute('data-theme', this.effectiveTheme);
-        },
-
-        // Helper for theme icons
-        getThemeIcon(themeName) {
-            const icons = {
-                'light': 'sun',
-                'dark': 'moon',
-                'system': 'computer-desktop',
-                'ppl-light': 'building-office',
-                'ppl-dark': 'building-office-2',
-            };
-            return icons[themeName] || 'paint-brush';
-        }
-    }));
-});
-
-
-import 'livewire-sortable';
