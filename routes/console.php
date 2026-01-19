@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\BuildWeeklyAggregatesJob;
 use App\Jobs\CreateDailySnapshotsJob;
 use App\Jobs\SyncCircuitAggregatesJob;
 use App\Jobs\SyncCircuitsJob;
@@ -75,5 +76,14 @@ Schedule::job(new CreateDailySnapshotsJob)
     ->timezone('America/New_York')
     ->at('05:00')
     ->name('create-daily-snapshots')
+    ->withoutOverlapping()
+    ->onOneServer();
+
+// Weekly aggregates - Saturday night at 11:00 PM ET (end of work week)
+Schedule::job(new BuildWeeklyAggregatesJob)
+    ->saturdays()
+    ->timezone('America/New_York')
+    ->at('23:00')
+    ->name('build-weekly-aggregates')
     ->withoutOverlapping()
     ->onOneServer();
