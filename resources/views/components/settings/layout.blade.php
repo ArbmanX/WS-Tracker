@@ -24,7 +24,7 @@
                     wire:navigate
                     class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}"
                 >
-                    <x-heroicon-o-user class="size-5" />
+                    <x-ui.icon name="user" size="md" />
                     {{ __('Profile') }}
                 </a>
             </li>
@@ -34,7 +34,7 @@
                     wire:navigate
                     class="{{ request()->routeIs('user-password.edit') ? 'active' : '' }}"
                 >
-                    <x-heroicon-o-key class="size-5" />
+                    <x-ui.icon name="key" size="md" />
                     {{ __('Password') }}
                 </a>
             </li>
@@ -45,7 +45,7 @@
                         wire:navigate
                         class="{{ request()->routeIs('two-factor.show') ? 'active' : '' }}"
                     >
-                        <x-heroicon-o-shield-check class="size-5" />
+                        <x-ui.icon name="shield-check" size="md" />
                         {{ __('Two-Factor Auth') }}
                     </a>
                 </li>
@@ -56,7 +56,7 @@
                     wire:navigate
                     class="{{ request()->routeIs('appearance.edit') ? 'active' : '' }}"
                 >
-                    <x-heroicon-o-paint-brush class="size-5" />
+                    <x-ui.icon name="paint-brush" size="md" />
                     {{ __('Appearance') }}
                 </a>
             </li>

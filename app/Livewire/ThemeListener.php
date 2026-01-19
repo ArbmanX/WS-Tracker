@@ -49,8 +49,12 @@ class ThemeListener extends Component
         }
     }
 
-    public function render()
+    public function render(): string
     {
-        return view('livewire.theme-listener');
+        // Use inline template since this component is deprecated
+        // (replaced by PreferenceSync for general preference handling)
+        return <<<'HTML'
+        <div class="hidden" aria-hidden="true"></div>
+        HTML;
     }
 }
