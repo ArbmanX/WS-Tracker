@@ -35,6 +35,10 @@ class User extends Authenticatable
         'theme_preference',
         'onboarded_at',
         'dashboard_preferences',
+        'is_excluded_from_analytics',
+        'exclusion_reason',
+        'excluded_by',
+        'excluded_at',
     ];
 
     /**
@@ -63,6 +67,8 @@ class User extends Authenticatable
             'ws_linked_at' => 'datetime',
             'onboarded_at' => 'datetime',
             'dashboard_preferences' => 'array',
+            'is_excluded_from_analytics' => 'boolean',
+            'excluded_at' => 'datetime',
         ];
     }
 
@@ -209,5 +215,63 @@ class User extends Authenticatable
     public function scopePendingOnboarding($query)
     {
         return $query->whereNull('onboarded_at');
+    }
+
+    /**
+     * User who excluded this planner from analytics.
+     */
+    public function excludedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'excluded_by');
+    }
+
+    /**
+     * Check if user is excluded from analytics.
+     */
+    public function isExcludedFromAnalytics(): bool
+    {
+        return $this->is_excluded_from_analytics;
+    }
+
+    /**
+     * Exclude this user from analytics.
+     */
+    public function excludeFromAnalytics(string $reason, ?User $excludedBy = null): void
+    {
+        $this->update([
+            'is_excluded_from_analytics' => true,
+            'exclusion_reason' => $reason,
+            'excluded_by' => $excludedBy?->id,
+            'excluded_at' => now(),
+        ]);
+    }
+
+    /**
+     * Include this user back in analytics.
+     */
+    public function includeInAnalytics(): void
+    {
+        $this->update([
+            'is_excluded_from_analytics' => false,
+            'exclusion_reason' => null,
+            'excluded_by' => null,
+            'excluded_at' => null,
+        ]);
+    }
+
+    /**
+     * Scope to users not excluded from analytics.
+     */
+    public function scopeIncludedInAnalytics($query)
+    {
+        return $query->where('is_excluded_from_analytics', false);
+    }
+
+    /**
+     * Scope to users excluded from analytics.
+     */
+    public function scopeExcludedFromAnalytics($query)
+    {
+        return $query->where('is_excluded_from_analytics', true);
     }
 }

@@ -19,6 +19,10 @@ class UnlinkedPlanner extends Model
         'last_seen_at',
         'linked_to_user_id',
         'linked_at',
+        'is_excluded_from_analytics',
+        'exclusion_reason',
+        'excluded_by',
+        'excluded_at',
     ];
 
     protected function casts(): array
@@ -27,6 +31,8 @@ class UnlinkedPlanner extends Model
             'first_seen_at' => 'datetime',
             'last_seen_at' => 'datetime',
             'linked_at' => 'datetime',
+            'is_excluded_from_analytics' => 'boolean',
+            'excluded_at' => 'datetime',
         ];
     }
 
@@ -93,5 +99,63 @@ class UnlinkedPlanner extends Model
         }
 
         $this->update($data);
+    }
+
+    /**
+     * User who excluded this planner from analytics.
+     */
+    public function excludedByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'excluded_by');
+    }
+
+    /**
+     * Check if planner is excluded from analytics.
+     */
+    public function isExcludedFromAnalytics(): bool
+    {
+        return $this->is_excluded_from_analytics;
+    }
+
+    /**
+     * Exclude this planner from analytics.
+     */
+    public function excludeFromAnalytics(string $reason, ?User $excludedBy = null): void
+    {
+        $this->update([
+            'is_excluded_from_analytics' => true,
+            'exclusion_reason' => $reason,
+            'excluded_by' => $excludedBy?->id,
+            'excluded_at' => now(),
+        ]);
+    }
+
+    /**
+     * Include this planner back in analytics.
+     */
+    public function includeInAnalytics(): void
+    {
+        $this->update([
+            'is_excluded_from_analytics' => false,
+            'exclusion_reason' => null,
+            'excluded_by' => null,
+            'excluded_at' => null,
+        ]);
+    }
+
+    /**
+     * Scope to planners not excluded from analytics.
+     */
+    public function scopeIncludedInAnalytics($query)
+    {
+        return $query->where('is_excluded_from_analytics', false);
+    }
+
+    /**
+     * Scope to planners excluded from analytics.
+     */
+    public function scopeExcludedFromAnalytics($query)
+    {
+        return $query->where('is_excluded_from_analytics', true);
     }
 }

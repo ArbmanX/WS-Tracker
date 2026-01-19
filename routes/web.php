@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\PlannerManagement;
 use App\Livewire\Admin\SyncControl;
 use App\Livewire\Admin\SyncHistory;
 use App\Livewire\Admin\UnlinkedPlanners;
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'verified', 'onboarded'])->prefix('assessments')->nam
 Route::middleware(['auth', 'verified', 'onboarded', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/sync', SyncControl::class)->name('sync');
     Route::get('/sync/history', SyncHistory::class)->name('sync.history');
+    Route::get('/planners', PlannerManagement::class)->name('planners');
     Route::get('/planners/unlinked', UnlinkedPlanners::class)->name('planners.unlinked');
 });
 
