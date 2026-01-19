@@ -65,6 +65,12 @@
             'permission' => 'admin',
             'items' => [
                 [
+                    'label' => 'Planner Management',
+                    'route' => 'admin.planners',
+                    'icon' => 'user-group',
+                    'permission' => 'admin',
+                ],
+                [
                     'label' => 'Data Management',
                     'route' => 'admin.data',
                     'icon' => 'circle-stack',
@@ -80,7 +86,7 @@
                     'label' => 'User Management',
                     'route' => 'admin.users',
                     'icon' => 'users',
-                    'permission' => 'admin',
+                    'permission' => 'sudo_admin',
                 ],
                 [
                     'label' => 'Settings',
@@ -102,6 +108,36 @@
                 return true;
             }
         }
+        return false;
+    };
+
+    // Helper to check role-based permission
+    // Permission values: 'sudo_admin', 'admin', 'planner', or null (public)
+    $checkPermission = function(?string $permission) {
+        if ($permission === null) {
+            return true; // No permission required
+        }
+
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        // sudo_admin has access to everything
+        if ($user->hasRole('sudo_admin')) {
+            return true;
+        }
+
+        // admin has access to 'admin' and 'planner' permissions
+        if ($user->hasRole('admin') && in_array($permission, ['admin', 'planner'])) {
+            return true;
+        }
+
+        // planner only has access to 'planner' permission
+        if ($user->hasRole('planner') && $permission === 'planner') {
+            return true;
+        }
+
         return false;
     };
 @endphp
@@ -147,8 +183,7 @@
                 {{-- Check section-level permission --}}
                 @php
                     $sectionPermission = $section['permission'] ?? null;
-                    // TODO: Replace with actual permission check
-                    $hasPermission = true; // auth()->user()?->hasPermission($sectionPermission) ?? true;
+                    $hasPermission = $checkPermission($sectionPermission);
                 @endphp
 
                 @if($hasPermission)
@@ -164,8 +199,7 @@
                     @foreach($section['items'] as $item)
                         @php
                             $itemPermission = $item['permission'] ?? null;
-                            // TODO: Replace with actual permission check
-                            $hasItemPermission = true;
+                            $hasItemPermission = $checkPermission($itemPermission);
                             $active = $isActive($item['route'] ?? '');
                             $routeExists = Route::has($item['route'] ?? '');
                         @endphp
