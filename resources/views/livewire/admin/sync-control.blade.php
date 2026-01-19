@@ -101,7 +101,7 @@
                     <div
                         class="bg-base-200 rounded-lg p-4 font-mono text-sm h-80 overflow-y-auto"
                         x-data="{ autoScroll: true }"
-                        x-init="$watch('$wire.syncOutput', () => { if (autoScroll) $el.scrollTop = $el.scrollHeight })"
+                        x-effect="if (autoScroll && $el.scrollHeight > $el.clientHeight) $el.scrollTop = $el.scrollHeight"
                         @scroll="autoScroll = ($el.scrollTop + $el.clientHeight >= $el.scrollHeight - 20)"
                     >
                         @forelse($this->syncOutput['logs'] as $log)
