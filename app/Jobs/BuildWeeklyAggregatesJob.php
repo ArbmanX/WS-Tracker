@@ -222,7 +222,7 @@ class BuildWeeklyAggregatesJob implements ShouldQueue
         $processed = 0;
 
         foreach ($plannerRegions as $pr) {
-            $stats = $this->computePlannerStats($pr->user_id, $pr->region_id);
+            $stats = $this->computePlannerStats($pr->user_id, $pr->region_id, $weekStarting, $weekEnding);
 
             PlannerWeeklyAggregate::updateOrCreate(
                 [
@@ -247,7 +247,7 @@ class BuildWeeklyAggregatesJob implements ShouldQueue
      *
      * @return array<string, mixed>
      */
-    protected function computePlannerStats(int $userId, int $regionId): array
+    protected function computePlannerStats(int $userId, int $regionId, Carbon $weekStarting, Carbon $weekEnding): array
     {
         // Get circuits this planner is assigned to in this region (excludes excluded circuits)
         $circuitIds = DB::table('circuit_user')
@@ -269,6 +269,10 @@ class BuildWeeklyAggregatesJob implements ShouldQueue
                 'total_acres' => 0,
                 'total_trees' => 0,
                 'miles_planned' => 0,
+                'miles_planned_start' => 0,
+                'miles_planned_end' => 0,
+                'miles_delta' => 0,
+                'met_weekly_target' => false,
                 'units_approved' => 0,
                 'units_refused' => 0,
                 'units_pending' => 0,
@@ -277,7 +281,10 @@ class BuildWeeklyAggregatesJob implements ShouldQueue
             ];
         }
 
-        // Get miles planned from circuits
+        // Calculate miles delta from snapshots
+        $milesDelta = $this->computeMilesDelta($circuitIds, $weekStarting, $weekEnding);
+
+        // Get current miles planned from circuits (cumulative total)
         $milesPlanned = Circuit::whereIn('id', $circuitIds)
             ->sum('miles_planned');
 
@@ -311,11 +318,76 @@ class BuildWeeklyAggregatesJob implements ShouldQueue
             'total_acres' => (float) ($unitStats->total_acres ?? 0),
             'total_trees' => (int) ($unitStats->total_trees ?? 0),
             'miles_planned' => (float) $milesPlanned,
+            'miles_planned_start' => $milesDelta['start'],
+            'miles_planned_end' => $milesDelta['end'],
+            'miles_delta' => $milesDelta['delta'],
+            'met_weekly_target' => $milesDelta['delta'] >= PlannerWeeklyAggregate::WEEKLY_MILES_TARGET,
             'units_approved' => (int) ($unitStats->units_approved ?? 0),
             'units_refused' => (int) ($unitStats->units_refused ?? 0),
             'units_pending' => (int) ($unitStats->units_pending ?? 0),
             'unit_counts_by_type' => [],
             'daily_breakdown' => null,
+        ];
+    }
+
+    /**
+     * Compute miles planned delta from circuit snapshots.
+     *
+     * Looks for snapshots at week start and end to calculate how many
+     * miles were planned during the week. Uses current circuit values
+     * if end-of-week snapshot doesn't exist.
+     *
+     * @param  \Illuminate\Support\Collection<int, int>  $circuitIds
+     * @return array{start: float, end: float, delta: float}
+     */
+    protected function computeMilesDelta($circuitIds, Carbon $weekStarting, Carbon $weekEnding): array
+    {
+        if ($circuitIds->isEmpty()) {
+            return ['start' => 0.0, 'end' => 0.0, 'delta' => 0.0];
+        }
+
+        // Get miles at start of week (Sunday) - use earliest snapshot on or before week start
+        // If no snapshot exists before the week, assume 0 (new circuit that week)
+        $startMiles = DB::table('circuit_snapshots')
+            ->whereIn('circuit_id', $circuitIds)
+            ->where('snapshot_date', '<=', $weekStarting->toDateString())
+            ->whereIn('id', function ($query) use ($circuitIds, $weekStarting) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('circuit_snapshots')
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->where('snapshot_date', '<=', $weekStarting->toDateString())
+                    ->groupBy('circuit_id');
+            })
+            ->sum('miles_planned') ?? 0;
+
+        // Get miles at end of week - prefer snapshot, fall back to current circuit values
+        $endSnapshot = DB::table('circuit_snapshots')
+            ->whereIn('circuit_id', $circuitIds)
+            ->where('snapshot_date', '<=', $weekEnding->toDateString())
+            ->whereIn('id', function ($query) use ($circuitIds, $weekEnding) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('circuit_snapshots')
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->where('snapshot_date', '<=', $weekEnding->toDateString())
+                    ->groupBy('circuit_id');
+            })
+            ->sum('miles_planned');
+
+        // If we have end-of-week snapshots, use them; otherwise use current circuit values
+        if ($endSnapshot > 0) {
+            $endMiles = (float) $endSnapshot;
+        } else {
+            // Fall back to current circuit values
+            $endMiles = (float) Circuit::whereIn('id', $circuitIds)->sum('miles_planned');
+        }
+
+        $startMiles = (float) $startMiles;
+        $delta = max(0, $endMiles - $startMiles); // Delta can't be negative
+
+        return [
+            'start' => round($startMiles, 2),
+            'end' => round($endMiles, 2),
+            'delta' => round($delta, 2),
         ];
     }
 

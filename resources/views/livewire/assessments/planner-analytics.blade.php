@@ -150,6 +150,88 @@
         />
     </div>
 
+    {{-- Weekly Target Progress Card --}}
+    @php
+        $targetSummary = $this->weeklyTargetSummary;
+        $targetMetrics = $this->weeklyTargetMetrics;
+    @endphp
+    @if($targetMetrics->isNotEmpty())
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <div class="flex items-center justify-between">
+                    <h2 class="card-title text-base">
+                        <x-heroicon-o-flag class="size-5 text-primary" />
+                        Weekly Miles Target
+                        <span class="badge badge-primary badge-sm">{{ $targetSummary['target'] }} mi/week</span>
+                    </h2>
+                    <div class="flex items-center gap-4 text-sm">
+                        <div class="flex items-center gap-1">
+                            <span class="badge badge-success badge-xs"></span>
+                            <span class="font-medium">{{ $targetSummary['met_target'] }}</span>
+                            <span class="text-base-content/60">met target</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <span class="badge badge-warning badge-xs"></span>
+                            <span class="font-medium">{{ $targetSummary['below_target'] }}</span>
+                            <span class="text-base-content/60">below target</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
+                    @foreach($targetMetrics as $planner)
+                        <div
+                            class="p-3 rounded-lg border {{ $planner['met_target'] ? 'border-success/30 bg-success/5' : 'border-warning/30 bg-warning/5' }}"
+                            wire:key="target-{{ $planner['user_id'] }}"
+                        >
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium text-sm">{{ $planner['name'] }}</span>
+                                @if($planner['met_target'])
+                                    <span class="badge badge-success badge-xs gap-1">
+                                        <x-heroicon-s-check class="size-3" />
+                                        Target Met
+                                    </span>
+                                @else
+                                    <span class="badge badge-warning badge-xs">
+                                        {{ $planner['miles_remaining'] }} mi to go
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1">
+                                    <progress
+                                        class="progress {{ $planner['met_target'] ? 'progress-success' : 'progress-warning' }} h-3"
+                                        value="{{ min(100, $planner['target_percentage']) }}"
+                                        max="100"
+                                    ></progress>
+                                </div>
+                                <span class="text-sm font-mono font-semibold {{ $planner['met_target'] ? 'text-success' : 'text-warning' }}">
+                                    {{ number_format($planner['miles_delta'], 1) }} mi
+                                </span>
+                            </div>
+
+                            <div class="flex justify-between text-xs text-base-content/50 mt-1">
+                                <span>Start: {{ number_format($planner['miles_start'], 1) }} mi</span>
+                                <span>End: {{ number_format($planner['miles_end'], 1) }} mi</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                @if($targetMetrics->isEmpty())
+                    <div class="flex items-center justify-center py-8 text-base-content/40">
+                        <div class="text-center">
+                            <x-heroicon-o-chart-bar class="size-12 mx-auto mb-2" />
+                            <p>No weekly target data available yet.</p>
+                            <p class="text-sm">Data will appear as daily snapshots are collected.</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endif
+
     {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {{-- Permission Status Donut --}}
@@ -282,6 +364,11 @@
                             <th class="text-right">Units</th>
                             <th class="text-right">Avg/Day</th>
                             <th class="text-right">Miles</th>
+                            <th class="text-right">
+                                <span class="tooltip tooltip-left" data-tip="Miles planned this week (target: 6.5 mi)">
+                                    Weekly Δ
+                                </span>
+                            </th>
                             <th class="text-right">Approval</th>
                             <th>Status Breakdown</th>
                         </tr>
@@ -306,6 +393,17 @@
                                 <td class="text-right font-mono">{{ number_format($planner['miles_planned'], 1) }}</td>
                                 <td class="text-right">
                                     @php
+                                        $deltaClass = $planner['met_target'] ? 'text-success' : 'text-warning';
+                                    @endphp
+                                    <span class="font-mono {{ $deltaClass }}">
+                                        {{ number_format($planner['miles_delta'], 1) }}
+                                        @if($planner['met_target'])
+                                            <x-heroicon-s-check-circle class="size-4 inline-block" />
+                                        @endif
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    @php
                                         $rate = $planner['approval_rate'];
                                         $badgeClass = $rate >= 75 ? 'badge-success' : ($rate >= 50 ? 'badge-warning' : 'badge-error');
                                     @endphp
@@ -321,7 +419,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12 text-base-content/40">
+                                <td colspan="9" class="text-center py-12 text-base-content/40">
                                     <x-heroicon-o-user-group class="size-12 mx-auto mb-2" />
                                     <p>No planner data available for this period.</p>
                                 </td>

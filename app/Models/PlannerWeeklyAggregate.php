@@ -11,6 +11,11 @@ class PlannerWeeklyAggregate extends Model
 {
     use HasFactory;
 
+    /**
+     * Weekly miles target for planners (6.5 miles/week).
+     */
+    public const WEEKLY_MILES_TARGET = 6.5;
+
     protected $fillable = [
         'user_id',
         'region_id',
@@ -23,6 +28,10 @@ class PlannerWeeklyAggregate extends Model
         'total_acres',
         'total_trees',
         'miles_planned',
+        'miles_planned_start',
+        'miles_planned_end',
+        'miles_delta',
+        'met_weekly_target',
         'units_approved',
         'units_refused',
         'units_pending',
@@ -38,9 +47,43 @@ class PlannerWeeklyAggregate extends Model
             'total_linear_ft' => 'decimal:2',
             'total_acres' => 'decimal:4',
             'miles_planned' => 'decimal:2',
+            'miles_planned_start' => 'decimal:2',
+            'miles_planned_end' => 'decimal:2',
+            'miles_delta' => 'decimal:2',
+            'met_weekly_target' => 'boolean',
             'unit_counts_by_type' => 'array',
             'daily_breakdown' => 'array',
         ];
+    }
+
+    /**
+     * Check if the planner met the weekly miles target.
+     */
+    public function metTarget(): bool
+    {
+        return (float) $this->miles_delta >= self::WEEKLY_MILES_TARGET;
+    }
+
+    /**
+     * Get the percentage of target achieved.
+     */
+    public function getTargetPercentageAttribute(): float
+    {
+        if (self::WEEKLY_MILES_TARGET <= 0) {
+            return 100;
+        }
+
+        return min(100, round(((float) $this->miles_delta / self::WEEKLY_MILES_TARGET) * 100, 1));
+    }
+
+    /**
+     * Get miles remaining to meet target.
+     */
+    public function getMilesRemainingToTargetAttribute(): float
+    {
+        $remaining = self::WEEKLY_MILES_TARGET - (float) $this->miles_delta;
+
+        return max(0, round($remaining, 2));
     }
 
     /**

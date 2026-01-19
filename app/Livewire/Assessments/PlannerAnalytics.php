@@ -180,6 +180,90 @@ class PlannerAnalytics extends Component
     }
 
     /**
+     * Weekly miles target metrics for dashboard.
+     * Shows each planner's progress toward the 6.5 mi/week target.
+     */
+    #[Computed]
+    public function weeklyTargetMetrics(): Collection
+    {
+        $weekBounds = $this->getWeekBounds();
+        $includedPlannerIds = $this->getIncludedPlannerIds();
+
+        if (empty($includedPlannerIds)) {
+            return collect();
+        }
+
+        $query = PlannerWeeklyAggregate::query()
+            ->forWeekEnding($weekBounds['endWeek'])
+            ->whereIn('user_id', $includedPlannerIds)
+            ->with('user:id,name');
+
+        if ($this->regionId) {
+            $query->inRegion($this->regionId);
+        }
+
+        if ($this->plannerId) {
+            $query->forPlanner($this->plannerId);
+        }
+
+        return $query
+            ->select([
+                'user_id',
+                DB::raw('SUM(miles_planned_start) as miles_start'),
+                DB::raw('SUM(miles_planned_end) as miles_end'),
+                DB::raw('SUM(miles_delta) as miles_delta'),
+                DB::raw('CASE WHEN SUM(miles_delta) >= '.PlannerWeeklyAggregate::WEEKLY_MILES_TARGET.' THEN true ELSE false END as met_target'),
+            ])
+            ->groupBy('user_id')
+            ->orderByDesc('miles_delta')
+            ->get()
+            ->map(function ($row) {
+                $target = PlannerWeeklyAggregate::WEEKLY_MILES_TARGET;
+                $delta = (float) $row->miles_delta;
+                $percentage = $target > 0 ? min(100, round(($delta / $target) * 100, 1)) : 0;
+
+                return [
+                    'user_id' => $row->user_id,
+                    'name' => $row->user?->name ?? 'Unknown',
+                    'miles_start' => round((float) $row->miles_start, 2),
+                    'miles_end' => round((float) $row->miles_end, 2),
+                    'miles_delta' => round($delta, 2),
+                    'target' => $target,
+                    'target_percentage' => $percentage,
+                    'met_target' => (bool) $row->met_target || $delta >= $target,
+                    'miles_remaining' => max(0, round($target - $delta, 2)),
+                ];
+            });
+    }
+
+    /**
+     * Summary of weekly target achievement.
+     */
+    #[Computed]
+    public function weeklyTargetSummary(): array
+    {
+        $metrics = $this->weeklyTargetMetrics;
+
+        if ($metrics->isEmpty()) {
+            return [
+                'total_planners' => 0,
+                'met_target' => 0,
+                'below_target' => 0,
+                'avg_delta' => 0,
+                'target' => PlannerWeeklyAggregate::WEEKLY_MILES_TARGET,
+            ];
+        }
+
+        return [
+            'total_planners' => $metrics->count(),
+            'met_target' => $metrics->where('met_target', true)->count(),
+            'below_target' => $metrics->where('met_target', false)->count(),
+            'avg_delta' => round($metrics->avg('miles_delta'), 2),
+            'target' => PlannerWeeklyAggregate::WEEKLY_MILES_TARGET,
+        ];
+    }
+
+    /**
      * Planner metrics for leaderboard table.
      */
     #[Computed]
@@ -212,6 +296,7 @@ class PlannerAnalytics extends Component
                 DB::raw('SUM(circuits_worked) as circuits_worked'),
                 DB::raw('SUM(days_worked) as days_worked'),
                 DB::raw('SUM(miles_planned) as miles_planned'),
+                DB::raw('SUM(miles_delta) as miles_delta'),
                 DB::raw('SUM(units_approved) as units_approved'),
                 DB::raw('SUM(units_refused) as units_refused'),
                 DB::raw('SUM(units_pending) as units_pending'),
@@ -229,6 +314,9 @@ class PlannerAnalytics extends Component
                     ? round($row->total_units / $row->days_worked, 1)
                     : 0;
 
+                $milesDelta = round((float) ($row->miles_delta ?? 0), 1);
+                $metTarget = $milesDelta >= PlannerWeeklyAggregate::WEEKLY_MILES_TARGET;
+
                 return [
                     'rank' => $index + 1,
                     'user_id' => $row->user_id,
@@ -239,6 +327,8 @@ class PlannerAnalytics extends Component
                     'days_worked' => (int) $row->days_worked,
                     'avg_daily' => $avgDaily,
                     'miles_planned' => round((float) $row->miles_planned, 1),
+                    'miles_delta' => $milesDelta,
+                    'met_target' => $metTarget,
                     'approval_rate' => $approvalRate,
                     'units_approved' => (int) $row->units_approved,
                     'units_refused' => (int) $row->units_refused,
@@ -417,6 +507,8 @@ class PlannerAnalytics extends Component
         unset(
             $this->summaryStats,
             $this->permissionStatus,
+            $this->weeklyTargetMetrics,
+            $this->weeklyTargetSummary,
             $this->plannerMetrics,
             $this->progressionData,
             $this->circuitBreakdown,
