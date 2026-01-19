@@ -276,8 +276,10 @@
                                                 <x-heroicon-o-x-mark class="h-3 w-3" />
                                             @elseif($sync->sync_status === \App\Enums\SyncStatus::Warning)
                                                 <x-heroicon-o-exclamation-triangle class="h-3 w-3" />
-                                            @else
+                                            @elseif($sync->sync_status === \App\Enums\SyncStatus::Started && $sync->started_at->diffInMinutes(now()) < 30)
                                                 <span class="loading loading-spinner loading-xs"></span>
+                                            @else
+                                                <x-heroicon-o-minus class="h-3 w-3" />
                                             @endif
                                         </span>
                                         <span class="text-base-content/60">{{ $sync->started_at->format('g:i A') }}</span>

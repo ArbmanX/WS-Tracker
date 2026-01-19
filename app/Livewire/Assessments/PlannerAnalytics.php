@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Assessments;
 
+use App\Livewire\Concerns\WithCircuitFilters;
 use App\Models\Circuit;
 use App\Models\PlannerDailyAggregate;
 use App\Models\PlannerWeeklyAggregate;
@@ -18,6 +19,8 @@ use Livewire\Component;
 #[Layout('components.layout.app-shell', ['title' => 'Planner Analytics'])]
 class PlannerAnalytics extends Component
 {
+    use WithCircuitFilters;
+
     #[Url]
     public string $dateRange = 'this_week';
 
@@ -305,9 +308,13 @@ class PlannerAnalytics extends Component
             return collect();
         }
 
-        return $user->circuits()
-            ->with(['region:id,name', 'latestAggregate'])
-            ->get()
+        $query = $user->circuits()
+            ->with(['region:id,name', 'latestAggregate']);
+
+        // Apply circuit filters
+        $this->applyCircuitFilters($query);
+
+        return $query->get()
             ->map(function ($circuit) {
                 $aggregate = $circuit->latestAggregate;
 
@@ -322,11 +329,15 @@ class PlannerAnalytics extends Component
                 return [
                     'id' => $circuit->id,
                     'work_order' => $circuit->display_work_order,
+                    'title' => $circuit->title,
                     'region' => $circuit->region?->name ?? 'Unknown',
                     'status' => $circuit->api_status,
-                    'total_units' => $aggregate?->total_units ?? 0,
+                    'cycle_type' => $circuit->cycle_type,
+                    'total_miles' => round($circuit->total_miles ?? 0, 1),
                     'miles_planned' => round($circuit->miles_planned ?? 0, 1),
+                    'total_units' => $aggregate?->total_units ?? 0,
                     'approval_rate' => $approvalRate,
+                    'last_modified' => $circuit->api_modified_date,
                 ];
             });
     }
@@ -426,6 +437,17 @@ class PlannerAnalytics extends Component
     public function updatedEndDate(): void
     {
         $this->clearComputedCache();
+    }
+
+    /**
+     * Clear computed caches when circuit filters change.
+     */
+    protected function onCircuitFiltersUpdated(): void
+    {
+        unset(
+            $this->circuitBreakdown,
+            $this->availableCycleTypes
+        );
     }
 
     public function render()

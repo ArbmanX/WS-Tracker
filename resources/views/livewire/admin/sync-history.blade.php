@@ -112,8 +112,10 @@
                                     <td class="font-mono text-sm">
                                         @if($log->duration_seconds)
                                             {{ gmdate('i:s', $log->duration_seconds) }}
-                                        @else
+                                        @elseif($log->sync_status === \App\Enums\SyncStatus::Started && $log->started_at->diffInMinutes(now()) < 30)
                                             <span class="loading loading-dots loading-xs"></span>
+                                        @else
+                                            <span class="text-base-content/40">-</span>
                                         @endif
                                     </td>
                                     <td class="font-mono text-sm">

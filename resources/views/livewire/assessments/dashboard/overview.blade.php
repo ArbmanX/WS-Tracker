@@ -20,6 +20,18 @@
         </div>
     </div>
 
+    {{-- Circuit Filters --}}
+    <div class="card bg-base-100 shadow">
+        <div class="card-body py-3">
+            <x-filters.circuit-filters
+                :statusFilter="$statusFilter"
+                :cycleTypeFilter="$cycleTypeFilter"
+                :availableStatuses="$this->availableStatuses"
+                :availableCycleTypes="$this->availableCycleTypes"
+            />
+        </div>
+    </div>
+
     {{-- Summary Stats --}}
     @php
         $totalStats = [

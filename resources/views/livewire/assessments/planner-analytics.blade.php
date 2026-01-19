@@ -99,6 +99,20 @@
                     </button>
                 @endif
             </div>
+
+            {{-- Circuit Filters (affects circuit breakdown) --}}
+            @if($plannerId)
+                <div class="divider my-2"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-base-content/60 uppercase font-semibold">Circuit Filters</span>
+                    <x-filters.circuit-filters
+                        :statusFilter="$statusFilter"
+                        :cycleTypeFilter="$cycleTypeFilter"
+                        :availableStatuses="$this->availableStatuses"
+                        :availableCycleTypes="$this->availableCycleTypes"
+                    />
+                </div>
+            @endif
         </div>
     </div>
 
@@ -341,17 +355,21 @@
                         <thead>
                             <tr>
                                 <th>Work Order</th>
+                                <th>Circuit Name</th>
                                 <th>Region</th>
                                 <th>Status</th>
-                                <th class="text-right">Units</th>
-                                <th class="text-right">Miles</th>
+                                <th class="text-right">Total Units</th>
+                                <th class="text-right">Total Miles</th>
+                                <th class="text-right">Planned Miles</th>
                                 <th class="text-right">Approval</th>
+                                <th>Last Modified</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($this->circuitBreakdown as $circuit)
                                 <tr wire:key="circuit-{{ $circuit['id'] }}">
                                     <td class="font-mono">{{ $circuit['work_order'] }}</td>
+                                    <td class="max-w-xs truncate" title="{{ $circuit['title'] }}">{{ $circuit['title'] }}</td>
                                     <td>{{ $circuit['region'] }}</td>
                                     <td>
                                         @php
@@ -366,6 +384,7 @@
                                         <span class="badge {{ $statusBadge }} badge-sm">{{ $circuit['status'] }}</span>
                                     </td>
                                     <td class="text-right font-mono">{{ number_format($circuit['total_units']) }}</td>
+                                    <td class="text-right font-mono">{{ number_format($circuit['total_miles'], 1) }}</td>
                                     <td class="text-right font-mono">{{ number_format($circuit['miles_planned'], 1) }}</td>
                                     <td class="text-right">
                                         @php
@@ -373,6 +392,15 @@
                                             $badgeClass = $rate >= 75 ? 'badge-success' : ($rate >= 50 ? 'badge-warning' : 'badge-error');
                                         @endphp
                                         <span class="badge {{ $badgeClass }} badge-sm">{{ number_format($rate, 1) }}%</span>
+                                    </td>
+                                    <td class="text-sm text-base-content/70">
+                                        @if($circuit['last_modified'])
+                                            <span class="tooltip" data-tip="{{ $circuit['last_modified']->format('M d, Y') }}">
+                                                {{ $circuit['last_modified']->diffForHumans() }}
+                                            </span>
+                                        @else
+                                            <span class="text-base-content/40">-</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

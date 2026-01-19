@@ -174,3 +174,197 @@ it('computes correct miles remaining', function () {
     expect($stats)->not->toBeNull();
     expect($stats->miles_remaining)->toBe(70.0);
 });
+
+// Circuit Filter Tests
+
+it('filters circuits by status', function () {
+    $region = Region::factory()->create();
+
+    // Create circuits with different statuses
+    Circuit::factory()->forRegion($region)->count(3)->create(['api_status' => 'ACTIV', 'total_miles' => 100]);
+    Circuit::factory()->forRegion($region)->count(2)->qc()->create(['total_miles' => 100]);
+    Circuit::factory()->forRegion($region)->count(1)->closed()->create(['total_miles' => 100]);
+
+    // With only ACTIV filter, should show only 3 circuits
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV']);
+
+    $stats = $component->instance()->regionStats[$region->id] ?? null;
+
+    expect($stats)->not->toBeNull();
+    expect($stats->total_circuits)->toBe(3);
+    expect($stats->total_miles)->toBe(300.0);
+});
+
+it('filters circuits by multiple statuses', function () {
+    $region = Region::factory()->create();
+
+    Circuit::factory()->forRegion($region)->count(3)->create(['api_status' => 'ACTIV', 'total_miles' => 100]);
+    Circuit::factory()->forRegion($region)->count(2)->qc()->create(['total_miles' => 100]);
+    Circuit::factory()->forRegion($region)->count(1)->closed()->create(['total_miles' => 100]);
+
+    // With ACTIV and QC filter, should show 5 circuits
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV', 'QC']);
+
+    $stats = $component->instance()->regionStats[$region->id] ?? null;
+
+    expect($stats)->not->toBeNull();
+    expect($stats->total_circuits)->toBe(5);
+});
+
+it('filters circuits by cycle type', function () {
+    $region = Region::factory()->create();
+
+    Circuit::factory()->forRegion($region)->count(3)->create([
+        'api_status' => 'ACTIV',
+        'cycle_type' => 'Reactive',
+        'total_miles' => 100,
+    ]);
+    Circuit::factory()->forRegion($region)->count(2)->create([
+        'api_status' => 'ACTIV',
+        'cycle_type' => 'VM Detection',
+        'total_miles' => 100,
+    ]);
+
+    // With only Reactive cycle type filter
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('cycleTypeFilter', ['Reactive']);
+
+    $stats = $component->instance()->regionStats[$region->id] ?? null;
+
+    expect($stats)->not->toBeNull();
+    expect($stats->total_circuits)->toBe(3);
+    expect($stats->total_miles)->toBe(300.0);
+});
+
+it('combines status and cycle type filters', function () {
+    $region = Region::factory()->create();
+
+    // Active Reactive circuits
+    Circuit::factory()->forRegion($region)->count(2)->create([
+        'api_status' => 'ACTIV',
+        'cycle_type' => 'Reactive',
+        'total_miles' => 100,
+    ]);
+    // QC Reactive circuits
+    Circuit::factory()->forRegion($region)->count(1)->qc()->create([
+        'cycle_type' => 'Reactive',
+        'total_miles' => 100,
+    ]);
+    // Active VM Detection circuits
+    Circuit::factory()->forRegion($region)->count(3)->create([
+        'api_status' => 'ACTIV',
+        'cycle_type' => 'VM Detection',
+        'total_miles' => 100,
+    ]);
+
+    // Filter: only ACTIV status and Reactive cycle type
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV'])
+        ->set('cycleTypeFilter', ['Reactive']);
+
+    $stats = $component->instance()->regionStats[$region->id] ?? null;
+
+    expect($stats)->not->toBeNull();
+    expect($stats->total_circuits)->toBe(2);
+});
+
+it('toggles status filter', function () {
+    Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->assertSet('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK'])
+        ->call('toggleStatus', 'CLOSE')
+        ->assertSet('statusFilter', ['ACTIV', 'QC', 'REWRK']);
+});
+
+it('prevents removing last status filter', function () {
+    Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV'])
+        ->call('toggleStatus', 'ACTIV')
+        ->assertSet('statusFilter', ['ACTIV']); // Should still have ACTIV
+});
+
+it('toggles cycle type filter', function () {
+    $region = Region::factory()->create();
+    Circuit::factory()->forRegion($region)->create(['cycle_type' => 'Reactive']);
+
+    Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->assertSet('cycleTypeFilter', [])
+        ->call('toggleCycleType', 'Reactive')
+        ->assertSet('cycleTypeFilter', ['Reactive'])
+        ->call('toggleCycleType', 'Reactive')
+        ->assertSet('cycleTypeFilter', []);
+});
+
+it('clears all circuit filters', function () {
+    Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV'])
+        ->set('cycleTypeFilter', ['Reactive'])
+        ->call('clearCircuitFilters')
+        ->assertSet('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK'])
+        ->assertSet('cycleTypeFilter', []);
+});
+
+it('persists status filter in URL', function () {
+    actingAs($this->user)
+        ->get(route('assessments.overview', ['status' => ['ACTIV', 'QC']]))
+        ->assertSuccessful();
+
+    Livewire::actingAs($this->user)
+        ->withQueryParams(['status' => ['ACTIV', 'QC']])
+        ->test(Overview::class)
+        ->assertSet('statusFilter', ['ACTIV', 'QC']);
+});
+
+it('persists cycle type filter in URL', function () {
+    actingAs($this->user)
+        ->get(route('assessments.overview', ['cycle' => ['Reactive']]))
+        ->assertSuccessful();
+
+    Livewire::actingAs($this->user)
+        ->withQueryParams(['cycle' => ['Reactive']])
+        ->test(Overview::class)
+        ->assertSet('cycleTypeFilter', ['Reactive']);
+});
+
+it('detects when circuit filters are active', function () {
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class);
+
+    // Default state - no active filters
+    expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
+
+    // Status filter active
+    $component->set('statusFilter', ['ACTIV']);
+    expect($component->instance()->hasActiveCircuitFilters())->toBeTrue();
+
+    // Reset to all statuses
+    $component->call('selectAllStatuses');
+    expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
+
+    // Cycle type filter active
+    $component->set('cycleTypeFilter', ['Reactive']);
+    expect($component->instance()->hasActiveCircuitFilters())->toBeTrue();
+});
+
+it('provides available cycle types from database', function () {
+    $region = Region::factory()->create();
+    Circuit::factory()->forRegion($region)->create(['cycle_type' => 'Reactive']);
+    Circuit::factory()->forRegion($region)->create(['cycle_type' => 'VM Detection']);
+    Circuit::factory()->forRegion($region)->create(['cycle_type' => 'Reactive']); // Duplicate
+
+    $component = Livewire::actingAs($this->user)->test(Overview::class);
+    $cycleTypes = $component->instance()->availableCycleTypes;
+
+    expect($cycleTypes)->toContain('Reactive');
+    expect($cycleTypes)->toContain('VM Detection');
+    expect($cycleTypes)->toHaveCount(2); // Should be distinct
+});

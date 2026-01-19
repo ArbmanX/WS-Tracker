@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Assessments\Dashboard;
 
+use App\Livewire\Concerns\WithCircuitFilters;
 use App\Models\Circuit;
 use App\Models\Region;
 use App\Models\RegionalWeeklyAggregate;
@@ -15,6 +16,8 @@ use Livewire\Component;
 #[Layout('components.layout.app-shell', ['title' => 'Overview'])]
 class Overview extends Component
 {
+    use WithCircuitFilters;
+
     #[Url]
     public string $viewMode = 'cards';
 
@@ -46,6 +49,11 @@ class Overview extends Component
     #[Computed]
     public function regionStats(): Collection
     {
+        // When circuit filters are active, always compute live
+        if ($this->hasActiveCircuitFilters()) {
+            return $this->computeStatsFromCircuits();
+        }
+
         // Try to get from weekly aggregates first
         $latestWeek = RegionalWeeklyAggregate::max('week_ending');
 
@@ -66,9 +74,14 @@ class Overview extends Component
      */
     protected function computeStatsFromCircuits(): Collection
     {
-        $stats = Circuit::query()
+        $baseQuery = Circuit::query()
             ->whereNull('deleted_at')
-            ->notExcluded()
+            ->notExcluded();
+
+        // Apply circuit filters
+        $this->applyCircuitFilters($baseQuery);
+
+        $stats = (clone $baseQuery)
             ->select([
                 'region_id',
                 DB::raw('COUNT(*) as total_circuits'),
@@ -85,17 +98,29 @@ class Overview extends Component
             ->groupBy('region_id')
             ->get();
 
-        // Get planner counts per region
-        $plannerCounts = DB::table('circuit_user')
+        // Get planner counts per region (with filters applied)
+        $plannerQuery = DB::table('circuit_user')
             ->join('circuits', 'circuit_user.circuit_id', '=', 'circuits.id')
             ->whereNull('circuits.deleted_at')
-            ->where('circuits.is_excluded', false)
+            ->where('circuits.is_excluded', false);
+
+        // Apply status filter to planner counts
+        if (! empty($this->statusFilter)) {
+            $plannerQuery->whereIn('circuits.api_status', $this->statusFilter);
+        }
+
+        // Apply cycle type filter to planner counts
+        if (! empty($this->cycleTypeFilter)) {
+            $plannerQuery->whereIn('circuits.cycle_type', $this->cycleTypeFilter);
+        }
+
+        $plannerCounts = $plannerQuery
             ->select('circuits.region_id', DB::raw('COUNT(DISTINCT circuit_user.user_id) as active_planners'))
             ->groupBy('circuits.region_id')
             ->pluck('active_planners', 'region_id');
 
-        // Get unit stats from circuit_aggregates (if available)
-        $unitStats = DB::table('circuit_aggregates')
+        // Get unit stats from circuit_aggregates (with filters applied)
+        $unitQuery = DB::table('circuit_aggregates')
             ->join('circuits', 'circuit_aggregates.circuit_id', '=', 'circuits.id')
             ->whereNull('circuits.deleted_at')
             ->where('circuits.is_excluded', false)
@@ -105,7 +130,19 @@ class Overview extends Component
                     ->from('circuit_aggregates')
                     ->where('is_rollup', false)
                     ->groupBy('circuit_id');
-            })
+            });
+
+        // Apply status filter to unit stats
+        if (! empty($this->statusFilter)) {
+            $unitQuery->whereIn('circuits.api_status', $this->statusFilter);
+        }
+
+        // Apply cycle type filter to unit stats
+        if (! empty($this->cycleTypeFilter)) {
+            $unitQuery->whereIn('circuits.cycle_type', $this->cycleTypeFilter);
+        }
+
+        $unitStats = $unitQuery
             ->select(
                 'circuits.region_id',
                 DB::raw('COALESCE(SUM(circuit_aggregates.total_units), 0) as total_units'),
@@ -170,7 +207,7 @@ class Overview extends Component
      * Returns RegionalWeeklyAggregate or stdClass (from fallback computation).
      */
     #[Computed]
-    public function selectedRegionStats(): object|null
+    public function selectedRegionStats(): ?object
     {
         return $this->selectedRegionId
             ? $this->regionStats[$this->selectedRegionId] ?? null
@@ -225,6 +262,19 @@ class Overview extends Component
             $this->sortBy = $column;
             $this->sortDir = 'asc';
         }
+    }
+
+    /**
+     * Clear computed caches when circuit filters change.
+     */
+    protected function onCircuitFiltersUpdated(): void
+    {
+        unset(
+            $this->regionStats,
+            $this->sortedRegions,
+            $this->selectedRegionStats,
+            $this->availableCycleTypes
+        );
     }
 
     public function render()
