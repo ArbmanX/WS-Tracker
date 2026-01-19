@@ -38,6 +38,13 @@ class UserManagement extends Component
 
     public ?int $defaultRegionId = null;
 
+    // Analytics exclusion state
+    public ?int $excludingUserId = null;
+
+    public string $exclusionReason = '';
+
+    public bool $showExclusionModal = false;
+
     /**
      * Reset pagination when search changes.
      */
@@ -187,10 +194,62 @@ class UserManagement extends Component
         return Region::active()->ordered()->get();
     }
 
+    /**
+     * Open exclusion modal for a user.
+     */
+    public function openExclusionModal(int $userId): void
+    {
+        $this->excludingUserId = $userId;
+        $this->exclusionReason = '';
+        $this->showExclusionModal = true;
+    }
+
+    /**
+     * Close exclusion modal.
+     */
+    public function closeExclusionModal(): void
+    {
+        $this->excludingUserId = null;
+        $this->exclusionReason = '';
+        $this->showExclusionModal = false;
+    }
+
+    /**
+     * Exclude a user from analytics.
+     */
+    public function excludeFromAnalytics(): void
+    {
+        if (empty(trim($this->exclusionReason))) {
+            $this->dispatch('notify', message: 'Please provide a reason for exclusion.', type: 'warning');
+
+            return;
+        }
+
+        $user = User::find($this->excludingUserId);
+        if ($user) {
+            $user->excludeFromAnalytics(trim($this->exclusionReason), auth()->user());
+            $this->dispatch('notify', message: "{$user->name} excluded from analytics.", type: 'success');
+        }
+
+        $this->closeExclusionModal();
+    }
+
+    /**
+     * Include a user back in analytics.
+     */
+    public function includeInAnalytics(int $userId): void
+    {
+        $user = User::find($userId);
+        if ($user) {
+            $user->includeInAnalytics();
+            $this->dispatch('notify', message: "{$user->name} included in analytics.", type: 'success');
+        }
+    }
+
     public function render()
     {
         $users = User::query()
-            ->with(['roles', 'defaultRegion'])
+            ->with(['roles', 'defaultRegion', 'excludedByUser'])
             ->when($this->search, function ($q) {
                 $search = '%'.strtolower($this->search).'%';
                 $q->where(function ($q) use ($search) {

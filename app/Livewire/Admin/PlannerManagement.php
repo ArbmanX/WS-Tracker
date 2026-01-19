@@ -35,6 +35,13 @@ class PlannerManagement extends Component
 
     public string $exclusionReason = '';
 
+    /** @var array<string> Format: "type-id" (e.g., "user-5", "unlinked-12") */
+    public array $selectedPlanners = [];
+
+    public bool $showBulkExcludeModal = false;
+
+    public string $bulkExclusionReason = '';
+
     /**
      * Reset pagination when search changes.
      */
@@ -334,6 +341,188 @@ class PlannerManagement extends Component
         unset($this->planners);
         unset($this->allPlanners);
         unset($this->stats);
+    }
+
+    /**
+     * Toggle selection of a single planner.
+     */
+    public function toggleSelection(string $key): void
+    {
+        if (in_array($key, $this->selectedPlanners)) {
+            $this->selectedPlanners = array_values(array_diff($this->selectedPlanners, [$key]));
+        } else {
+            $this->selectedPlanners[] = $key;
+        }
+    }
+
+    /**
+     * Check if a planner is selected.
+     */
+    public function isSelected(string $type, int $id): bool
+    {
+        return in_array("{$type}-{$id}", $this->selectedPlanners);
+    }
+
+    /**
+     * Select all visible planners.
+     */
+    public function selectAll(): void
+    {
+        $this->selectedPlanners = $this->allPlanners
+            ->map(fn ($p) => "{$p['type']}-{$p['id']}")
+            ->toArray();
+    }
+
+    /**
+     * Clear all selections.
+     */
+    public function clearSelection(): void
+    {
+        $this->selectedPlanners = [];
+    }
+
+    /**
+     * Toggle select all.
+     */
+    public function toggleSelectAll(): void
+    {
+        if ($this->allSelected) {
+            $this->clearSelection();
+        } else {
+            $this->selectAll();
+        }
+    }
+
+    /**
+     * Check if all visible planners are selected.
+     */
+    #[Computed]
+    public function allSelected(): bool
+    {
+        if ($this->allPlanners->isEmpty()) {
+            return false;
+        }
+
+        $visibleKeys = $this->allPlanners
+            ->map(fn ($p) => "{$p['type']}-{$p['id']}")
+            ->toArray();
+
+        return empty(array_diff($visibleKeys, $this->selectedPlanners));
+    }
+
+    /**
+     * Get selected planners data for the modal.
+     */
+    #[Computed]
+    public function selectedPlannersData(): \Illuminate\Support\Collection
+    {
+        return $this->allPlanners->filter(function ($planner) {
+            return in_array("{$planner['type']}-{$planner['id']}", $this->selectedPlanners);
+        });
+    }
+
+    /**
+     * Open bulk exclude modal.
+     */
+    public function openBulkExcludeModal(): void
+    {
+        if (empty($this->selectedPlanners)) {
+            return;
+        }
+        $this->bulkExclusionReason = '';
+        $this->showBulkExcludeModal = true;
+    }
+
+    /**
+     * Cancel bulk exclude.
+     */
+    public function cancelBulkExclude(): void
+    {
+        $this->showBulkExcludeModal = false;
+        $this->bulkExclusionReason = '';
+    }
+
+    /**
+     * Bulk exclude selected planners.
+     */
+    public function bulkExclude(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['sudo_admin', 'admin'])) {
+            $this->dispatch('notify', message: 'You do not have permission to exclude planners.', type: 'error');
+
+            return;
+        }
+
+        if (empty($this->selectedPlanners) || empty(trim($this->bulkExclusionReason))) {
+            $this->dispatch('notify', message: 'Please provide a reason for exclusion.', type: 'warning');
+
+            return;
+        }
+
+        $count = 0;
+        foreach ($this->selectedPlanners as $key) {
+            [$type, $id] = explode('-', $key);
+            $id = (int) $id;
+
+            if ($type === 'user') {
+                $planner = User::find($id);
+                $planner?->excludeFromAnalytics(trim($this->bulkExclusionReason), auth()->user());
+            } else {
+                $planner = UnlinkedPlanner::find($id);
+                $planner?->excludeFromAnalytics(trim($this->bulkExclusionReason), auth()->user());
+            }
+            $count++;
+        }
+
+        $this->dispatch('notify', message: "{$count} planners excluded from analytics.", type: 'success');
+        $this->cancelBulkExclude();
+        $this->clearSelection();
+
+        // Clear the cached computed properties
+        unset($this->planners);
+        unset($this->allPlanners);
+        unset($this->stats);
+        unset($this->selectedPlannersData);
+        unset($this->allSelected);
+    }
+
+    /**
+     * Bulk include selected planners.
+     */
+    public function bulkInclude(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['sudo_admin', 'admin'])) {
+            $this->dispatch('notify', message: 'You do not have permission to include planners.', type: 'error');
+
+            return;
+        }
+
+        if (empty($this->selectedPlanners)) {
+            return;
+        }
+
+        $count = 0;
+        foreach ($this->selectedPlanners as $key) {
+            [$type, $id] = explode('-', $key);
+            $id = (int) $id;
+
+            if ($type === 'user') {
+                User::find($id)?->includeInAnalytics();
+            } else {
+                UnlinkedPlanner::find($id)?->includeInAnalytics();
+            }
+            $count++;
+        }
+
+        $this->dispatch('notify', message: "{$count} planners included in analytics.", type: 'success');
+        $this->clearSelection();
+
+        // Clear the cached computed properties
+        unset($this->planners);
+        unset($this->allPlanners);
+        unset($this->stats);
+        unset($this->selectedPlannersData);
+        unset($this->allSelected);
     }
 
     public function render()

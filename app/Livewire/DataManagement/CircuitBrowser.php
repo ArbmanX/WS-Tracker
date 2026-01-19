@@ -4,6 +4,7 @@ namespace App\Livewire\DataManagement;
 
 use App\Models\Circuit;
 use App\Models\Region;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -30,6 +31,12 @@ class CircuitBrowser extends Component
     #[Url(as: 'modified')]
     public string $modifiedFilter = '';
 
+    #[Url(as: 'year')]
+    public string $scopeYearFilter = '';
+
+    #[Url(as: 'cycle')]
+    public string $cycleTypeFilter = '';
+
     // Detail/Edit Modal State
     public bool $showModal = false;
 
@@ -54,6 +61,14 @@ class CircuitBrowser extends Component
     public bool $showExcludeModal = false;
 
     public string $excludeReason = '';
+
+    // Bulk selection state
+    /** @var array<int> */
+    public array $selectedCircuits = [];
+
+    public bool $showBulkExcludeModal = false;
+
+    public string $bulkExcludeReason = '';
 
     /**
      * Reset pagination when filters change.
@@ -83,12 +98,22 @@ class CircuitBrowser extends Component
         $this->resetPage();
     }
 
+    public function updatedScopeYearFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedCycleTypeFilter(): void
+    {
+        $this->resetPage();
+    }
+
     /**
      * Clear all filters.
      */
     public function clearFilters(): void
     {
-        $this->reset(['search', 'regionFilter', 'apiStatusFilter', 'excludedFilter', 'modifiedFilter']);
+        $this->reset(['search', 'regionFilter', 'apiStatusFilter', 'excludedFilter', 'modifiedFilter', 'scopeYearFilter', 'cycleTypeFilter']);
         $this->resetPage();
     }
 
@@ -277,6 +302,39 @@ class CircuitBrowser extends Component
     }
 
     /**
+     * Get available scope years (extracted from work_order prefix).
+     *
+     * @return array<string, string>
+     */
+    public function getScopeYearOptionsProperty(): array
+    {
+        return Circuit::query()
+            ->selectRaw('DISTINCT SUBSTR(work_order, 1, 4) as scope_year')
+            ->whereRaw("SUBSTR(work_order, 1, 4) BETWEEN '2000' AND '2099'")
+            ->orderByDesc('scope_year')
+            ->toBase()
+            ->pluck('scope_year', 'scope_year')
+            ->toArray();
+    }
+
+    /**
+     * Get available cycle types.
+     *
+     * @return array<string, string>
+     */
+    public function getCycleTypeOptionsProperty(): array
+    {
+        return Circuit::query()
+            ->select('cycle_type')
+            ->distinct()
+            ->whereNotNull('cycle_type')
+            ->where('cycle_type', '!=', '')
+            ->orderBy('cycle_type')
+            ->pluck('cycle_type', 'cycle_type')
+            ->toArray();
+    }
+
+    /**
      * Get the selected circuit.
      */
     public function getSelectedCircuitProperty(): ?Circuit
@@ -307,6 +365,143 @@ class CircuitBrowser extends Component
             ->get();
     }
 
+    /**
+     * Toggle selection of a single circuit.
+     */
+    public function toggleCircuitSelection(int $id): void
+    {
+        if (in_array($id, $this->selectedCircuits)) {
+            $this->selectedCircuits = array_values(array_diff($this->selectedCircuits, [$id]));
+        } else {
+            $this->selectedCircuits[] = $id;
+        }
+    }
+
+    /**
+     * Check if a circuit is selected.
+     */
+    public function isCircuitSelected(int $id): bool
+    {
+        return in_array($id, $this->selectedCircuits);
+    }
+
+    /**
+     * Clear all circuit selections.
+     */
+    public function clearCircuitSelection(): void
+    {
+        $this->selectedCircuits = [];
+    }
+
+    /**
+     * Select all circuits on current page.
+     */
+    public function selectAllOnPage(array $ids): void
+    {
+        $this->selectedCircuits = array_unique(array_merge($this->selectedCircuits, $ids));
+    }
+
+    /**
+     * Deselect all circuits on current page.
+     */
+    public function deselectAllOnPage(array $ids): void
+    {
+        $this->selectedCircuits = array_values(array_diff($this->selectedCircuits, $ids));
+    }
+
+    /**
+     * Get selected circuits data for the modal.
+     */
+    #[Computed]
+    public function selectedCircuitsData(): \Illuminate\Support\Collection
+    {
+        if (empty($this->selectedCircuits)) {
+            return collect();
+        }
+
+        return Circuit::whereIn('id', $this->selectedCircuits)->get();
+    }
+
+    /**
+     * Open bulk exclude modal.
+     */
+    public function openBulkExcludeModal(): void
+    {
+        if (empty($this->selectedCircuits)) {
+            return;
+        }
+        $this->bulkExcludeReason = '';
+        $this->showBulkExcludeModal = true;
+    }
+
+    /**
+     * Cancel bulk exclude.
+     */
+    public function cancelBulkExclude(): void
+    {
+        $this->showBulkExcludeModal = false;
+        $this->bulkExcludeReason = '';
+    }
+
+    /**
+     * Bulk exclude selected circuits.
+     */
+    public function bulkExcludeCircuits(): void
+    {
+        $this->validate([
+            'bulkExcludeReason' => ['required', 'string', 'min:5', 'max:500'],
+        ], [
+            'bulkExcludeReason.required' => 'Please provide a reason for excluding these circuits.',
+        ]);
+
+        $count = 0;
+        foreach ($this->selectedCircuits as $circuitId) {
+            $circuit = Circuit::find($circuitId);
+            if ($circuit && ! $circuit->is_excluded) {
+                $circuit->exclude($this->bulkExcludeReason, auth()->id());
+
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($circuit)
+                    ->withProperties(['reason' => $this->bulkExcludeReason, 'bulk' => true])
+                    ->log('Circuit excluded from reporting (bulk): '.$this->bulkExcludeReason);
+
+                $count++;
+            }
+        }
+
+        $this->dispatch('notify', message: "{$count} circuits excluded from reporting.", type: 'success');
+        $this->cancelBulkExclude();
+        $this->clearCircuitSelection();
+        unset($this->selectedCircuitsData);
+    }
+
+    /**
+     * Bulk include selected circuits.
+     */
+    public function bulkIncludeCircuits(): void
+    {
+        $count = 0;
+        foreach ($this->selectedCircuits as $circuitId) {
+            $circuit = Circuit::find($circuitId);
+            if ($circuit && $circuit->is_excluded) {
+                $circuit->include();
+
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($circuit)
+                    ->withProperties(['bulk' => true])
+                    ->log('Circuit included in reporting (bulk)');
+
+                $count++;
+            }
+        }
+
+        $this->dispatch('notify', message: "{$count} circuits included in reporting.", type: 'success');
+        $this->clearCircuitSelection();
+        unset($this->selectedCircuitsData);
+    }
+
     public function render()
     {
         $circuits = Circuit::query()
@@ -325,6 +520,8 @@ class CircuitBrowser extends Component
             ->when($this->excludedFilter === 'no', fn ($q) => $q->notExcluded())
             ->when($this->modifiedFilter === 'yes', fn ($q) => $q->withUserModifications())
             ->when($this->modifiedFilter === 'no', fn ($q) => $q->withoutUserModifications())
+            ->when($this->scopeYearFilter, fn ($q) => $q->whereRaw('SUBSTR(work_order, 1, 4) = ?', [$this->scopeYearFilter]))
+            ->when($this->cycleTypeFilter, fn ($q) => $q->where('cycle_type', $this->cycleTypeFilter))
             ->orderBy('work_order')
             ->paginate(25);
 

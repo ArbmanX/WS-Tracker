@@ -230,6 +230,21 @@ class Circuit extends Model
     }
 
     /**
+     * Get the scope year extracted from the work order (e.g., "2025" from "2025-1918").
+     */
+    public function getScopeYearAttribute(): ?string
+    {
+        if (! $this->work_order) {
+            return null;
+        }
+
+        $year = substr($this->work_order, 0, 4);
+
+        // Only return if it looks like a valid year
+        return is_numeric($year) ? $year : null;
+    }
+
+    /**
      * Scope by API status.
      */
     public function scopeByApiStatus($query, string $status)

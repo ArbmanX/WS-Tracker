@@ -72,7 +72,10 @@ it('shows correct status breakdown', function () {
     Circuit::factory()->forRegion($region)->count(2)->qc()->create();
     Circuit::factory()->forRegion($region)->count(1)->closed()->create();
 
-    $component = Livewire::actingAs($this->user)->test(Overview::class);
+    // Default filter is ACTIV only, so set all statuses to see full breakdown
+    $component = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK']);
 
     // Get the computed stats via the component instance
     $stats = $component->instance()->regionStats[$region->id] ?? null;
@@ -275,11 +278,13 @@ it('combines status and cycle type filters', function () {
 });
 
 it('toggles status filter', function () {
+    // Default is now ACTIV only, so first set multiple statuses to test toggle
     Livewire::actingAs($this->user)
         ->test(Overview::class)
-        ->assertSet('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK'])
+        ->assertSet('statusFilter', ['ACTIV']) // New default is ACTIV only
+        ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE'])
         ->call('toggleStatus', 'CLOSE')
-        ->assertSet('statusFilter', ['ACTIV', 'QC', 'REWRK']);
+        ->assertSet('statusFilter', ['ACTIV', 'QC']);
 });
 
 it('prevents removing last status filter', function () {
@@ -304,12 +309,13 @@ it('toggles cycle type filter', function () {
 });
 
 it('clears all circuit filters', function () {
+    // Clear filters should reset to ACTIV only (the new default)
     Livewire::actingAs($this->user)
         ->test(Overview::class)
-        ->set('statusFilter', ['ACTIV'])
+        ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE'])
         ->set('cycleTypeFilter', ['Reactive'])
         ->call('clearCircuitFilters')
-        ->assertSet('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK'])
+        ->assertSet('statusFilter', ['ACTIV']) // New default is ACTIV only
         ->assertSet('cycleTypeFilter', []);
 });
 
@@ -339,15 +345,15 @@ it('detects when circuit filters are active', function () {
     $component = Livewire::actingAs($this->user)
         ->test(Overview::class);
 
-    // Default state - no active filters
+    // Default state (ACTIV only) - no active filters from default perspective
     expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
 
-    // Status filter active
-    $component->set('statusFilter', ['ACTIV']);
+    // When we add more statuses beyond default, filters are considered active
+    $component->set('statusFilter', ['ACTIV', 'QC']);
     expect($component->instance()->hasActiveCircuitFilters())->toBeTrue();
 
-    // Reset to all statuses
-    $component->call('selectAllStatuses');
+    // Reset to ACTIV only (the default)
+    $component->call('clearCircuitFilters');
     expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
 
     // Cycle type filter active

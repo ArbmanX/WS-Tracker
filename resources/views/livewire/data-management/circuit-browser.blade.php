@@ -54,6 +54,32 @@
                     </select>
                 </div>
 
+                {{-- Scope Year Filter --}}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Scope Year</span>
+                    </label>
+                    <select wire:model.live="scopeYearFilter" class="select select-bordered select-sm">
+                        <option value="">All Years</option>
+                        @foreach($this->scopeYearOptions as $year)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Cycle Type Filter --}}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Cycle Type</span>
+                    </label>
+                    <select wire:model.live="cycleTypeFilter" class="select select-bordered select-sm">
+                        <option value="">All Types</option>
+                        @foreach($this->cycleTypeOptions as $type)
+                            <option value="{{ $type }}">{{ $type }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 {{-- Excluded Filter --}}
                 <div class="form-control">
                     <label class="label">
@@ -79,7 +105,7 @@
                 </div>
 
                 {{-- Clear Filters --}}
-                @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter)
+                @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter)
                     <button wire:click="clearFilters" class="btn btn-ghost btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -91,6 +117,35 @@
         </div>
     </div>
 
+    {{-- Bulk Action Bar --}}
+    @if(count($selectedCircuits) > 0)
+        <div class="alert bg-primary/10 border-primary mb-6">
+            <div class="flex w-full items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <x-heroicon-o-check-circle class="h-5 w-5 text-primary" />
+                    <span class="font-medium">{{ count($selectedCircuits) }} circuit(s) selected</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    @if($excludedFilter === 'yes')
+                        <button wire:click="bulkIncludeCircuits" wire:confirm="Include {{ count($selectedCircuits) }} circuits back in reporting?" class="btn btn-success btn-sm">
+                            <x-heroicon-o-eye class="h-4 w-4" />
+                            Include All
+                        </button>
+                    @else
+                        <button wire:click="openBulkExcludeModal" class="btn btn-warning btn-sm">
+                            <x-heroicon-o-eye-slash class="h-4 w-4" />
+                            Exclude All
+                        </button>
+                    @endif
+                    <button wire:click="clearCircuitSelection" class="btn btn-ghost btn-sm">
+                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- Circuits Table --}}
     <div class="card bg-base-100 shadow-lg">
         <div class="card-body">
@@ -100,17 +155,33 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     <p class="text-base-content/40">No circuits found</p>
-                    @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter)
+                    @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter)
                         <button wire:click="clearFilters" class="btn btn-ghost btn-sm mt-2">Clear filters</button>
                     @endif
                 </div>
             @else
+                @php
+                    $pageIds = $circuits->pluck('id')->toArray();
+                    $allPageSelected = !empty($pageIds) && empty(array_diff($pageIds, $selectedCircuits));
+                @endphp
                 <div class="overflow-x-auto">
                     <table class="table table-sm">
                         <thead>
                             <tr>
+                                <th class="w-10">
+                                    <label class="cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            class="checkbox checkbox-sm checkbox-primary"
+                                            wire:click="{{ $allPageSelected ? 'deselectAllOnPage' : 'selectAllOnPage' }}({{ json_encode($pageIds) }})"
+                                            @checked($allPageSelected)
+                                        />
+                                    </label>
+                                </th>
                                 <th>Work Order</th>
                                 <th>Title</th>
+                                <th>Year</th>
+                                <th>Cycle Type</th>
                                 <th>Region</th>
                                 <th>Status</th>
                                 <th>Miles</th>
@@ -122,10 +193,26 @@
                             @foreach($circuits as $circuit)
                                 <tr class="hover" wire:key="circuit-{{ $circuit->id }}">
                                     <td>
+                                        <label class="cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                class="checkbox checkbox-sm checkbox-primary"
+                                                wire:click="toggleCircuitSelection({{ $circuit->id }})"
+                                                @checked($this->isCircuitSelected($circuit->id))
+                                            />
+                                        </label>
+                                    </td>
+                                    <td>
                                         <span class="font-mono text-sm">{{ $circuit->display_work_order }}</span>
                                     </td>
                                     <td class="max-w-xs truncate" title="{{ $circuit->title }}">
                                         {{ Str::limit($circuit->title, 40) }}
+                                    </td>
+                                    <td class="font-mono text-sm text-base-content/70">
+                                        {{ $circuit->scope_year ?? '-' }}
+                                    </td>
+                                    <td class="text-sm max-w-32 truncate" title="{{ $circuit->cycle_type }}">
+                                        {{ Str::limit($circuit->cycle_type, 20) ?? '-' }}
                                     </td>
                                     <td class="text-sm">
                                         {{ $circuit->region?->name ?? '-' }}
@@ -389,7 +476,7 @@
         </form>
     </dialog>
 
-    {{-- Exclude Modal --}}
+    {{-- Single Exclude Modal --}}
     <dialog class="modal {{ $showExcludeModal ? 'modal-open' : '' }}">
         <div class="modal-box">
             <h3 class="font-bold text-lg">Exclude Circuit from Reporting</h3>
@@ -419,6 +506,61 @@
         </div>
         <form method="dialog" class="modal-backdrop">
             <button wire:click="$set('showExcludeModal', false)">close</button>
+        </form>
+    </dialog>
+
+    {{-- Bulk Exclude Modal --}}
+    <dialog class="modal {{ $showBulkExcludeModal ? 'modal-open' : '' }}">
+        <div class="modal-box max-w-2xl">
+            <h3 class="font-bold text-lg">Exclude {{ count($selectedCircuits) }} Circuits from Reporting</h3>
+            <p class="py-2 text-base-content/60">
+                The following circuits will be hidden from all reports and dashboards:
+            </p>
+
+            {{-- List of selected circuits --}}
+            <div class="max-h-48 overflow-y-auto bg-base-200 rounded-lg p-3 my-4">
+                <ul class="space-y-1">
+                    @foreach($this->selectedCircuitsData as $circuit)
+                        <li class="flex items-center gap-2 text-sm">
+                            <x-heroicon-o-map class="h-4 w-4 text-base-content/40" />
+                            <span class="font-mono">{{ $circuit->display_work_order }}</span>
+                            <span class="text-base-content/60 truncate">{{ Str::limit($circuit->title, 30) }}</span>
+                            <span class="badge badge-ghost badge-xs ml-auto">{{ $circuit->api_status }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <form wire:submit="bulkExcludeCircuits">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Reason for exclusion <span class="text-error">*</span></span>
+                    </label>
+                    <textarea
+                        wire:model="bulkExcludeReason"
+                        class="textarea textarea-bordered @error('bulkExcludeReason') textarea-error @enderror"
+                        placeholder="Why are these circuits being excluded?"
+                        rows="3"
+                    ></textarea>
+                    @error('bulkExcludeReason')
+                        <label class="label"><span class="label-text-alt text-error">{{ $message }}</span></label>
+                    @enderror
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/50">This reason will be applied to all selected circuits</span>
+                    </label>
+                </div>
+
+                <div class="modal-action">
+                    <button type="button" wire:click="cancelBulkExclude" class="btn btn-ghost">Cancel</button>
+                    <button type="submit" class="btn btn-warning">
+                        <x-heroicon-o-eye-slash class="h-4 w-4" />
+                        Exclude {{ count($selectedCircuits) }} Circuits
+                    </button>
+                </div>
+            </form>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button wire:click="cancelBulkExclude">close</button>
         </form>
     </dialog>
 </div>

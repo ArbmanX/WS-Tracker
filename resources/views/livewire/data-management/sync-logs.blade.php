@@ -155,7 +155,7 @@
                                     <td class="text-sm">
                                         @if($log->triggeredBy)
                                             <div class="flex items-center gap-2">
-                                                <div class="avatar placeholder">
+                                                <div class="avatar avatar-placeholder">
                                                     <div class="bg-primary text-primary-content w-6 rounded-full">
                                                         <span class="text-xs">{{ $log->triggeredBy->initials() }}</span>
                                                     </div>

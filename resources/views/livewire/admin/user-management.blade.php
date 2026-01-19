@@ -2,14 +2,22 @@
     <div class="mb-6 flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-base-content">User Management</h1>
-            <p class="text-base-content/60">Manage user accounts and roles</p>
+            <p class="text-base-content/60">Manage user accounts, roles, and analytics exclusions</p>
         </div>
-        <button wire:click="create" class="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Add User
-        </button>
+        <div class="flex gap-2">
+            @if(Route::has('admin.planners'))
+                <a href="{{ route('admin.planners') }}" class="btn btn-outline btn-sm">
+                    <x-heroicon-o-users class="h-4 w-4" />
+                    Manage Planners
+                </a>
+            @endif
+            <button wire:click="create" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add User
+            </button>
+        </div>
     </div>
 
     {{-- Filters --}}
@@ -65,6 +73,7 @@
                                 <th>Role</th>
                                 <th>Region</th>
                                 <th>WS Linked</th>
+                                <th>Analytics</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -105,24 +114,63 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="flex gap-2">
+                                        {{-- Analytics status (only for planners) --}}
+                                        @if($user->hasRole('planner'))
+                                            @if($user->is_excluded_from_analytics)
+                                                <div class="tooltip tooltip-left" data-tip="{{ $user->exclusion_reason }}">
+                                                    <span class="badge badge-warning badge-sm gap-1">
+                                                        <x-heroicon-o-eye-slash class="h-3 w-3" />
+                                                        Excluded
+                                                    </span>
+                                                </div>
+                                            @else
+                                                <span class="badge badge-success badge-sm gap-1">
+                                                    <x-heroicon-o-check class="h-3 w-3" />
+                                                    Active
+                                                </span>
+                                            @endif
+                                        @else
+                                            <span class="text-base-content/30">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <div class="flex gap-1">
                                             <button
                                                 wire:click="edit({{ $user->id }})"
                                                 class="btn btn-ghost btn-xs"
+                                                title="Edit user"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
+                                                <x-heroicon-o-pencil class="h-4 w-4" />
                                             </button>
+                                            {{-- Analytics toggle for planners --}}
+                                            @if($user->hasRole('planner'))
+                                                @if($user->is_excluded_from_analytics)
+                                                    <button
+                                                        wire:click="includeInAnalytics({{ $user->id }})"
+                                                        wire:confirm="Include {{ $user->name }} back in analytics?"
+                                                        class="btn btn-ghost btn-xs text-success"
+                                                        title="Include in analytics"
+                                                    >
+                                                        <x-heroicon-o-eye class="h-4 w-4" />
+                                                    </button>
+                                                @else
+                                                    <button
+                                                        wire:click="openExclusionModal({{ $user->id }})"
+                                                        class="btn btn-ghost btn-xs text-warning"
+                                                        title="Exclude from analytics"
+                                                    >
+                                                        <x-heroicon-o-eye-slash class="h-4 w-4" />
+                                                    </button>
+                                                @endif
+                                            @endif
                                             @if($user->id !== auth()->id())
                                                 <button
                                                     wire:click="delete({{ $user->id }})"
                                                     wire:confirm="Are you sure you want to delete {{ $user->name }}? This action cannot be undone."
                                                     class="btn btn-ghost btn-xs text-error"
+                                                    title="Delete user"
                                                 >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
+                                                    <x-heroicon-o-trash class="h-4 w-4" />
                                                 </button>
                                             @endif
                                         </div>
@@ -259,4 +307,39 @@
             <button wire:click="closeModal">close</button>
         </form>
     </dialog>
+
+    {{-- Exclusion Modal --}}
+    @if($showExclusionModal)
+        <div class="modal modal-open">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg">Exclude from Analytics</h3>
+                <p class="py-4 text-base-content/60">
+                    This user will be hidden from all analytics, reports, and dashboards.
+                </p>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Reason for exclusion <span class="text-error">*</span></span>
+                    </label>
+                    <textarea
+                        wire:model="exclusionReason"
+                        class="textarea textarea-bordered"
+                        placeholder="e.g., Contractor no longer active, Test account, etc."
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="modal-action">
+                    <button wire:click="closeExclusionModal" class="btn btn-ghost">Cancel</button>
+                    <button wire:click="excludeFromAnalytics" class="btn btn-warning">
+                        <x-heroicon-o-eye-slash class="h-4 w-4" />
+                        Exclude
+                    </button>
+                </div>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button wire:click="closeExclusionModal">close</button>
+            </form>
+        </div>
+    @endif
 </div>

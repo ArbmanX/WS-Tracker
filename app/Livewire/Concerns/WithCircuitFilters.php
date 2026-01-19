@@ -20,12 +20,21 @@ trait WithCircuitFilters
     public array $cycleTypeFilter = [];
 
     /**
+     * The default status filter value.
+     * Dashboards should focus on active circuits by default.
+     */
+    protected function getDefaultStatusFilter(): array
+    {
+        return ['ACTIV'];
+    }
+
+    /**
      * Initialize filter defaults when trait is booted.
      */
     public function initializeWithCircuitFilters(): void
     {
         if (empty($this->statusFilter)) {
-            $this->statusFilter = ['ACTIV', 'QC', 'CLOSE', 'REWRK'];
+            $this->statusFilter = $this->getDefaultStatusFilter();
         }
     }
 
@@ -113,23 +122,25 @@ trait WithCircuitFilters
     }
 
     /**
-     * Clear all circuit filters to defaults.
+     * Clear all circuit filters to defaults (ACTIV only).
      */
     public function clearCircuitFilters(): void
     {
-        $this->statusFilter = array_keys($this->availableStatuses);
+        $this->statusFilter = $this->getDefaultStatusFilter();
         $this->cycleTypeFilter = [];
         $this->onCircuitFiltersUpdated();
     }
 
     /**
      * Check if any circuit filters are active (non-default).
+     * Default is ACTIV only with no cycle type filter.
      */
     public function hasActiveCircuitFilters(): bool
     {
-        $allStatuses = array_keys($this->availableStatuses);
-        $hasStatusFilter = count($this->statusFilter) !== count($allStatuses)
-            || array_diff($allStatuses, $this->statusFilter);
+        $defaultStatuses = $this->getDefaultStatusFilter();
+        $hasStatusFilter = count($this->statusFilter) !== count($defaultStatuses)
+            || ! empty(array_diff($defaultStatuses, $this->statusFilter))
+            || ! empty(array_diff($this->statusFilter, $defaultStatuses));
         $hasCycleFilter = ! empty($this->cycleTypeFilter);
 
         return $hasStatusFilter || $hasCycleFilter;
