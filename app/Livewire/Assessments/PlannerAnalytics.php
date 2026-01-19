@@ -397,6 +397,19 @@ class PlannerAnalytics extends Component
     }
 
     /**
+     * Clear all filters and reset to defaults.
+     */
+    public function clearAllFilters(): void
+    {
+        $this->regionId = null;
+        $this->plannerId = null;
+        $this->dateRange = 'this_week';
+        $this->startDate = null;
+        $this->endDate = null;
+        $this->clearComputedCache();
+    }
+
+    /**
      * Clear computed property caches when filters change.
      */
     protected function clearComputedCache(): void

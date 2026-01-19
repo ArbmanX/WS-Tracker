@@ -91,7 +91,7 @@
                 @if($regionId || $plannerId || $dateRange !== 'this_week')
                     <button
                         type="button"
-                        wire:click="$set('regionId', null); $set('plannerId', null); $set('dateRange', 'this_week')"
+                        wire:click="clearAllFilters"
                         class="btn btn-ghost btn-sm"
                     >
                         <x-heroicon-o-x-mark class="size-4" />
