@@ -98,18 +98,15 @@ it('transforms collection of api rows', function () {
         ->and($result[1]['job_guid'])->toBe('{2}');
 });
 
-it('extracts planners from api row', function () {
+it('extracts planner from SS_TAKENBY with valid WS username format', function () {
     $apiRow = [
-        'VEGJOB_FORESTER' => 'John Doe',
-        'SS_ASSIGNEDTO' => 'Jane Smith',
-        'SS_TAKENBY' => 'John Doe', // Duplicate
+        'SS_TAKENBY' => 'ASPLUNDH\\cnewcombe',
     ];
 
     $planners = $this->transformer->extractPlanners($apiRow);
 
-    expect($planners)->toHaveCount(2)
-        ->and($planners)->toContain('John Doe')
-        ->and($planners)->toContain('Jane Smith');
+    expect($planners)->toHaveCount(1)
+        ->and($planners[0])->toBe('ASPLUNDH\\cnewcombe');
 });
 
 it('identifies split children correctly', function () {
@@ -184,4 +181,84 @@ it('handles non-numeric values in numeric fields', function () {
 
     expect($result['total_miles'])->toEqual(0.0)
         ->and($result['miles_planned'])->toEqual(0.0);
+});
+
+it('ignores SS_TAKENBY without valid WS username format', function () {
+    // Display names without backslash should be ignored
+    $apiRow = [
+        'SS_TAKENBY' => 'Chris Newcombe', // Display name, not WS username
+    ];
+
+    $planners = $this->transformer->extractPlanners($apiRow);
+
+    expect($planners)->toBeEmpty();
+});
+
+it('ignores SS_ASSIGNEDTO and VEGJOB_FORESTER for planner extraction', function () {
+    // Only SS_TAKENBY with valid format should be used
+    $apiRow = [
+        'SS_ASSIGNEDTO' => 'ASPLUNDH\\other',
+        'VEGJOB_FORESTER' => 'CONTRACTOR\\forester',
+    ];
+
+    $planners = $this->transformer->extractPlanners($apiRow);
+
+    expect($planners)->toBeEmpty();
+});
+
+it('stores planner fields in api_data_json', function () {
+    $apiRow = [
+        'SS_JOBGUID' => '{1}',
+        'SS_WO' => '2025-1',
+        'SS_TAKENBY' => 'ASPLUNDH\\cnewcombe',
+        'SS_ASSIGNEDTO' => 'Admin',
+        'VEGJOB_FORESTER' => 'Chris Newcombe',
+    ];
+
+    $result = $this->transformer->transform($apiRow);
+
+    expect($result['api_data_json'])->toBeArray()
+        ->and($result['api_data_json']['SS_TAKENBY'])->toBe('ASPLUNDH\\cnewcombe')
+        ->and($result['api_data_json']['SS_ASSIGNEDTO'])->toBe('Admin')
+        ->and($result['api_data_json']['VEGJOB_FORESTER'])->toBe('Chris Newcombe');
+});
+
+it('excludes specified foresters from planner extraction', function () {
+    $apiRow = [
+        'SS_TAKENBY' => 'CONTRACTOR\\Derek Cinicola', // Excluded forester in WS format
+    ];
+
+    // Add the WS-formatted name to excluded list for this test
+    $transformer = new CircuitTransformer;
+    $reflection = new ReflectionClass($transformer);
+    $prop = $reflection->getProperty('excludedForesters');
+    $prop->setValue($transformer, collect(['CONTRACTOR\\Derek Cinicola']));
+
+    $planners = $transformer->extractPlanners($apiRow);
+
+    expect($planners)->toBeEmpty();
+});
+
+it('handles empty SS_TAKENBY gracefully', function () {
+    $apiRow = [
+        'SS_TAKENBY' => '',
+    ];
+
+    $planners = $this->transformer->extractPlanners($apiRow);
+
+    expect($planners)->toBeEmpty();
+});
+
+it('validates WS username format correctly', function () {
+    // Valid formats
+    expect($this->transformer->isValidWsUsername('ASPLUNDH\\cnewcombe'))->toBeTrue()
+        ->and($this->transformer->isValidWsUsername('CONTRACTOR\\user123'))->toBeTrue()
+        ->and($this->transformer->isValidWsUsername('ABC\\xyz'))->toBeTrue();
+
+    // Invalid formats
+    expect($this->transformer->isValidWsUsername('John Doe'))->toBeFalse()
+        ->and($this->transformer->isValidWsUsername('cnewcombe'))->toBeFalse()
+        ->and($this->transformer->isValidWsUsername('\\username'))->toBeFalse()  // Empty contractor
+        ->and($this->transformer->isValidWsUsername('CONTRACTOR\\'))->toBeFalse() // Empty username
+        ->and($this->transformer->isValidWsUsername(''))->toBeFalse();
 });

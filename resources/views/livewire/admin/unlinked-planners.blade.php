@@ -49,7 +49,46 @@
                             @foreach($planners as $planner)
                                 <tr class="hover" wire:key="planner-{{ $planner->id }}">
                                     <td class="font-medium">
-                                        {{ $planner->display_name ?? 'Unknown' }}
+                                        @if($editingDisplayNameId === $planner->id)
+                                            {{-- Editing Mode --}}
+                                            <div class="flex items-center gap-2">
+                                                <input
+                                                    type="text"
+                                                    wire:model="editDisplayName"
+                                                    wire:keydown.enter="saveDisplayName"
+                                                    wire:keydown.escape="cancelEditingDisplayName"
+                                                    class="input input-bordered input-sm w-48"
+                                                    placeholder="Enter display name..."
+                                                    autofocus
+                                                />
+                                                <button
+                                                    wire:click="saveDisplayName"
+                                                    class="btn btn-success btn-xs btn-square"
+                                                    title="Save"
+                                                >
+                                                    <x-heroicon-o-check class="size-4" />
+                                                </button>
+                                                <button
+                                                    wire:click="cancelEditingDisplayName"
+                                                    class="btn btn-ghost btn-xs btn-square"
+                                                    title="Cancel"
+                                                >
+                                                    <x-heroicon-o-x-mark class="size-4" />
+                                                </button>
+                                            </div>
+                                        @else
+                                            {{-- Display Mode --}}
+                                            <div class="flex items-center gap-2 group">
+                                                <span>{{ $planner->display_name ?? 'Unknown' }}</span>
+                                                <button
+                                                    wire:click="startEditingDisplayName({{ $planner->id }})"
+                                                    class="btn btn-ghost btn-xs btn-square opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    title="Edit display name"
+                                                >
+                                                    <x-heroicon-o-pencil-square class="size-4" />
+                                                </button>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="font-mono text-sm text-base-content/70">
                                         {{ $planner->ws_username }}
@@ -156,13 +195,23 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                How Linking Works
+                How Planner Assignment Works
             </h3>
-            <p class="text-sm text-base-content/70">
-                When circuits are synced from WorkStudio, planners are identified by their username.
-                If a planner's username doesn't match any existing user, they appear here.
-                You can either link them to an existing user account or create a new user.
-            </p>
+            <div class="text-sm text-base-content/70 space-y-2">
+                <p>
+                    When circuits are synced from WorkStudio, planners are identified by their username
+                    (e.g., <code class="text-xs bg-base-300 px-1 py-0.5 rounded">ASPLUNDH\cnewcombe</code>).
+                    If a planner's username doesn't match any existing user, they appear here.
+                </p>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Edit Display Name:</strong> Hover over a name and click the pencil icon to set a human-readable display name for the username.</li>
+                    <li><strong>Link to User:</strong> Connect a WorkStudio username to an existing user account.</li>
+                    <li><strong>Create User:</strong> Create a new user account from the planner's information.</li>
+                </ul>
+                <p class="text-base-content/50">
+                    Display names are used in analytics and reports to show friendly names instead of usernames.
+                </p>
+            </div>
         </div>
     </div>
 </div>

@@ -53,10 +53,21 @@
             'section' => 'Planning',
             'items' => [
                 [
-                    'label' => 'Planner Dashboard',
+                    'label' => 'My Dashboard',
                     'route' => 'planner.dashboard',
                     'icon' => 'calendar-days',
                     'permission' => 'planner',
+                ],
+                [
+                    'label' => 'Planner Analytics',
+                    'route' => 'assessments.planner-analytics',
+                    'icon' => 'chart-bar-square',
+                ],
+                [
+                    'label' => 'Manage Planners',
+                    'route' => 'admin.planners',
+                    'icon' => 'user-group',
+                    'permission' => 'admin',
                 ],
             ],
         ],
@@ -64,12 +75,6 @@
             'section' => 'Administration',
             'permission' => 'admin',
             'items' => [
-                [
-                    'label' => 'Planner Management',
-                    'route' => 'admin.planners',
-                    'icon' => 'user-group',
-                    'permission' => 'admin',
-                ],
                 [
                     'label' => 'Data Management',
                     'route' => 'admin.data',

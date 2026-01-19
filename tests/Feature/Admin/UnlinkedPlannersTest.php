@@ -169,3 +169,95 @@ test('available users excludes already linked users', function () {
     expect($availableUsers)->toHaveCount(2); // admin + unlinkedUser
     expect($availableUsers->pluck('id'))->toContain($unlinkedUser->id);
 });
+
+test('can start editing display name', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    $planner = UnlinkedPlanner::factory()->create([
+        'ws_username' => 'ASPLUNDH\\cnewcombe',
+        'display_name' => 'Chris Newcombe',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(UnlinkedPlanners::class)
+        ->assertSet('editingDisplayNameId', null)
+        ->call('startEditingDisplayName', $planner->id)
+        ->assertSet('editingDisplayNameId', $planner->id)
+        ->assertSet('editDisplayName', 'Chris Newcombe');
+});
+
+test('can cancel editing display name', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    $planner = UnlinkedPlanner::factory()->create();
+
+    Livewire::actingAs($user)
+        ->test(UnlinkedPlanners::class)
+        ->call('startEditingDisplayName', $planner->id)
+        ->assertSet('editingDisplayNameId', $planner->id)
+        ->call('cancelEditingDisplayName')
+        ->assertSet('editingDisplayNameId', null)
+        ->assertSet('editDisplayName', '');
+});
+
+test('admin can update display name', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $planner = UnlinkedPlanner::factory()->create([
+        'ws_username' => 'ASPLUNDH\\cnewcombe',
+        'display_name' => null,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(UnlinkedPlanners::class)
+        ->call('startEditingDisplayName', $planner->id)
+        ->set('editDisplayName', 'Chris Newcombe')
+        ->call('saveDisplayName')
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'updated');
+        })
+        ->assertSet('editingDisplayNameId', null);
+
+    expect($planner->refresh()->display_name)->toBe('Chris Newcombe');
+});
+
+test('planner cannot update display name', function () {
+    $user = User::factory()->create();
+    $user->assignRole('planner');
+
+    $planner = UnlinkedPlanner::factory()->create([
+        'ws_username' => 'ASPLUNDH\\cnewcombe',
+        'display_name' => 'Original Name',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(UnlinkedPlanners::class)
+        ->call('startEditingDisplayName', $planner->id)
+        ->set('editDisplayName', 'New Name')
+        ->call('saveDisplayName')
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'permission');
+        });
+
+    expect($planner->refresh()->display_name)->toBe('Original Name');
+});
+
+test('empty display name saves as null', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $planner = UnlinkedPlanner::factory()->create([
+        'display_name' => 'Original Name',
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(UnlinkedPlanners::class)
+        ->call('startEditingDisplayName', $planner->id)
+        ->set('editDisplayName', '   ')
+        ->call('saveDisplayName');
+
+    expect($planner->refresh()->display_name)->toBeNull();
+});

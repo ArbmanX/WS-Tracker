@@ -18,7 +18,7 @@ test('sudo_admin sees all menu sections including administration', function () {
         ->assertSee('Dashboard')
         ->assertSee('Assessments')
         ->assertSee('Administration')
-        ->assertSee('Planner Management')
+        ->assertSee('Manage Planners')
         ->assertSee('Data Management')
         ->assertSee('Sync Controls')
         ->assertSee('User Management');
@@ -35,7 +35,7 @@ test('admin sees administration section but not sudo_admin only items', function
         ->assertSee('Dashboard')
         ->assertSee('Assessments')
         ->assertSee('Administration')
-        ->assertSee('Planner Management')
+        ->assertSee('Manage Planners')
         ->assertSee('Sync Controls')
         ->assertDontSee('Data Management')  // sudo_admin only
         ->assertDontSee('User Management'); // sudo_admin only
@@ -53,7 +53,7 @@ test('planner sees limited menu without administration section', function () {
         ->assertSee('Assessments')
         ->assertSee('Planning')
         ->assertDontSee('Administration')
-        ->assertDontSee('Planner Management')
+        ->assertDontSee('Manage Planners')
         ->assertDontSee('Sync Controls');
 });
 

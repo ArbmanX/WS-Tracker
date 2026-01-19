@@ -19,6 +19,10 @@ class UnlinkedPlanners extends Component
 
     public bool $showLinked = false;
 
+    public ?int $editingDisplayNameId = null;
+
+    public string $editDisplayName = '';
+
     /**
      * Start linking a planner to a user.
      */
@@ -96,6 +100,55 @@ class UnlinkedPlanners extends Component
         ]);
 
         $this->dispatch('notify', message: "Created user {$user->name} and linked to planner.", type: 'success');
+    }
+
+    /**
+     * Start editing a planner's display name.
+     */
+    public function startEditingDisplayName(int $plannerId): void
+    {
+        $planner = UnlinkedPlanner::find($plannerId);
+        if ($planner) {
+            $this->editingDisplayNameId = $plannerId;
+            $this->editDisplayName = $planner->display_name ?? '';
+        }
+    }
+
+    /**
+     * Cancel editing display name.
+     */
+    public function cancelEditingDisplayName(): void
+    {
+        $this->editingDisplayNameId = null;
+        $this->editDisplayName = '';
+    }
+
+    /**
+     * Save the display name for a planner.
+     */
+    public function saveDisplayName(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['sudo_admin', 'admin'])) {
+            $this->dispatch('notify', message: 'You do not have permission to edit display names.', type: 'error');
+
+            return;
+        }
+
+        if (! $this->editingDisplayNameId) {
+            return;
+        }
+
+        $planner = UnlinkedPlanner::findOrFail($this->editingDisplayNameId);
+
+        $displayName = trim($this->editDisplayName);
+        if (empty($displayName)) {
+            $displayName = null;
+        }
+
+        $planner->update(['display_name' => $displayName]);
+
+        $this->dispatch('notify', message: 'Display name updated.', type: 'success');
+        $this->cancelEditingDisplayName();
     }
 
     /**

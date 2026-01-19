@@ -207,6 +207,11 @@ class CircuitTransformer
     {
         // Store commonly needed API fields that aren't directly mapped
         $fieldsToStore = [
+            // Planner identification fields (used for automatic planner assignment)
+            'SS_TAKENBY',
+            'SS_ASSIGNEDTO',
+            'VEGJOB_FORESTER',
+            // Other metadata
             'VEGJOB_SERVCOMP',
             'VEGJOB_OPCO',
             'SS_READONLY',
@@ -233,35 +238,43 @@ class CircuitTransformer
     /**
      * Extract planner usernames from API response.
      * Returns an array of planner identifiers found in the circuit data.
+     *
+     * Only uses SS_TAKENBY field and validates that it matches the
+     * WorkStudio username format: CONTRACTOR\username (e.g., ASPLUNDH\cnewcombe)
      */
     public function extractPlanners(array $apiRow): array
     {
         $planners = [];
 
-        // Primary planner from forester field
-        if (! empty($apiRow['VEGJOB_FORESTER'])) {
-            if ($apiRow['VEGJOB_FORESTER']) {
-                $planners[] = trim($apiRow['VEGJOB_FORESTER']);
-            }
-        }
-
-        // Assigned user
-        if (! empty($apiRow['SS_ASSIGNEDTO'])) {
-            $assignedTo = trim($apiRow['SS_ASSIGNEDTO']);
-            if (! in_array($assignedTo, $planners)) {
-                $planners[] = $assignedTo;
-            }
-        }
-
-        // Taken by user
+        // Only use SS_TAKENBY - must be in CONTRACTOR\username format
         if (! empty($apiRow['SS_TAKENBY'])) {
             $takenBy = trim($apiRow['SS_TAKENBY']);
-            if (! in_array($takenBy, $planners)) {
+
+            // Validate format: must contain backslash separating contractor and username
+            if ($this->isValidWsUsername($takenBy) && ! $this->excludedForesters->contains($takenBy)) {
                 $planners[] = $takenBy;
             }
         }
 
-        return array_filter($planners);
+        return $planners;
+    }
+
+    /**
+     * Validate that a string is in WorkStudio username format.
+     * Format: CONTRACTOR\username (e.g., ASPLUNDH\cnewcombe)
+     */
+    public function isValidWsUsername(string $value): bool
+    {
+        // Must contain exactly one backslash with non-empty parts on both sides
+        if (! str_contains($value, '\\')) {
+            return false;
+        }
+
+        $parts = explode('\\', $value, 2);
+
+        return count($parts) === 2
+            && ! empty(trim($parts[0]))  // Contractor part
+            && ! empty(trim($parts[1])); // Username part
     }
 
     /**

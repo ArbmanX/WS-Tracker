@@ -6,6 +6,7 @@ use App\Livewire\Admin\SyncHistory;
 use App\Livewire\Admin\UnlinkedPlanners;
 use App\Livewire\Admin\UserManagement;
 use App\Livewire\Assessments\Dashboard\Overview;
+use App\Livewire\Assessments\PlannerAnalytics;
 use App\Livewire\DataManagement\CircuitBrowser;
 use App\Livewire\DataManagement\Endpoints;
 use App\Livewire\DataManagement\Exclusions;
@@ -38,6 +39,7 @@ Route::get('dashboard', fn () => redirect()->route('assessments.overview'))
 // Assessments routes
 Route::middleware(['auth', 'verified', 'onboarded'])->prefix('assessments')->name('assessments.')->group(function () {
     Route::get('/overview', Overview::class)->name('overview');
+    Route::get('/planner-analytics', PlannerAnalytics::class)->name('planner-analytics');
 });
 
 // Admin routes (requires admin or sudo_admin role)
