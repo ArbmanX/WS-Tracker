@@ -8,6 +8,7 @@ use App\Events\SyncCompletedEvent;
 use App\Events\SyncFailedEvent;
 use App\Events\SyncStartedEvent;
 use App\Models\SyncLog;
+use App\Services\Sync\SyncOutputLogger;
 use App\Services\WorkStudio\Sync\CircuitSyncService;
 use App\Services\WorkStudio\Transformers\CircuitTransformer;
 use App\Services\WorkStudio\WorkStudioApiService;
@@ -43,6 +44,7 @@ class SyncCircuitsJob implements ShouldQueue
      * @param  int|null  $triggeredByUserId  User who triggered the sync (if manual)
      * @param  bool  $forceOverwrite  If true, overwrite user modifications
      * @param  int|null  $regionId  Optional region filter
+     * @param  string|null  $outputLoggerKey  Key for SyncOutputLogger (for live progress)
      */
     public function __construct(
         private array $statuses,
@@ -50,6 +52,7 @@ class SyncCircuitsJob implements ShouldQueue
         private ?int $triggeredByUserId = null,
         private bool $forceOverwrite = false,
         private ?int $regionId = null,
+        private ?string $outputLoggerKey = null,
     ) {}
 
     /**
@@ -60,6 +63,11 @@ class SyncCircuitsJob implements ShouldQueue
         CircuitTransformer $transformer,
         CircuitSyncService $syncService,
     ): void {
+        // Initialize output logger if key provided
+        $outputLogger = $this->outputLoggerKey
+            ? new SyncOutputLogger($this->outputLoggerKey)
+            : null;
+
         // Start sync log
         $syncLog = SyncLog::start(
             type: SyncType::CircuitList,
@@ -76,11 +84,16 @@ class SyncCircuitsJob implements ShouldQueue
         // Dispatch started event
         event(new SyncStartedEvent($syncLog));
 
+        $outputLogger?->start('Starting circuit sync for: '.implode(', ', $this->statuses));
+        $outputLogger?->info('Sync log ID: '.$syncLog->id);
+
         try {
             // Health check
+            $outputLogger?->info('Checking WorkStudio API health...');
             if (! $api->healthCheck()) {
                 throw new \RuntimeException('WorkStudio API is unavailable');
             }
+            $outputLogger?->success('API health check passed');
 
             $totalResults = [
                 'circuits_processed' => 0,
@@ -98,6 +111,7 @@ class SyncCircuitsJob implements ShouldQueue
 
             // Process each status
             foreach ($this->statuses as $status) {
+                $outputLogger?->info("Fetching {$status} circuits from API...");
                 Log::info('Syncing circuits', [
                     'status' => $status,
                     'sync_log_id' => $syncLog->id,
@@ -105,10 +119,22 @@ class SyncCircuitsJob implements ShouldQueue
 
                 // Fetch circuits from API
                 $circuits = $api->getCircuitsByStatus($status, $this->triggeredByUserId);
+                $circuitCount = count($circuits);
+                $outputLogger?->success("Retrieved {$circuitCount} {$status} circuits");
 
                 // Sync each circuit
+                $statusProcessed = 0;
                 foreach ($circuits as $circuitData) {
                     try {
+                        $workOrder = $circuitData['work_order'] ?? 'unknown';
+
+                        // Update progress
+                        $outputLogger?->progress(
+                            $totalResults['circuits_processed'] + 1,
+                            $circuitCount,
+                            "Processing {$workOrder}"
+                        );
+
                         // Sync the circuit
                         $circuit = $syncService->syncCircuit(
                             $circuitData,
@@ -126,6 +152,7 @@ class SyncCircuitsJob implements ShouldQueue
                         }
 
                         $totalResults['circuits_processed']++;
+                        $statusProcessed++;
 
                         // Rate limiting
                         $callCount++;
@@ -139,12 +166,16 @@ class SyncCircuitsJob implements ShouldQueue
                             'error' => $e->getMessage(),
                         ];
 
+                        $outputLogger?->warning("Failed to sync {$circuitData['work_order']}: {$e->getMessage()}");
+
                         Log::error('Failed to sync circuit', [
                             'job_guid' => $circuitData['job_guid'] ?? 'unknown',
                             'error' => $e->getMessage(),
                         ]);
                     }
                 }
+
+                $outputLogger?->success("Completed {$status}: {$statusProcessed} circuits processed");
             }
 
             // Get final results from sync service
@@ -159,12 +190,22 @@ class SyncCircuitsJob implements ShouldQueue
                     count($totalResults['errors']).' circuits failed to sync',
                     $totalResults
                 );
+                $outputLogger?->warning('Sync completed with '.count($totalResults['errors']).' errors');
             } else {
                 $syncLog->complete($totalResults);
             }
 
             // Dispatch completed event
             event(new SyncCompletedEvent($syncLog));
+
+            $summaryMessage = sprintf(
+                'Sync completed: %d processed, %d created, %d updated',
+                $totalResults['circuits_processed'],
+                $totalResults['circuits_created'],
+                $totalResults['circuits_updated']
+            );
+
+            $outputLogger?->complete($summaryMessage);
 
             Log::info('Circuit sync completed', [
                 'sync_log_id' => $syncLog->id,
@@ -176,6 +217,7 @@ class SyncCircuitsJob implements ShouldQueue
 
             // Dispatch aggregate sync job for updated circuits
             if ($totalResults['circuits_processed'] > 0) {
+                $outputLogger?->info('Dispatching aggregate sync job...');
                 dispatch(new SyncCircuitAggregatesJob(
                     $this->statuses,
                     $this->triggerType,
@@ -191,6 +233,8 @@ class SyncCircuitsJob implements ShouldQueue
 
             // Dispatch failed event
             event(new SyncFailedEvent($syncLog, $e));
+
+            $outputLogger?->fail('Sync failed: '.$e->getMessage());
 
             Log::error('Circuit sync failed', [
                 'sync_log_id' => $syncLog->id,

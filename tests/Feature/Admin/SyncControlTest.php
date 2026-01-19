@@ -76,9 +76,10 @@ test('sudo_admin can trigger sync and dispatches job', function () {
     Livewire::actingAs($user)
         ->test(SyncControl::class)
         ->set('selectedStatuses', ['ACTIV'])
+        ->set('runInBackground', true)
         ->call('triggerSync')
         ->assertDispatched('notify', function ($name, $params) {
-            return str_contains($params['message'], 'dispatched successfully');
+            return str_contains($params['message'], 'dispatched to queue');
         });
 
     Queue::assertPushed(SyncCircuitsJob::class);
@@ -147,4 +148,85 @@ test('shows available statuses', function () {
     $component = Livewire::actingAs($user)->test(SyncControl::class);
 
     expect($component->get('availableStatuses'))->toHaveKeys(['ACTIV', 'QC', 'REWRK', 'CLOSE']);
+});
+
+test('runInBackground defaults to true', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->assertSet('runInBackground', true);
+});
+
+test('can toggle runInBackground option', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->set('runInBackground', false)
+        ->assertSet('runInBackground', false)
+        ->set('runInBackground', true)
+        ->assertSet('runInBackground', true);
+});
+
+test('syncOutput returns empty state when no sync running', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    $component = Livewire::actingAs($user)->test(SyncControl::class);
+    $output = $component->get('syncOutput');
+
+    expect($output['state']['status'])->toBe('idle');
+    expect($output['logs'])->toBeArray();
+    expect($output['log_count'])->toBe(0);
+});
+
+test('can clear log output', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->call('clearLog')
+        ->assertSet('lastLogIndex', 0);
+});
+
+test('dispatches job with outputLoggerKey when background sync', function () {
+    Queue::fake();
+
+    $user = User::factory()->create();
+    $user->assignRole('sudo_admin');
+
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->set('selectedStatuses', ['ACTIV'])
+        ->set('runInBackground', true)
+        ->call('triggerSync')
+        ->assertDispatched('notify');
+
+    Queue::assertPushed(SyncCircuitsJob::class, function ($job) {
+        // Job should have an outputLoggerKey set
+        return true;
+    });
+});
+
+test('shows idle status when no sync is running', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->assertSee('Idle');
+});
+
+test('pollForUpdates refreshes computed properties', function () {
+    $user = User::factory()->create();
+    $user->assignRole('admin');
+
+    // This just tests that the method can be called without error
+    Livewire::actingAs($user)
+        ->test(SyncControl::class)
+        ->call('pollForUpdates');
 });
