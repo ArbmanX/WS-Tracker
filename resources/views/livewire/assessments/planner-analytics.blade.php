@@ -18,6 +18,40 @@
         </div>
     </div>
 
+    {{-- Global Analytics Settings Indicator --}}
+    @php $settings = $this->globalSettings; @endphp
+    <div class="alert alert-info py-2">
+        <x-heroicon-o-funnel class="size-5" />
+        <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <span>
+                <span class="font-medium">Scope Year:</span>
+                <span class="font-mono">{{ $settings->scope_year }}</span>
+            </span>
+            <span>
+                <span class="font-medium">Cycle Types:</span>
+                @if($settings->selected_cycle_types)
+                    <span class="font-mono">{{ count($settings->selected_cycle_types) }} selected</span>
+                @else
+                    <span>All</span>
+                @endif
+            </span>
+            <span>
+                <span class="font-medium">Contractors:</span>
+                @if($settings->selected_contractors)
+                    <span class="font-mono">{{ count($settings->selected_contractors) }} selected</span>
+                @else
+                    <span>All</span>
+                @endif
+            </span>
+            @can('update', App\Models\AnalyticsSetting::class)
+                <a href="{{ route('admin.analytics-settings') }}" class="link link-hover font-medium">
+                    <x-heroicon-o-cog-6-tooth class="size-4 inline" />
+                    Settings
+                </a>
+            @endcan
+        </div>
+    </div>
+
     {{-- Filters --}}
     <div class="card bg-base-100 shadow">
         <div class="card-body py-4">
@@ -234,42 +268,80 @@
 
     {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {{-- Permission Status Donut --}}
+        {{-- Full Permission Status Breakdown (All 6 Statuses) --}}
         <div class="card bg-base-100 shadow">
             <div class="card-body">
-                <h2 class="card-title text-base">Permission Status</h2>
-                @php $permission = $this->permissionStatus; @endphp
-                @if($permission['approved'] + $permission['pending'] + $permission['refused'] > 0)
-                    <x-apex-chart
-                        chart-id="permission-donut"
-                        type="donut"
-                        :height="280"
-                        :series="[$permission['approved'], $permission['pending'], $permission['refused']]"
-                        :options="[
-                            'labels' => ['Approved', 'Pending', 'Refused'],
-                            'colors' => ['#22c55e', '#eab308', '#ef4444'],
-                            'legend' => [
-                                'position' => 'bottom',
-                                'labels' => ['useSeriesColors' => true]
-                            ],
-                            'plotOptions' => [
-                                'pie' => [
-                                    'donut' => [
-                                        'size' => '65%',
-                                        'labels' => [
-                                            'show' => true,
-                                            'total' => [
-                                                'show' => true,
-                                                'label' => 'Total',
-                                                'fontSize' => '14px',
+                <h2 class="card-title text-base">
+                    <x-heroicon-o-shield-check class="size-5 text-primary" />
+                    Permission Status
+                    <span class="badge badge-ghost badge-sm">All Statuses</span>
+                </h2>
+
+                @php $fullPermission = $this->fullPermissionBreakdown; @endphp
+                @if(!empty($fullPermission))
+                    @php
+                        $totalUnits = collect($fullPermission)->sum('count');
+                        $chartColors = collect($fullPermission)->pluck('color')->values()->toArray();
+                        $chartLabels = collect($fullPermission)->pluck('name')->values()->toArray();
+                        $chartSeries = collect($fullPermission)->pluck('count')->values()->toArray();
+                    @endphp
+
+                    @if($totalUnits > 0)
+                        <div wire:key="permission-chart-{{ md5(json_encode($chartSeries)) }}">
+                            <x-apex-chart
+                                chart-id="full-permission-donut"
+                                type="donut"
+                                :height="280"
+                                :series="$chartSeries"
+                                :options="[
+                                    'labels' => $chartLabels,
+                                    'colors' => $chartColors,
+                                    'legend' => [
+                                        'position' => 'bottom',
+                                        'labels' => ['useSeriesColors' => true]
+                                    ],
+                                    'plotOptions' => [
+                                        'pie' => [
+                                            'donut' => [
+                                                'size' => '65%',
+                                                'labels' => [
+                                                    'show' => true,
+                                                    'total' => [
+                                                        'show' => true,
+                                                        'label' => 'Total Units',
+                                                        'fontSize' => '14px',
+                                                    ]
+                                                ]
                                             ]
                                         ]
-                                    ]
-                                ]
-                            ],
-                            'dataLabels' => ['enabled' => false],
-                        ]"
-                    />
+                                    ],
+                                    'dataLabels' => ['enabled' => false],
+                                ]"
+                            />
+                        </div>
+
+                        {{-- Detailed breakdown with counts and percentages --}}
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4">
+                            @foreach($fullPermission as $code => $status)
+                                <div class="flex items-center gap-2 text-sm">
+                                    <span
+                                        class="w-3 h-3 rounded-full shrink-0"
+                                        style="background-color: {{ $status['color'] }}"
+                                    ></span>
+                                    <span class="truncate" title="{{ $status['name'] }}">{{ $status['name'] }}</span>
+                                    <span class="font-mono text-base-content/70">{{ number_format($status['count']) }}</span>
+                                    <span class="text-xs text-base-content/50">({{ $status['percentage'] }}%)</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex items-center justify-center h-64 text-base-content/40">
+                            <div class="text-center">
+                                <x-heroicon-o-chart-pie class="size-12 mx-auto mb-2" />
+                                <p>No permission data available</p>
+                            </div>
+                        </div>
+                    @endif
                 @else
                     <div class="flex items-center justify-center h-64 text-base-content/40">
                         <div class="text-center">
@@ -278,22 +350,6 @@
                         </div>
                     </div>
                 @endif
-
-                {{-- Legend with values --}}
-                <div class="flex justify-center gap-6 mt-2 text-sm">
-                    <div class="flex items-center gap-2">
-                        <span class="badge badge-success badge-xs"></span>
-                        <span>Approved: {{ number_format($permission['approved']) }}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="badge badge-warning badge-xs"></span>
-                        <span>Pending: {{ number_format($permission['pending']) }}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="badge badge-error badge-xs"></span>
-                        <span>Refused: {{ number_format($permission['refused']) }}</span>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -303,29 +359,31 @@
                 <h2 class="card-title text-base">Planning Progression</h2>
                 @php $progression = $this->progressionData; @endphp
                 @if(!empty($progression['dates']))
-                    <x-apex-chart
-                        chart-id="progression-chart"
-                        type="area"
-                        :height="280"
-                        :series="[
-                            ['name' => 'Units', 'data' => $progression['units']],
-                            ['name' => 'Miles', 'data' => $progression['miles']]
-                        ]"
-                        :options="[
-                            'xaxis' => [
-                                'categories' => $progression['dates'],
-                                'labels' => ['rotate' => -45]
-                            ],
-                            'yaxis' => [
-                                ['title' => ['text' => 'Units'], 'seriesName' => 'Units'],
-                                ['opposite' => true, 'title' => ['text' => 'Miles'], 'seriesName' => 'Miles']
-                            ],
-                            'stroke' => ['curve' => 'smooth', 'width' => 2],
-                            'fill' => ['type' => 'gradient', 'gradient' => ['opacityFrom' => 0.4, 'opacityTo' => 0.1]],
-                            'legend' => ['position' => 'top'],
-                            'tooltip' => ['shared' => true],
-                        ]"
-                    />
+                    <div wire:key="progression-chart-{{ md5(json_encode($progression)) }}">
+                        <x-apex-chart
+                            chart-id="progression-chart"
+                            type="area"
+                            :height="280"
+                            :series="[
+                                ['name' => 'Units', 'data' => $progression['units']],
+                                ['name' => 'Miles', 'data' => $progression['miles']]
+                            ]"
+                            :options="[
+                                'xaxis' => [
+                                    'categories' => $progression['dates'],
+                                    'labels' => ['rotate' => -45]
+                                ],
+                                'yaxis' => [
+                                    ['title' => ['text' => 'Units'], 'seriesName' => 'Units'],
+                                    ['opposite' => true, 'title' => ['text' => 'Miles'], 'seriesName' => 'Miles']
+                                ],
+                                'stroke' => ['curve' => 'smooth', 'width' => 2],
+                                'fill' => ['type' => 'gradient', 'gradient' => ['opacityFrom' => 0.4, 'opacityTo' => 0.1]],
+                                'legend' => ['position' => 'top'],
+                                'tooltip' => ['shared' => true],
+                            ]"
+                        />
+                    </div>
                 @else
                     <div class="flex items-center justify-center h-64 text-base-content/40">
                         <div class="text-center">
@@ -337,6 +395,153 @@
             </div>
         </div>
     </div>
+
+    {{-- Unit Type Breakdown --}}
+    @php $unitTypes = $this->unitTypeBreakdown; @endphp
+    @if(!empty($unitTypes))
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <h2 class="card-title text-base">
+                    <x-heroicon-o-squares-2x2 class="size-5 text-secondary" />
+                    Unit Type Breakdown
+                    <span class="badge badge-ghost badge-sm">By Category</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                    @foreach($unitTypes as $key => $category)
+                        @php
+                            $bgColor = match($key) {
+                                'trim_line' => 'bg-info/10 border-info/30',
+                                'brush_area' => 'bg-success/10 border-success/30',
+                                'tree_removal' => 'bg-warning/10 border-warning/30',
+                                default => 'bg-base-200 border-base-300',
+                            };
+                            $iconColor = match($key) {
+                                'trim_line' => 'text-info',
+                                'brush_area' => 'text-success',
+                                'tree_removal' => 'text-warning',
+                                default => 'text-base-content',
+                            };
+                            $icon = match($key) {
+                                'trim_line' => 'o-scissors',
+                                'brush_area' => 'o-beaker',
+                                'tree_removal' => 'o-fire',
+                                default => 'o-cube',
+                            };
+                        @endphp
+                        <div class="p-4 rounded-lg border {{ $bgColor }}">
+                            <div class="flex items-center gap-2 mb-3">
+                                <x-dynamic-component :component="'heroicon-' . $icon" class="size-5 {{ $iconColor }}" />
+                                <h3 class="font-semibold">{{ $category['label'] }}</h3>
+                            </div>
+
+                            <div class="flex justify-between items-baseline mb-4">
+                                <div>
+                                    <span class="text-3xl font-bold">{{ number_format($category['total']) }}</span>
+                                    <span class="text-sm text-base-content/60 ml-1">{{ $category['unit_label'] }}</span>
+                                </div>
+                                <div class="text-sm text-base-content/60">
+                                    {{ number_format($category['count']) }} units
+                                </div>
+                            </div>
+
+                            @if(!empty($category['types']))
+                                <div class="divider my-2 text-xs">By Type</div>
+                                <div class="space-y-1 max-h-32 overflow-y-auto">
+                                    @foreach($category['types'] as $code => $type)
+                                        <div class="flex justify-between text-sm">
+                                            <span class="truncate" title="{{ $type['name'] }}">{{ $code }}</span>
+                                            <span class="font-mono text-base-content/70">{{ number_format($type['count']) }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-sm text-base-content/40 text-center py-2">
+                                    No units in this category
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Planner Activity Details (when planner selected) --}}
+    @if($plannerId)
+        @php $activity = $this->activityTimestamps; @endphp
+        @if($activity['planner_activity']->isNotEmpty())
+            <div class="card bg-base-100 shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-base">
+                        <x-heroicon-o-clock class="size-5 text-accent" />
+                        Activity Timeline
+                        @if($this->selectedPlanner)
+                            <span class="text-base-content/60 font-normal">for {{ $this->selectedPlanner->name }}</span>
+                        @endif
+                    </h2>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                        {{-- Last Snapshot --}}
+                        <div class="stat bg-base-200/50 rounded-lg">
+                            <div class="stat-title text-xs">Last Data Sync</div>
+                            <div class="stat-value text-base">
+                                @if($activity['planner_activity']['last_snapshot'])
+                                    {{ $activity['planner_activity']['last_snapshot']->diffForHumans() }}
+                                @else
+                                    <span class="text-base-content/40">No data</span>
+                                @endif
+                            </div>
+                            @if($activity['planner_activity']['last_snapshot'])
+                                <div class="stat-desc">{{ $activity['planner_activity']['last_snapshot']->format('M d, Y H:i') }}</div>
+                            @endif
+                        </div>
+
+                        {{-- Circuit Status Counts --}}
+                        <div class="stat bg-base-200/50 rounded-lg">
+                            <div class="stat-title text-xs">Circuit Status</div>
+                            <div class="stat-value text-base flex gap-2">
+                                <span class="badge badge-primary badge-sm" title="Active">
+                                    {{ $activity['planner_activity']['active_circuits'] ?? 0 }}
+                                </span>
+                                <span class="badge badge-warning badge-sm" title="QC">
+                                    {{ $activity['planner_activity']['qc_circuits'] ?? 0 }}
+                                </span>
+                                <span class="badge badge-success badge-sm" title="Closed">
+                                    {{ $activity['planner_activity']['closed_circuits'] ?? 0 }}
+                                </span>
+                            </div>
+                            <div class="stat-desc">Active / QC / Closed</div>
+                        </div>
+
+                        {{-- Oldest In-Progress --}}
+                        <div class="stat bg-base-200/50 rounded-lg">
+                            <div class="stat-title text-xs">Oldest In Progress</div>
+                            <div class="stat-value text-base">
+                                @if($activity['planner_activity']['oldest_in_progress'])
+                                    {{ $activity['planner_activity']['oldest_in_progress']->diffForHumans() }}
+                                @else
+                                    <span class="text-base-content/40">None</span>
+                                @endif
+                            </div>
+                            @if($activity['planner_activity']['oldest_in_progress_wo'])
+                                <div class="stat-desc font-mono">{{ $activity['planner_activity']['oldest_in_progress_wo'] }}</div>
+                            @endif
+                        </div>
+
+                        {{-- Total Circuits --}}
+                        <div class="stat bg-base-200/50 rounded-lg">
+                            <div class="stat-title text-xs">Total Assigned</div>
+                            <div class="stat-value text-base">
+                                {{ ($activity['planner_activity']['active_circuits'] ?? 0) + ($activity['planner_activity']['qc_circuits'] ?? 0) + ($activity['planner_activity']['closed_circuits'] ?? 0) }}
+                            </div>
+                            <div class="stat-desc">circuits</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
 
     {{-- Planner Leaderboard --}}
     <div class="card bg-base-100 shadow">
@@ -362,7 +567,11 @@
                             <th>Planner</th>
                             <th class="text-right">Circuits</th>
                             <th class="text-right">Units</th>
-                            <th class="text-right">Avg/Day</th>
+                            <th class="text-right">
+                                <span class="tooltip tooltip-left" data-tip="Total units assessed ÷ days worked (5-day work week assumed)">
+                                    Units/Day
+                                </span>
+                            </th>
                             <th class="text-right">Miles</th>
                             <th class="text-right">
                                 <span class="tooltip tooltip-left" data-tip="Miles planned this week (target: 6.5 mi)">
@@ -516,7 +725,7 @@
     {{-- Loading Overlay --}}
     <div
         wire:loading.flex
-        wire:target="dateRange, regionId, plannerId, startDate, endDate, filterByPlanner, clearPlannerFilter"
+        wire:target="dateRange, regionId, plannerId, startDate, endDate, filterByPlanner, clearPlannerFilter, clearAllFilters"
         class="fixed inset-0 z-40 items-center justify-center bg-base-100/50"
     >
         <span class="loading loading-spinner loading-lg text-primary"></span>

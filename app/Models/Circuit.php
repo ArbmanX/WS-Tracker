@@ -270,13 +270,20 @@ class Circuit extends Model
 
     /**
      * Scope to circuits needing sync.
+     *
+     * Uses the configurable sync interval from AnalyticsSetting.
+     * Default is 12 hours if not configured.
+     *
+     * @param  int|null  $intervalHours  Override the configured interval (useful for testing)
      */
-    public function scopeNeedsSync($query)
+    public function scopeNeedsSync($query, ?int $intervalHours = null)
     {
+        $interval = $intervalHours ?? AnalyticsSetting::getSyncIntervalHours();
+
         return $query->where('planned_units_sync_enabled', true)
-            ->where(function ($q) {
+            ->where(function ($q) use ($interval) {
                 $q->whereNull('last_planned_units_synced_at')
-                    ->orWhere('last_planned_units_synced_at', '<', now()->subHours(12));
+                    ->orWhere('last_planned_units_synced_at', '<', now()->subHours($interval));
             });
     }
 
@@ -318,6 +325,46 @@ class Circuit extends Model
     public function scopeForReporting($query)
     {
         return $query->notExcluded();
+    }
+
+    /**
+     * Scope to circuits with a specific scope year (extracted from work_order).
+     */
+    public function scopeForScopeYear($query, string $year)
+    {
+        return $query->where('work_order', 'like', $year.'-%');
+    }
+
+    /**
+     * Scope to circuits with specific cycle types.
+     *
+     * @param  array<string>|string  $cycleTypes
+     */
+    public function scopeWithCycleTypes($query, array|string $cycleTypes)
+    {
+        $cycleTypes = (array) $cycleTypes;
+
+        return $query->whereIn('cycle_type', $cycleTypes);
+    }
+
+    /**
+     * Scope to apply all analytics settings filters (scope year, cycle types).
+     * This is the primary scope to use for analytics queries.
+     */
+    public function scopeForAnalytics($query)
+    {
+        $settings = AnalyticsSetting::instance();
+
+        // Apply scope year filter
+        $query->forScopeYear($settings->scope_year ?? date('Y'));
+
+        // Apply cycle type filter if specified
+        $selectedCycleTypes = $settings->selected_cycle_types;
+        if ($selectedCycleTypes !== null && ! empty($selectedCycleTypes)) {
+            $query->withCycleTypes($selectedCycleTypes);
+        }
+
+        return $query;
     }
 
     /**

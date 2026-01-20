@@ -84,12 +84,13 @@ test('tabs property contains correct navigation items', function () {
     $component = Livewire::actingAs($admin)->test(Index::class);
 
     $tabs = $component->get('tabs');
-    expect($tabs)->toHaveCount(4);
+    expect($tabs)->toHaveCount(5);
     expect(collect($tabs)->pluck('route')->toArray())->toContain(
         'admin.data.circuits',
         'admin.data.exclusions',
         'admin.data.sync-logs',
-        'admin.data.endpoints'
+        'admin.data.endpoints',
+        'admin.data.tables'
     );
 });
 
@@ -102,5 +103,6 @@ test('renders navigation cards for all sections', function () {
         ->assertSee('Circuit Browser')
         ->assertSee('Exclusions')
         ->assertSee('Sync Logs')
-        ->assertSee('API Endpoints');
+        ->assertSee('API Endpoints')
+        ->assertSee('Table Manager');
 });

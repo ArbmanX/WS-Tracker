@@ -56,6 +56,7 @@ trait WithCircuitFilters
 
     /**
      * Get distinct cycle types from the database.
+     * Respects global analytics settings (scope year filter).
      *
      * @return Collection<int, string>
      */
@@ -63,6 +64,7 @@ trait WithCircuitFilters
     public function availableCycleTypes(): Collection
     {
         return Circuit::query()
+            ->forAnalytics()
             ->whereNull('deleted_at')
             ->notExcluded()
             ->whereNotNull('cycle_type')

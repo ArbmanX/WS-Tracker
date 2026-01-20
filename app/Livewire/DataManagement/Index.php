@@ -58,6 +58,12 @@ class Index extends Component
                 'icon' => 'server',
                 'description' => 'View configured API endpoints',
             ],
+            [
+                'name' => 'Table Manager',
+                'route' => 'admin.data.tables',
+                'icon' => 'circle-stack',
+                'description' => 'Clear API/sync tables and view stats',
+            ],
         ];
     }
 

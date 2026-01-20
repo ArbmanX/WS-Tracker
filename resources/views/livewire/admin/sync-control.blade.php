@@ -10,7 +10,7 @@
     <div class="mb-6 flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-base-content">Sync Control</h1>
-            <p class="text-base-content/60">Manage WorkStudio API synchronization</p>
+            <p class="text-base-content/60">Manage WorkStudio API synchronization and aggregates</p>
         </div>
         <div class="badge badge-outline badge-lg gap-2">
             @if(auth()->user()?->hasRole('sudo_admin'))
@@ -43,6 +43,14 @@
                         <span class="badge badge-neutral gap-2">
                             <span class="inline-block h-2 w-2 rounded-full bg-base-content/40"></span>
                             Idle
+                        </span>
+                    @endif
+
+                    {{-- Global sync toggle indicator --}}
+                    @if(!$globalSyncEnabled)
+                        <span class="badge badge-error gap-1">
+                            <x-heroicon-o-pause class="h-3 w-3" />
+                            Sync Paused
                         </span>
                     @endif
                 </div>
@@ -118,7 +126,7 @@
                             </div>
                         @empty
                             <div class="text-base-content/40 text-center py-8">
-                                Ready to sync. Select statuses and click "Sync Now".
+                                Ready to sync. Select a sync type and click the button.
                             </div>
                         @endforelse
                     </div>
@@ -138,107 +146,312 @@
 
         {{-- Sync Options Panel (1/3 width) --}}
         <div class="space-y-6">
-            {{-- Sync Options Card --}}
-            <div class="card bg-base-100 shadow-lg">
-                <div class="card-body">
-                    <h2 class="card-title text-lg mb-4">
-                        <x-heroicon-o-cog-6-tooth class="h-5 w-5" />
-                        Sync Options
-                    </h2>
+            {{-- Tabs --}}
+            <div class="tabs tabs-boxed bg-base-100 p-1">
+                <button
+                    wire:click="$set('activeTab', 'circuits')"
+                    class="tab flex-1 {{ $activeTab === 'circuits' ? 'tab-active' : '' }}"
+                >
+                    <x-heroicon-o-map class="h-4 w-4 mr-1" />
+                    Circuits
+                </button>
+                <button
+                    wire:click="$set('activeTab', 'planned')"
+                    class="tab flex-1 {{ $activeTab === 'planned' ? 'tab-active' : '' }}"
+                >
+                    <x-heroicon-o-clipboard-document-list class="h-4 w-4 mr-1" />
+                    Planned
+                </button>
+                <button
+                    wire:click="$set('activeTab', 'aggregates')"
+                    class="tab flex-1 {{ $activeTab === 'aggregates' ? 'tab-active' : '' }}"
+                >
+                    <x-heroicon-o-chart-bar class="h-4 w-4 mr-1" />
+                    Aggregates
+                </button>
+            </div>
 
-                    {{-- Status Selection --}}
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-medium">Statuses</span>
+            {{-- Circuit Sync Tab --}}
+            @if($activeTab === 'circuits')
+                <div class="card bg-base-100 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title text-lg mb-4">
+                            <x-heroicon-o-arrow-path class="h-5 w-5" />
+                            Circuit Sync
+                        </h2>
+
+                        {{-- Status Selection --}}
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Statuses</span>
+                            </label>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($this->availableStatuses as $code => $label)
+                                    <label class="label cursor-pointer gap-2 p-2 rounded-lg hover:bg-base-200 transition-colors">
+                                        <input
+                                            type="checkbox"
+                                            wire:model.live="selectedStatuses"
+                                            value="{{ $code }}"
+                                            class="checkbox checkbox-primary checkbox-sm"
+                                            @disabled($this->isOutputRunning || $this->isSyncing)
+                                        />
+                                        <span class="label-text">{{ $label }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="divider my-2"></div>
+
+                        {{-- Force Overwrite Option --}}
+                        <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
+                            <input
+                                type="checkbox"
+                                wire:model.live="forceOverwrite"
+                                class="checkbox checkbox-warning checkbox-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            />
+                            <div>
+                                <span class="label-text font-medium">Force Overwrite</span>
+                                <p class="text-xs text-base-content/60">Override user modifications</p>
+                            </div>
                         </label>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach($this->availableStatuses as $code => $label)
-                                <label class="label cursor-pointer gap-2 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                                    <input
-                                        type="checkbox"
-                                        wire:model.live="selectedStatuses"
-                                        value="{{ $code }}"
-                                        class="checkbox checkbox-primary checkbox-sm"
-                                        @disabled($this->isOutputRunning || $this->isSyncing)
-                                    />
-                                    <span class="label-text">{{ $label }}</span>
-                                </label>
-                            @endforeach
+
+                        {{-- Run in Background Option --}}
+                        <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
+                            <input
+                                type="checkbox"
+                                wire:model.live="runInBackground"
+                                class="checkbox checkbox-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            />
+                            <div>
+                                <span class="label-text font-medium">Run in Background</span>
+                                <p class="text-xs text-base-content/60">Dispatch to queue worker</p>
+                            </div>
+                        </label>
+
+                        <div class="divider my-2"></div>
+
+                        {{-- Action Buttons --}}
+                        <div class="flex gap-2">
+                            @if(auth()->user()?->hasRole('sudo_admin'))
+                                @if($this->isOutputRunning)
+                                    <button
+                                        wire:click="cancelSync"
+                                        class="btn btn-error btn-sm flex-1"
+                                    >
+                                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                                        Cancel
+                                    </button>
+                                @else
+                                    <button
+                                        wire:click="triggerCircuitSync"
+                                        wire:loading.attr="disabled"
+                                        wire:target="triggerCircuitSync"
+                                        class="btn btn-primary flex-1"
+                                        @disabled(empty($selectedStatuses) || $this->isSyncing)
+                                    >
+                                        <span wire:loading.remove wire:target="triggerCircuitSync">
+                                            <x-heroicon-o-arrow-path class="h-4 w-4" />
+                                            Sync Circuits
+                                        </span>
+                                        <span wire:loading wire:target="triggerCircuitSync">
+                                            <span class="loading loading-spinner loading-sm"></span>
+                                            Starting...
+                                        </span>
+                                    </button>
+                                @endif
+                            @else
+                                <div class="tooltip flex-1" data-tip="Only sudo admins can trigger syncs">
+                                    <button class="btn btn-disabled w-full">
+                                        <x-heroicon-o-lock-closed class="h-4 w-4" />
+                                        Sync Circuits
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
+                </div>
+            @endif
 
-                    <div class="divider my-2"></div>
+            {{-- Planned Units Sync Tab --}}
+            @if($activeTab === 'planned')
+                <div class="card bg-base-100 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title text-lg mb-4">
+                            <x-heroicon-o-clipboard-document-list class="h-5 w-5" />
+                            Planned Units Sync
+                        </h2>
 
-                    {{-- Force Overwrite Option --}}
-                    <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <input
-                            type="checkbox"
-                            wire:model.live="forceOverwrite"
-                            class="checkbox checkbox-warning checkbox-sm"
-                            @disabled($this->isOutputRunning || $this->isSyncing)
-                        />
-                        <div>
-                            <span class="label-text font-medium">Force Overwrite</span>
-                            <p class="text-xs text-base-content/60">Override user modifications</p>
+                        {{-- Stats --}}
+                        <div class="stats stats-vertical bg-base-200 w-full mb-4">
+                            <div class="stat py-2">
+                                <div class="stat-title text-xs">Circuits Needing Sync</div>
+                                <div class="stat-value text-lg">{{ number_format($this->circuitsNeedingSync) }}</div>
+                            </div>
+                            <div class="stat py-2">
+                                <div class="stat-title text-xs">Matching Filters</div>
+                                <div class="stat-value text-lg">{{ number_format($this->circuitsMatchingFilters) }}</div>
+                            </div>
                         </div>
-                    </label>
 
-                    {{-- Run in Background Option --}}
-                    <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <input
-                            type="checkbox"
-                            wire:model.live="runInBackground"
-                            class="checkbox checkbox-sm"
-                            @disabled($this->isOutputRunning || $this->isSyncing)
-                        />
-                        <div>
-                            <span class="label-text font-medium">Run in Background</span>
-                            <p class="text-xs text-base-content/60">Dispatch to queue worker</p>
-                        </div>
-                    </label>
+                        {{-- Options --}}
+                        <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
+                            <input
+                                type="checkbox"
+                                wire:model.live="plannedUnitsRespectFilters"
+                                class="checkbox checkbox-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            />
+                            <div>
+                                <span class="label-text font-medium">Respect Analytics Filters</span>
+                                <p class="text-xs text-base-content/60">Only sync circuits matching scope year & cycle types</p>
+                            </div>
+                        </label>
 
-                    <div class="divider my-2"></div>
+                        <label class="label cursor-pointer justify-start gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
+                            <input
+                                type="checkbox"
+                                wire:model.live="plannedUnitsDryRun"
+                                class="checkbox checkbox-info checkbox-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            />
+                            <div>
+                                <span class="label-text font-medium">Dry Run (Preview Only)</span>
+                                <p class="text-xs text-base-content/60">Show what would sync without making changes</p>
+                            </div>
+                        </label>
 
-                    {{-- Action Buttons --}}
-                    <div class="flex gap-2">
+                        <div class="divider my-2"></div>
+
+                        {{-- Action Button --}}
                         @if(auth()->user()?->hasRole('sudo_admin'))
                             @if($this->isOutputRunning)
                                 <button
                                     wire:click="cancelSync"
-                                    class="btn btn-error btn-sm flex-1"
+                                    class="btn btn-error w-full"
                                 >
                                     <x-heroicon-o-x-mark class="h-4 w-4" />
                                     Cancel
                                 </button>
                             @else
                                 <button
-                                    wire:click="triggerSync"
+                                    wire:click="triggerPlannedUnitsSync"
                                     wire:loading.attr="disabled"
-                                    wire:target="triggerSync"
-                                    class="btn btn-primary flex-1"
-                                    @disabled(empty($selectedStatuses) || $this->isSyncing)
+                                    wire:target="triggerPlannedUnitsSync"
+                                    class="btn {{ $plannedUnitsDryRun ? 'btn-info' : 'btn-primary' }} w-full"
+                                    @disabled($this->isSyncing)
                                 >
-                                    <span wire:loading.remove wire:target="triggerSync">
-                                        <x-heroicon-o-arrow-path class="h-4 w-4" />
-                                        Sync Now
+                                    <span wire:loading.remove wire:target="triggerPlannedUnitsSync">
+                                        @if($plannedUnitsDryRun)
+                                            <x-heroicon-o-eye class="h-4 w-4" />
+                                            Preview Sync
+                                        @else
+                                            <x-heroicon-o-arrow-path class="h-4 w-4" />
+                                            Sync Planned Units
+                                        @endif
                                     </span>
-                                    <span wire:loading wire:target="triggerSync">
+                                    <span wire:loading wire:target="triggerPlannedUnitsSync">
                                         <span class="loading loading-spinner loading-sm"></span>
                                         Starting...
                                     </span>
                                 </button>
                             @endif
                         @else
-                            <div class="tooltip flex-1" data-tip="Only sudo admins can trigger syncs">
+                            <div class="tooltip w-full" data-tip="Only sudo admins can trigger syncs">
                                 <button class="btn btn-disabled w-full">
                                     <x-heroicon-o-lock-closed class="h-4 w-4" />
-                                    Sync Now
+                                    Sync Planned Units
                                 </button>
                             </div>
                         @endif
                     </div>
                 </div>
-            </div>
+            @endif
+
+            {{-- Aggregates Tab --}}
+            @if($activeTab === 'aggregates')
+                <div class="card bg-base-100 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title text-lg mb-4">
+                            <x-heroicon-o-chart-bar class="h-5 w-5" />
+                            Build Aggregates
+                        </h2>
+
+                        {{-- Aggregate Type --}}
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-medium">Aggregate Type</span>
+                            </label>
+                            <select
+                                wire:model.live="aggregateType"
+                                class="select select-bordered select-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            >
+                                @foreach($this->aggregateTypes as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Target Date --}}
+                        <div class="form-control mt-4">
+                            <label class="label">
+                                <span class="label-text font-medium">Target Date</span>
+                            </label>
+                            <input
+                                type="date"
+                                wire:model.live="aggregateDate"
+                                class="input input-bordered input-sm"
+                                @disabled($this->isOutputRunning || $this->isSyncing)
+                            />
+                            <label class="label">
+                                <span class="label-text-alt text-base-content/60">Build aggregates for this date</span>
+                            </label>
+                        </div>
+
+                        <div class="divider my-2"></div>
+
+                        {{-- Action Button --}}
+                        @if(auth()->user()?->hasRole('sudo_admin'))
+                            @if($this->isOutputRunning)
+                                <button
+                                    wire:click="cancelSync"
+                                    class="btn btn-error w-full"
+                                >
+                                    <x-heroicon-o-x-mark class="h-4 w-4" />
+                                    Cancel
+                                </button>
+                            @else
+                                <button
+                                    wire:click="triggerAggregatesBuild"
+                                    wire:loading.attr="disabled"
+                                    wire:target="triggerAggregatesBuild"
+                                    class="btn btn-primary w-full"
+                                    @disabled($this->isSyncing)
+                                >
+                                    <span wire:loading.remove wire:target="triggerAggregatesBuild">
+                                        <x-heroicon-o-calculator class="h-4 w-4" />
+                                        Build Aggregates
+                                    </span>
+                                    <span wire:loading wire:target="triggerAggregatesBuild">
+                                        <span class="loading loading-spinner loading-sm"></span>
+                                        Starting...
+                                    </span>
+                                </button>
+                            @endif
+                        @else
+                            <div class="tooltip w-full" data-tip="Only sudo admins can build aggregates">
+                                <button class="btn btn-disabled w-full">
+                                    <x-heroicon-o-lock-closed class="h-4 w-4" />
+                                    Build Aggregates
+                                </button>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             {{-- Recent Syncs Card --}}
             <div class="card bg-base-100 shadow-lg">
@@ -290,6 +503,75 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Global Settings Card --}}
+    <div class="card bg-base-100 shadow-lg mt-6">
+        <div class="card-body">
+            <h2 class="card-title text-lg">
+                <x-heroicon-o-cog-6-tooth class="h-5 w-5" />
+                Global Sync Settings
+            </h2>
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mt-4">
+                {{-- Global Enable/Disable --}}
+                <div class="form-control">
+                    <label class="label cursor-pointer justify-start gap-3">
+                        <input
+                            type="checkbox"
+                            wire:model.live="globalSyncEnabled"
+                            class="toggle toggle-success"
+                            @disabled(!auth()->user()?->hasRole('sudo_admin'))
+                        />
+                        <div>
+                            <span class="label-text font-medium">Planned Units Sync</span>
+                            <p class="text-xs text-base-content/60">{{ $globalSyncEnabled ? 'Enabled' : 'Disabled globally' }}</p>
+                        </div>
+                    </label>
+                </div>
+
+                {{-- Sync Interval --}}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">Sync Interval</span>
+                    </label>
+                    <div class="join">
+                        <input
+                            type="number"
+                            wire:model.live="syncIntervalHours"
+                            min="1"
+                            max="168"
+                            class="input input-bordered input-sm join-item w-20"
+                            @disabled(!auth()->user()?->hasRole('sudo_admin'))
+                        />
+                        <span class="join-item btn btn-sm btn-disabled">hours</span>
+                    </div>
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">How often circuits are synced (1-168 hours)</span>
+                    </label>
+                </div>
+
+                {{-- Save Button --}}
+                <div class="form-control justify-end">
+                    @if(auth()->user()?->hasRole('sudo_admin'))
+                        <button
+                            wire:click="saveGlobalSettings"
+                            wire:loading.attr="disabled"
+                            class="btn btn-primary btn-sm"
+                        >
+                            <x-heroicon-o-check class="h-4 w-4" />
+                            Save Settings
+                        </button>
+                    @else
+                        <div class="tooltip" data-tip="Only sudo admins can modify settings">
+                            <button class="btn btn-disabled btn-sm">
+                                <x-heroicon-o-lock-closed class="h-4 w-4" />
+                                Save Settings
+                            </button>
                         </div>
                     @endif
                 </div>

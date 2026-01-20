@@ -2,6 +2,9 @@
 
 namespace App\Livewire\DataManagement;
 
+use App\Enums\SyncTrigger;
+use App\Jobs\SyncPlannedUnitsJob;
+use App\Models\AnalyticsSetting;
 use App\Models\Circuit;
 use App\Models\Region;
 use Livewire\Attributes\Computed;
@@ -500,6 +503,145 @@ class CircuitBrowser extends Component
         $this->dispatch('notify', message: "{$count} circuits included in reporting.", type: 'success');
         $this->clearCircuitSelection();
         unset($this->selectedCircuitsData);
+    }
+
+    /**
+     * Toggle sync enabled for a circuit.
+     */
+    public function toggleSyncEnabled(int $circuitId): void
+    {
+        if (! auth()->user()?->hasRole('sudo_admin')) {
+            $this->dispatch('notify', message: 'Only sudo admins can modify sync settings.', type: 'error');
+
+            return;
+        }
+
+        $circuit = Circuit::findOrFail($circuitId);
+        $newState = ! $circuit->planned_units_sync_enabled;
+        $circuit->update(['planned_units_sync_enabled' => $newState]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($circuit)
+            ->withProperties(['planned_units_sync_enabled' => $newState])
+            ->log($newState ? 'Enabled planned units sync' : 'Disabled planned units sync');
+
+        $this->dispatch('notify', message: $newState ? 'Sync enabled for this circuit.' : 'Sync disabled for this circuit.', type: 'success');
+    }
+
+    /**
+     * Trigger a sync for a single circuit.
+     */
+    public function triggerSingleSync(int $circuitId): void
+    {
+        if (! auth()->user()?->hasRole('sudo_admin')) {
+            $this->dispatch('notify', message: 'Only sudo admins can trigger syncs.', type: 'error');
+
+            return;
+        }
+
+        $circuit = Circuit::findOrFail($circuitId);
+
+        if (! $circuit->planned_units_sync_enabled) {
+            $this->dispatch('notify', message: 'Sync is disabled for this circuit. Enable it first.', type: 'warning');
+
+            return;
+        }
+
+        dispatch(new SyncPlannedUnitsJob(
+            triggerType: SyncTrigger::Manual,
+            triggeredByUserId: auth()->id(),
+            circuitIds: [$circuitId],
+            respectFilters: false,
+            dryRun: false,
+        ));
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($circuit)
+            ->log('Manual sync triggered');
+
+        $this->dispatch('notify', message: "Sync job queued for {$circuit->work_order}.", type: 'success');
+    }
+
+    /**
+     * Bulk toggle sync enabled for selected circuits.
+     */
+    public function bulkToggleSyncEnabled(bool $enable): void
+    {
+        if (! auth()->user()?->hasRole('sudo_admin')) {
+            $this->dispatch('notify', message: 'Only sudo admins can modify sync settings.', type: 'error');
+
+            return;
+        }
+
+        if (empty($this->selectedCircuits)) {
+            return;
+        }
+
+        $count = Circuit::whereIn('id', $this->selectedCircuits)
+            ->update(['planned_units_sync_enabled' => $enable]);
+
+        $action = $enable ? 'enabled' : 'disabled';
+        $this->dispatch('notify', message: "Sync {$action} for {$count} circuits.", type: 'success');
+        $this->clearCircuitSelection();
+    }
+
+    /**
+     * Bulk trigger sync for selected circuits.
+     */
+    public function bulkTriggerSync(): void
+    {
+        if (! auth()->user()?->hasRole('sudo_admin')) {
+            $this->dispatch('notify', message: 'Only sudo admins can trigger syncs.', type: 'error');
+
+            return;
+        }
+
+        if (empty($this->selectedCircuits)) {
+            return;
+        }
+
+        // Filter to only sync-enabled circuits
+        $syncableIds = Circuit::whereIn('id', $this->selectedCircuits)
+            ->where('planned_units_sync_enabled', true)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($syncableIds)) {
+            $this->dispatch('notify', message: 'None of the selected circuits have sync enabled.', type: 'warning');
+
+            return;
+        }
+
+        dispatch(new SyncPlannedUnitsJob(
+            triggerType: SyncTrigger::Manual,
+            triggeredByUserId: auth()->id(),
+            circuitIds: $syncableIds,
+            respectFilters: false,
+            dryRun: false,
+        ));
+
+        $this->dispatch('notify', message: 'Sync job queued for '.count($syncableIds).' circuits.', type: 'success');
+        $this->clearCircuitSelection();
+    }
+
+    /**
+     * Get global sync settings.
+     */
+    #[Computed]
+    public function globalSyncEnabled(): bool
+    {
+        return AnalyticsSetting::isPlannedUnitsSyncEnabled();
+    }
+
+    /**
+     * Get configured sync interval.
+     */
+    #[Computed]
+    public function syncIntervalHours(): int
+    {
+        return AnalyticsSetting::getSyncIntervalHours();
     }
 
     public function render()

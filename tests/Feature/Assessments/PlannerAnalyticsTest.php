@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Assessments\PlannerAnalytics;
+use App\Models\AnalyticsSetting;
 use App\Models\Circuit;
 use App\Models\PlannerDailyAggregate;
 use App\Models\PlannerWeeklyAggregate;
@@ -14,6 +15,13 @@ use function Pest\Laravel\actingAs;
 beforeEach(function () {
     $this->seed(RolesAndPermissionsSeeder::class);
     $this->user = User::factory()->create();
+
+    // Set global analytics settings to be permissive for tests
+    AnalyticsSetting::instance()->update([
+        'scope_year' => date('Y'),
+        'selected_cycle_types' => null,
+        'selected_contractors' => null,
+    ]);
 });
 
 it('renders planner analytics page for authenticated users', function () {
@@ -251,7 +259,7 @@ it('shows circuit breakdown when planner selected', function () {
     $region = Region::factory()->create();
 
     $circuit = Circuit::factory()->forRegion($region)->create([
-        'work_order' => '12345',
+        'work_order' => date('Y').'-12345',
         'extension' => '@',
     ]);
 
@@ -263,7 +271,7 @@ it('shows circuit breakdown when planner selected', function () {
 
     $breakdown = $component->get('circuitBreakdown');
     expect($breakdown)->toHaveCount(1);
-    expect($breakdown[0]['work_order'])->toBe('12345');
+    expect($breakdown[0]['work_order'])->toBe(date('Y').'-12345');
 });
 
 it('hides circuit breakdown when no planner selected', function () {
@@ -465,4 +473,224 @@ it('handles zero days worked gracefully for avg daily calculation', function () 
 
     expect($metrics)->toHaveCount(1);
     expect($metrics[0]['avg_daily'])->toEqual(0); // Should not divide by zero
+});
+
+// Phase 5: Full Permission Status Breakdown Tests
+
+it('provides full permission breakdown from snapshot data', function () {
+    $this->seed(\Database\Seeders\PermissionStatusesSeeder::class);
+
+    $planner = User::factory()->create(['is_excluded_from_analytics' => false]);
+    $planner->assignRole('planner');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->forRegion($region)->create();
+    $planner->circuits()->attach($circuit);
+
+    // Create a snapshot with specific permission breakdown
+    \App\Models\PlannedUnitsSnapshot::factory()
+        ->forCircuit($circuit)
+        ->create([
+            'raw_json' => [
+                'summary' => [
+                    'by_permission' => [
+                        'Approved' => 50,
+                        'Refused' => 10,
+                        'No Contact' => 15,
+                        'Deferred' => 5,
+                        'Unknown' => 20, // This maps to Pending
+                    ],
+                    'by_unit_type' => [],
+                    'total_trees' => 0,
+                    'total_linear_ft' => 0,
+                    'total_acres' => 0,
+                ],
+                'units' => [],
+            ],
+        ]);
+
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $breakdown = $component->get('fullPermissionBreakdown');
+
+    expect($breakdown)->toBeArray();
+    expect($breakdown)->not->toBeEmpty();
+
+    // Should have counts aggregated
+    $approved = collect($breakdown)->firstWhere('name', 'Approved');
+    if ($approved) {
+        expect($approved['count'])->toBe(50);
+    }
+});
+
+it('returns empty full permission breakdown when no planners included', function () {
+    // No planners created or all excluded
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $breakdown = $component->get('fullPermissionBreakdown');
+
+    expect($breakdown)->toBeEmpty();
+});
+
+// Phase 5: Unit Type Breakdown Tests
+
+it('provides unit type breakdown grouped by category', function () {
+    $planner = User::factory()->create(['is_excluded_from_analytics' => false]);
+    $planner->assignRole('planner');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->forRegion($region)->create();
+    $planner->circuits()->attach($circuit);
+
+    // Create a snapshot with unit type breakdown
+    \App\Models\PlannedUnitsSnapshot::factory()
+        ->forCircuit($circuit)
+        ->create([
+            'raw_json' => [
+                'summary' => [
+                    'by_permission' => [],
+                    'by_unit_type' => [
+                        'SPM' => 30,  // Line trimming
+                        'HCB' => 20,  // Brush/herbicide
+                        'RMV' => 15,  // Tree removal
+                    ],
+                    'total_trees' => 15,
+                    'total_linear_ft' => 500.5,
+                    'total_acres' => 2.5,
+                ],
+                'units' => [],
+            ],
+        ]);
+
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $breakdown = $component->get('unitTypeBreakdown');
+
+    expect($breakdown)->toBeArray();
+    // Should have the three main categories (keys from UnitType::aggregationGroups())
+    expect($breakdown)->toHaveKeys(['trim_line', 'brush_area', 'tree_removal']);
+
+    // Check tree removal category has the total
+    expect($breakdown['tree_removal']['total'])->toBe(15);
+    expect($breakdown['trim_line']['total'])->toEqual(500.5);
+    expect($breakdown['brush_area']['total'])->toEqual(2.5);
+});
+
+it('returns empty unit type breakdown when no planners', function () {
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $breakdown = $component->get('unitTypeBreakdown');
+
+    expect($breakdown)->toBeEmpty();
+});
+
+// Phase 5: Activity Timestamps Tests
+
+it('provides activity timestamps when planner selected', function () {
+    $planner = User::factory()->create(['is_excluded_from_analytics' => false]);
+    $planner->assignRole('planner');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->forRegion($region)->create([
+        'api_status' => 'ACTIV',
+        'miles_planned' => 5.5, // In progress
+        'api_modified_date' => now()->subDays(5),
+    ]);
+    $planner->circuits()->attach($circuit);
+
+    // Create a recent snapshot
+    \App\Models\PlannedUnitsSnapshot::factory()
+        ->forCircuit($circuit)
+        ->create();
+
+    $component = Livewire::actingAs($this->user)
+        ->test(PlannerAnalytics::class)
+        ->call('filterByPlanner', $planner->id);
+
+    $activity = $component->get('activityTimestamps');
+
+    expect($activity)->toHaveKeys(['last_unit_created', 'last_snapshot', 'planner_activity']);
+    expect($activity['planner_activity'])->not->toBeEmpty();
+    expect($activity['planner_activity']['active_circuits'])->toBe(1);
+});
+
+it('tracks oldest in-progress circuit for planner', function () {
+    $planner = User::factory()->create(['is_excluded_from_analytics' => false]);
+    $planner->assignRole('planner');
+
+    $region = Region::factory()->create();
+
+    // Create two active circuits with different ages
+    $olderCircuit = Circuit::factory()->forRegion($region)->create([
+        'work_order' => '2025-1111',
+        'extension' => '@',
+        'api_status' => 'ACTIV',
+        'miles_planned' => 3.0, // In progress
+        'api_modified_date' => now()->subDays(30),
+    ]);
+
+    $newerCircuit = Circuit::factory()->forRegion($region)->create([
+        'work_order' => '2025-2222',
+        'extension' => '@',
+        'api_status' => 'ACTIV',
+        'miles_planned' => 1.0, // In progress
+        'api_modified_date' => now()->subDays(5),
+    ]);
+
+    $planner->circuits()->attach([$olderCircuit->id, $newerCircuit->id]);
+
+    $component = Livewire::actingAs($this->user)
+        ->test(PlannerAnalytics::class)
+        ->call('filterByPlanner', $planner->id);
+
+    $activity = $component->get('activityTimestamps');
+
+    // Should find the older circuit as oldest in progress
+    expect($activity['planner_activity']['oldest_in_progress_wo'])->toBe('2025-1111');
+});
+
+it('returns empty activity when no planner selected', function () {
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $activity = $component->get('activityTimestamps');
+
+    expect($activity['last_unit_created'])->toBeNull();
+    expect($activity['planner_activity'])->toBeEmpty();
+});
+
+it('counts circuit statuses correctly in activity', function () {
+    $planner = User::factory()->create(['is_excluded_from_analytics' => false]);
+    $planner->assignRole('planner');
+
+    $region = Region::factory()->create();
+
+    // Create circuits in different statuses
+    $activeCircuit = Circuit::factory()->forRegion($region)->create(['api_status' => 'ACTIV']);
+    $qcCircuit = Circuit::factory()->forRegion($region)->create(['api_status' => 'QC']);
+    $closedCircuit1 = Circuit::factory()->forRegion($region)->create(['api_status' => 'CLOSE']);
+    $closedCircuit2 = Circuit::factory()->forRegion($region)->create(['api_status' => 'CLOSE']);
+
+    $planner->circuits()->attach([
+        $activeCircuit->id,
+        $qcCircuit->id,
+        $closedCircuit1->id,
+        $closedCircuit2->id,
+    ]);
+
+    $component = Livewire::actingAs($this->user)
+        ->test(PlannerAnalytics::class)
+        ->call('filterByPlanner', $planner->id);
+
+    $activity = $component->get('activityTimestamps');
+
+    expect($activity['planner_activity']['active_circuits'])->toBe(1);
+    expect($activity['planner_activity']['qc_circuits'])->toBe(1);
+    expect($activity['planner_activity']['closed_circuits'])->toBe(2);
+});
+
+// Phase 5: Available Permission Statuses Test
+
+it('provides available permission statuses', function () {
+    $this->seed(\Database\Seeders\PermissionStatusesSeeder::class);
+
+    $component = Livewire::actingAs($this->user)->test(PlannerAnalytics::class);
+    $statuses = $component->get('availablePermissionStatuses');
+
+    expect($statuses)->not->toBeEmpty();
+    expect($statuses->first())->toHaveKeys(['name', 'code', 'color']);
 });

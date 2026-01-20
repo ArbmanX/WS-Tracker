@@ -144,6 +144,35 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the contractor prefix from ws_username (e.g., "ASPLUNDH" from "ASPLUNDH\jsmith").
+     */
+    public function getContractorAttribute(): ?string
+    {
+        if (! $this->ws_username) {
+            return null;
+        }
+
+        // Split by backslash and return first part
+        $parts = explode('\\', $this->ws_username);
+
+        return count($parts) > 1 ? $parts[0] : null;
+    }
+
+    /**
+     * Get the username without contractor prefix (e.g., "jsmith" from "ASPLUNDH\jsmith").
+     */
+    public function getWsUsernameShortAttribute(): ?string
+    {
+        if (! $this->ws_username) {
+            return null;
+        }
+
+        $parts = explode('\\', $this->ws_username);
+
+        return count($parts) > 1 ? $parts[1] : $this->ws_username;
+    }
+
+    /**
      * Check if user has valid WS credentials.
      */
     public function hasValidWsCredentials(): bool
@@ -273,5 +302,36 @@ class User extends Authenticatable
     public function scopeExcludedFromAnalytics($query)
     {
         return $query->where('is_excluded_from_analytics', true);
+    }
+
+    /**
+     * Scope to users with a specific contractor prefix in ws_username.
+     *
+     * @param  array<string>|string  $contractors
+     */
+    public function scopeWithContractor($query, array|string $contractors)
+    {
+        $contractors = (array) $contractors;
+
+        return $query->where(function ($q) use ($contractors) {
+            foreach ($contractors as $contractor) {
+                $q->orWhere('ws_username', 'like', $contractor.'\\%');
+            }
+        });
+    }
+
+    /**
+     * Scope to users with any of the allowed contractors (from analytics settings).
+     * If no contractors are specified in settings, includes all users.
+     */
+    public function scopeWithAllowedContractors($query)
+    {
+        $allowedContractors = AnalyticsSetting::getSelectedContractors();
+
+        if ($allowedContractors === null || empty($allowedContractors)) {
+            return $query; // No filter - include all
+        }
+
+        return $query->withContractor($allowedContractors);
     }
 }

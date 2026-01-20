@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AnalyticsSettings;
 use App\Livewire\Admin\PlannerManagement;
 use App\Livewire\Admin\SyncControl;
 use App\Livewire\Admin\SyncHistory;
@@ -12,6 +13,7 @@ use App\Livewire\DataManagement\Endpoints;
 use App\Livewire\DataManagement\Exclusions;
 use App\Livewire\DataManagement\Index as DataManagementIndex;
 use App\Livewire\DataManagement\SyncLogs;
+use App\Livewire\DataManagement\TableManager;
 use App\Livewire\Onboarding\OnboardingWizard;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +55,7 @@ Route::middleware(['auth', 'verified', 'onboarded', 'admin'])->prefix('admin')->
 // Sudo admin only routes
 Route::middleware(['auth', 'verified', 'onboarded', 'sudo_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', UserManagement::class)->name('users');
+    Route::get('/analytics-settings', AnalyticsSettings::class)->name('analytics-settings');
 
     // Data Management
     Route::get('/data', DataManagementIndex::class)->name('data');
@@ -60,6 +63,7 @@ Route::middleware(['auth', 'verified', 'onboarded', 'sudo_admin'])->prefix('admi
     Route::get('/data/sync-logs', SyncLogs::class)->name('data.sync-logs');
     Route::get('/data/exclusions', Exclusions::class)->name('data.exclusions');
     Route::get('/data/endpoints', Endpoints::class)->name('data.endpoints');
+    Route::get('/data/tables', TableManager::class)->name('data.tables');
 });
 
 require __DIR__.'/settings.php';

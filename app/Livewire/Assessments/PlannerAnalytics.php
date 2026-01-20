@@ -3,10 +3,14 @@
 namespace App\Livewire\Assessments;
 
 use App\Livewire\Concerns\WithCircuitFilters;
+use App\Models\AnalyticsSetting;
 use App\Models\Circuit;
+use App\Models\PermissionStatus;
+use App\Models\PlannedUnitsSnapshot;
 use App\Models\PlannerDailyAggregate;
 use App\Models\PlannerWeeklyAggregate;
 use App\Models\Region;
+use App\Models\UnitType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -94,6 +98,7 @@ class PlannerAnalytics extends Component
 
     /**
      * Get planner IDs that are included in analytics.
+     * Respects global analytics settings for contractor filtering.
      *
      * @return array<int>
      */
@@ -102,6 +107,7 @@ class PlannerAnalytics extends Component
         return User::query()
             ->role('planner')
             ->includedInAnalytics()
+            ->withAllowedContractors()
             ->pluck('id')
             ->toArray();
     }
@@ -165,7 +171,7 @@ class PlannerAnalytics extends Component
     }
 
     /**
-     * Permission status breakdown for donut chart.
+     * Permission status breakdown for donut chart (simple 3-status).
      */
     #[Computed]
     public function permissionStatus(): array
@@ -177,6 +183,279 @@ class PlannerAnalytics extends Component
             'pending' => $stats['units_pending'],
             'refused' => $stats['units_refused'],
         ];
+    }
+
+    /**
+     * Map DaisyUI semantic color names to hex values for ApexCharts.
+     */
+    protected function daisyColorToHex(string $daisyColor): string
+    {
+        return match ($daisyColor) {
+            'primary' => '#570df8',
+            'secondary' => '#f000b8',
+            'accent' => '#37cdbe',
+            'neutral' => '#3d4451',
+            'info' => '#3abff8',
+            'success' => '#36d399',
+            'warning' => '#fbbd23',
+            'error' => '#f87272',
+            default => '#6b7280', // gray fallback
+        };
+    }
+
+    /**
+     * Full permission status breakdown (all 6 statuses) from snapshot data.
+     * Uses the raw_json->summary->by_permission data from PlannedUnitsSnapshots.
+     *
+     * @return array<string, array{name: string, code: string, color: string, count: int, percentage: float}>
+     */
+    #[Computed]
+    public function fullPermissionBreakdown(): array
+    {
+        $includedPlannerIds = $this->getIncludedPlannerIds();
+
+        if (empty($includedPlannerIds)) {
+            return [];
+        }
+
+        // Get circuits for the filtered planners (respecting global analytics settings)
+        $circuitIds = Circuit::query()
+            ->forAnalytics()
+            ->whereHas('planners', fn ($q) => $q->whereIn('users.id', $includedPlannerIds))
+            ->when($this->regionId, fn ($q) => $q->where('region_id', $this->regionId))
+            ->pluck('id');
+
+        if ($circuitIds->isEmpty()) {
+            return [];
+        }
+
+        // Get latest snapshots for these circuits and aggregate permission counts
+        $snapshots = PlannedUnitsSnapshot::query()
+            ->whereIn('circuit_id', $circuitIds)
+            ->whereIn('id', function ($sub) use ($circuitIds) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('planned_units_snapshots')
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->groupBy('circuit_id');
+            })
+            ->whereNotNull('raw_json')
+            ->get();
+
+        // Aggregate permission counts from snapshots
+        $permissionCounts = [];
+        foreach ($snapshots as $snapshot) {
+            $byPermission = $snapshot->raw_json['summary']['by_permission'] ?? [];
+            foreach ($byPermission as $status => $count) {
+                // Normalize "Unknown" to "Pending"
+                $normalizedStatus = $status === 'Unknown' ? '' : $status;
+                $permissionCounts[$normalizedStatus] = ($permissionCounts[$normalizedStatus] ?? 0) + $count;
+            }
+        }
+
+        // Get permission status definitions with colors
+        $statuses = PermissionStatus::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->keyBy('code');
+
+        $total = array_sum($permissionCounts);
+        $result = [];
+
+        foreach ($statuses as $code => $status) {
+            $count = $permissionCounts[$code] ?? 0;
+            $result[$code] = [
+                'name' => $status->name,
+                'code' => $code,
+                'color' => $this->daisyColorToHex($status->color),
+                'count' => $count,
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 1) : 0,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Unit type breakdown aggregated by category.
+     * Groups units into Line Trimming (linear ft), Brush/Herbicide (acres), Tree Removal (trees).
+     *
+     * @return array<string, array{label: string, unit_label: string, total: float|int, count: int, types: array}>
+     */
+    #[Computed]
+    public function unitTypeBreakdown(): array
+    {
+        $includedPlannerIds = $this->getIncludedPlannerIds();
+
+        if (empty($includedPlannerIds)) {
+            return [];
+        }
+
+        // Get circuits for the filtered planners (respecting global analytics settings)
+        $circuitIds = Circuit::query()
+            ->forAnalytics()
+            ->whereHas('planners', fn ($q) => $q->whereIn('users.id', $includedPlannerIds))
+            ->when($this->regionId, fn ($q) => $q->where('region_id', $this->regionId))
+            ->pluck('id');
+
+        if ($circuitIds->isEmpty()) {
+            return [];
+        }
+
+        // Get latest snapshots for these circuits
+        $snapshots = PlannedUnitsSnapshot::query()
+            ->whereIn('circuit_id', $circuitIds)
+            ->whereIn('id', function ($sub) use ($circuitIds) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('planned_units_snapshots')
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->groupBy('circuit_id');
+            })
+            ->whereNotNull('raw_json')
+            ->get();
+
+        // Aggregate unit counts by type from snapshots
+        $unitCounts = [];
+        $totals = ['trees' => 0, 'linear_ft' => 0, 'acres' => 0];
+
+        foreach ($snapshots as $snapshot) {
+            $byType = $snapshot->raw_json['summary']['by_unit_type'] ?? [];
+            foreach ($byType as $typeCode => $count) {
+                $unitCounts[$typeCode] = ($unitCounts[$typeCode] ?? 0) + $count;
+            }
+            $totals['trees'] += $snapshot->raw_json['summary']['total_trees'] ?? 0;
+            $totals['linear_ft'] += $snapshot->raw_json['summary']['total_linear_ft'] ?? 0;
+            $totals['acres'] += $snapshot->raw_json['summary']['total_acres'] ?? 0;
+        }
+
+        // Get unit type definitions grouped by category
+        $unitTypes = UnitType::allByCode();
+        $groups = UnitType::aggregationGroups();
+
+        $result = [];
+        foreach ($groups as $key => $group) {
+            $categoryTypes = [];
+            $categoryCount = 0;
+
+            foreach ($group['codes'] as $code) {
+                if (isset($unitCounts[$code]) && $unitCounts[$code] > 0) {
+                    $type = $unitTypes->get($code);
+                    $categoryTypes[$code] = [
+                        'name' => $type?->name ?? $code,
+                        'count' => $unitCounts[$code],
+                    ];
+                    $categoryCount += $unitCounts[$code];
+                }
+            }
+
+            $totalValue = match ($group['measurement']) {
+                UnitType::MEASUREMENT_TREE_COUNT => $totals['trees'],
+                UnitType::MEASUREMENT_LINEAR_FT => round($totals['linear_ft'], 1),
+                UnitType::MEASUREMENT_ACRES => round($totals['acres'], 2),
+                default => 0,
+            };
+
+            $result[$key] = [
+                'label' => $group['label'],
+                'unit_label' => $group['unit_label'],
+                'total' => $totalValue,
+                'count' => $categoryCount,
+                'types' => $categoryTypes,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Activity timestamps for planners.
+     * Shows last activity, oldest pending items, etc.
+     *
+     * @return array{last_unit_created: ?Carbon, last_snapshot: ?Carbon, planner_activity: Collection}
+     */
+    #[Computed]
+    public function activityTimestamps(): array
+    {
+        $includedPlannerIds = $this->getIncludedPlannerIds();
+
+        if (empty($includedPlannerIds)) {
+            return [
+                'last_unit_created' => null,
+                'last_snapshot' => null,
+                'planner_activity' => collect(),
+            ];
+        }
+
+        // Get last snapshot across all tracked circuits (respecting global analytics settings)
+        $lastSnapshot = PlannedUnitsSnapshot::query()
+            ->whereHas('circuit', fn ($q) => $q->forAnalytics()->whereHas('planners', fn ($pq) => $pq->whereIn('users.id', $includedPlannerIds)))
+            ->when($this->regionId, fn ($q) => $q->whereHas('circuit', fn ($cq) => $cq->where('region_id', $this->regionId)))
+            ->latest()
+            ->first();
+
+        // Get per-planner activity stats
+        $plannerActivity = collect();
+
+        if ($this->plannerId) {
+            // Single planner view - get detailed activity
+            $planner = User::find($this->plannerId);
+            if ($planner) {
+                $circuits = $planner->circuits()
+                    ->when($this->regionId, fn ($q) => $q->where('region_id', $this->regionId))
+                    ->get();
+
+                $circuitIds = $circuits->pluck('id');
+
+                // Get latest snapshot for this planner's circuits
+                $latestSnapshot = PlannedUnitsSnapshot::query()
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->latest()
+                    ->first();
+
+                // Find circuits by status
+                $activeCircuits = $circuits->where('api_status', 'ACTIV')->count();
+                $qcCircuits = $circuits->where('api_status', 'QC')->count();
+                $closedCircuits = $circuits->where('api_status', 'CLOSE')->count();
+
+                // Get oldest circuit that's still in progress
+                $oldestInProgress = $circuits
+                    ->where('api_status', 'ACTIV')
+                    ->where('miles_planned', '>', 0)
+                    ->sortBy('api_modified_date')
+                    ->first();
+
+                $plannerActivity = collect([
+                    'planner_id' => $this->plannerId,
+                    'planner_name' => $planner->name,
+                    'last_snapshot' => $latestSnapshot?->created_at,
+                    'active_circuits' => $activeCircuits,
+                    'qc_circuits' => $qcCircuits,
+                    'closed_circuits' => $closedCircuits,
+                    'oldest_in_progress' => $oldestInProgress?->api_modified_date,
+                    'oldest_in_progress_wo' => $oldestInProgress?->display_work_order,
+                ]);
+            }
+        }
+
+        return [
+            'last_unit_created' => $lastSnapshot?->created_at,
+            'last_snapshot' => $lastSnapshot?->created_at,
+            'planner_activity' => $plannerActivity,
+        ];
+    }
+
+    /**
+     * Available permission statuses for display.
+     *
+     * @return Collection<int, PermissionStatus>
+     */
+    #[Computed]
+    public function availablePermissionStatuses(): Collection
+    {
+        return PermissionStatus::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
     }
 
     /**
@@ -399,9 +678,10 @@ class PlannerAnalytics extends Component
         }
 
         $query = $user->circuits()
+            ->forAnalytics()
             ->with(['region:id,name', 'latestAggregate']);
 
-        // Apply circuit filters
+        // Apply circuit filters (status/cycle from URL)
         $this->applyCircuitFilters($query);
 
         return $query->get()
@@ -444,6 +724,15 @@ class PlannerAnalytics extends Component
     }
 
     /**
+     * Get the current global analytics settings for display.
+     */
+    #[Computed]
+    public function globalSettings(): AnalyticsSetting
+    {
+        return AnalyticsSetting::instance();
+    }
+
+    /**
      * Available regions for filter dropdown.
      */
     #[Computed]
@@ -457,6 +746,7 @@ class PlannerAnalytics extends Component
 
     /**
      * Available planners for filter dropdown.
+     * Respects global analytics settings for contractor filtering.
      */
     #[Computed]
     public function planners(): Collection
@@ -464,6 +754,7 @@ class PlannerAnalytics extends Component
         return User::query()
             ->role('planner')
             ->includedInAnalytics()
+            ->withAllowedContractors()
             ->orderBy('name')
             ->get(['id', 'name', 'ws_username']);
     }
@@ -507,6 +798,9 @@ class PlannerAnalytics extends Component
         unset(
             $this->summaryStats,
             $this->permissionStatus,
+            $this->fullPermissionBreakdown,
+            $this->unitTypeBreakdown,
+            $this->activityTimestamps,
             $this->weeklyTargetMetrics,
             $this->weeklyTargetSummary,
             $this->plannerMetrics,

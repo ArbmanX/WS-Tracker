@@ -27,7 +27,7 @@ class CircuitFactory extends Factory
 
         return [
             'job_guid' => '{'.strtoupper(Str::uuid()).'}',
-            'work_order' => fake()->year().'-'.fake()->numberBetween(1000, 9999),
+            'work_order' => date('Y').'-'.fake()->numberBetween(1000, 9999),
             'extension' => '@',
             'region_id' => Region::factory(),
             'title' => strtoupper(fake()->city().' '.fake()->randomElement(['69/12', '138/12', '230/69']).' KV '.
@@ -129,6 +129,16 @@ class CircuitFactory extends Factory
             'is_excluded' => true,
             'exclusion_reason' => $reason,
             'excluded_at' => now(),
+        ]);
+    }
+
+    /**
+     * Create with a specific scope year in the work order.
+     */
+    public function forScopeYear(string $year): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'work_order' => $year.'-'.fake()->numberBetween(1000, 9999),
         ]);
     }
 }

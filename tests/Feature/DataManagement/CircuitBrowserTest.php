@@ -5,6 +5,7 @@ use App\Models\Circuit;
 use App\Models\Region;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -280,4 +281,192 @@ test('can switch modal tabs', function () {
         ->assertSet('activeTab', 'raw')
         ->set('activeTab', 'history')
         ->assertSet('activeTab', 'history');
+});
+
+// ==== Sync Control Tests ====
+
+test('sudo_admin can toggle sync enabled for a circuit', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => true,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->call('toggleSyncEnabled', $circuit->id)
+        ->assertDispatched('notify');
+
+    $circuit->refresh();
+    expect($circuit->planned_units_sync_enabled)->toBeFalse();
+});
+
+test('admin cannot toggle sync enabled', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => true,
+    ]);
+
+    // Admin cannot access the page but we test the method directly
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->call('toggleSyncEnabled', $circuit->id)
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'sudo admin');
+        });
+
+    $circuit->refresh();
+    expect($circuit->planned_units_sync_enabled)->toBeTrue();
+});
+
+test('sudo_admin can trigger single circuit sync', function () {
+    Queue::fake();
+
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => true,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->call('triggerSingleSync', $circuit->id)
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'queued');
+        });
+
+    Queue::assertPushed(\App\Jobs\SyncPlannedUnitsJob::class);
+});
+
+test('cannot trigger single sync if sync disabled for circuit', function () {
+    Queue::fake();
+
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => false,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->call('triggerSingleSync', $circuit->id)
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'disabled');
+        });
+
+    Queue::assertNothingPushed();
+});
+
+test('sudo_admin can bulk toggle sync enabled', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuits = Circuit::factory()->count(3)->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => false,
+    ]);
+
+    $circuitIds = $circuits->pluck('id')->toArray();
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->set('selectedCircuits', $circuitIds)
+        ->call('bulkToggleSyncEnabled', true)
+        ->assertDispatched('notify');
+
+    foreach ($circuits as $circuit) {
+        $circuit->refresh();
+        expect($circuit->planned_units_sync_enabled)->toBeTrue();
+    }
+});
+
+test('sudo_admin can bulk trigger sync', function () {
+    Queue::fake();
+
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuits = Circuit::factory()->count(3)->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => true,
+    ]);
+
+    $circuitIds = $circuits->pluck('id')->toArray();
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->set('selectedCircuits', $circuitIds)
+        ->call('bulkTriggerSync')
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], '3 circuits');
+        });
+
+    Queue::assertPushed(\App\Jobs\SyncPlannedUnitsJob::class);
+});
+
+test('bulk sync only includes sync-enabled circuits', function () {
+    Queue::fake();
+
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $enabledCircuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => true,
+    ]);
+    $disabledCircuit = Circuit::factory()->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => false,
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->set('selectedCircuits', [$enabledCircuit->id, $disabledCircuit->id])
+        ->call('bulkTriggerSync')
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], '1 circuit');
+        });
+
+    Queue::assertPushed(\App\Jobs\SyncPlannedUnitsJob::class);
+});
+
+test('bulk sync warns when no circuits have sync enabled', function () {
+    Queue::fake();
+
+    $admin = User::factory()->create();
+    $admin->assignRole('sudo_admin');
+
+    $region = Region::factory()->create();
+    $circuits = Circuit::factory()->count(2)->create([
+        'region_id' => $region->id,
+        'planned_units_sync_enabled' => false,
+    ]);
+
+    $circuitIds = $circuits->pluck('id')->toArray();
+
+    Livewire::actingAs($admin)
+        ->test(CircuitBrowser::class)
+        ->set('selectedCircuits', $circuitIds)
+        ->call('bulkTriggerSync')
+        ->assertDispatched('notify', function ($name, $params) {
+            return str_contains($params['message'], 'None of the selected');
+        });
+
+    Queue::assertNothingPushed();
 });

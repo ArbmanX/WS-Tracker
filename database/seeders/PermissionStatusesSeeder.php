@@ -44,10 +44,24 @@ class PermissionStatusesSeeder extends Seeder
                 'is_active' => true,
             ],
             [
+                'name' => 'Deferred',
+                'code' => 'Deferred',
+                'color' => 'secondary',
+                'sort_order' => 5,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'PPL Approved',
+                'code' => 'PPL Approved',
+                'color' => 'accent',
+                'sort_order' => 6,
+                'is_active' => true,
+            ],
+            [
                 'name' => 'N/A',
                 'code' => 'N/A',
                 'color' => 'neutral',
-                'sort_order' => 5,
+                'sort_order' => 7,
                 'is_active' => true,
             ],
         ];

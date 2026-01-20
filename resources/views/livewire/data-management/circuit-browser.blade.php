@@ -120,12 +120,12 @@
     {{-- Bulk Action Bar --}}
     @if(count($selectedCircuits) > 0)
         <div class="alert bg-primary/10 border-primary mb-6">
-            <div class="flex w-full items-center justify-between">
+            <div class="flex w-full items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-2">
                     <x-heroicon-o-check-circle class="h-5 w-5 text-primary" />
                     <span class="font-medium">{{ count($selectedCircuits) }} circuit(s) selected</span>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                     @if($excludedFilter === 'yes')
                         <button wire:click="bulkIncludeCircuits" wire:confirm="Include {{ count($selectedCircuits) }} circuits back in reporting?" class="btn btn-success btn-sm">
                             <x-heroicon-o-eye class="h-4 w-4" />
@@ -137,6 +137,38 @@
                             Exclude All
                         </button>
                     @endif
+
+                    {{-- Sync Actions (sudo_admin only) --}}
+                    @if(auth()->user()?->hasRole('sudo_admin'))
+                        <div class="dropdown dropdown-end">
+                            <div tabindex="0" role="button" class="btn btn-info btn-sm">
+                                <x-heroicon-o-arrow-path class="h-4 w-4" />
+                                Sync Actions
+                                <x-heroicon-o-chevron-down class="h-3 w-3" />
+                            </div>
+                            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200">
+                                <li>
+                                    <button wire:click="bulkTriggerSync" wire:confirm="Queue sync for selected circuits?">
+                                        <x-heroicon-o-play class="h-4 w-4" />
+                                        Sync Selected
+                                    </button>
+                                </li>
+                                <li>
+                                    <button wire:click="bulkToggleSyncEnabled(true)">
+                                        <x-heroicon-o-check class="h-4 w-4" />
+                                        Enable Sync
+                                    </button>
+                                </li>
+                                <li>
+                                    <button wire:click="bulkToggleSyncEnabled(false)">
+                                        <x-heroicon-o-x-mark class="h-4 w-4" />
+                                        Disable Sync
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    @endif
+
                     <button wire:click="clearCircuitSelection" class="btn btn-ghost btn-sm">
                         <x-heroicon-o-x-mark class="h-4 w-4" />
                         Clear
@@ -186,6 +218,9 @@
                                 <th>Status</th>
                                 <th>Miles</th>
                                 <th>Flags</th>
+                                @if(auth()->user()?->hasRole('sudo_admin'))
+                                    <th>Sync</th>
+                                @endif
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -241,6 +276,26 @@
                                             @endif
                                         </div>
                                     </td>
+                                    @if(auth()->user()?->hasRole('sudo_admin'))
+                                        <td>
+                                            <div class="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    wire:click="toggleSyncEnabled({{ $circuit->id }})"
+                                                    @checked($circuit->planned_units_sync_enabled)
+                                                    class="toggle toggle-primary toggle-xs"
+                                                    title="{{ $circuit->planned_units_sync_enabled ? 'Sync enabled' : 'Sync disabled' }}"
+                                                />
+                                                @if($circuit->last_planned_units_synced_at)
+                                                    <span class="text-xs text-base-content/50" title="Last synced: {{ $circuit->last_planned_units_synced_at->format('M d, Y g:i A') }}">
+                                                        {{ $circuit->last_planned_units_synced_at->diffForHumans(short: true) }}
+                                                    </span>
+                                                @else
+                                                    <span class="text-xs text-base-content/30">Never</span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    @endif
                                     <td>
                                         <div class="dropdown dropdown-end">
                                             <div tabindex="0" role="button" class="btn btn-ghost btn-xs btn-circle">
@@ -248,7 +303,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                                 </svg>
                                             </div>
-                                            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-lg bg-base-100 rounded-box w-40 border border-base-200">
+                                            <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow-lg bg-base-100 rounded-box w-44 border border-base-200">
                                                 <li>
                                                     <button wire:click="viewCircuit({{ $circuit->id }})">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,6 +313,19 @@
                                                         View
                                                     </button>
                                                 </li>
+                                                @if(auth()->user()?->hasRole('sudo_admin'))
+                                                    <li>
+                                                        <button
+                                                            wire:click="triggerSingleSync({{ $circuit->id }})"
+                                                            @disabled(!$circuit->planned_units_sync_enabled)
+                                                            class="{{ $circuit->planned_units_sync_enabled ? 'text-info' : 'opacity-50 cursor-not-allowed' }}"
+                                                            title="{{ $circuit->planned_units_sync_enabled ? 'Sync this circuit now' : 'Enable sync first' }}"
+                                                        >
+                                                            <x-heroicon-o-arrow-path class="h-4 w-4" />
+                                                            Sync Now
+                                                        </button>
+                                                    </li>
+                                                @endif
                                                 @if($circuit->is_excluded)
                                                     <li>
                                                         <button wire:click="includeCircuit({{ $circuit->id }})" class="text-success">
@@ -428,6 +496,46 @@
                             </div>
                         </div>
 
+                        @if(auth()->user()?->hasRole('sudo_admin'))
+                            <div class="mt-4 p-3 bg-base-200 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <span class="text-xs font-semibold text-base-content/70 uppercase">Planned Units Sync</span>
+                                        <p class="text-sm mt-1">
+                                            @if($circuit->planned_units_sync_enabled)
+                                                <span class="badge badge-success badge-sm">Enabled</span>
+                                            @else
+                                                <span class="badge badge-neutral badge-sm">Disabled</span>
+                                            @endif
+                                            <span class="text-base-content/60 ml-2">
+                                                Last: {{ $circuit->last_planned_units_synced_at?->format('M d, Y g:i A') ?? 'Never' }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label class="label cursor-pointer gap-2">
+                                            <span class="label-text text-xs">Sync Enabled</span>
+                                            <input
+                                                type="checkbox"
+                                                wire:click="toggleSyncEnabled({{ $circuit->id }})"
+                                                @checked($circuit->planned_units_sync_enabled)
+                                                class="toggle toggle-primary toggle-sm"
+                                            />
+                                        </label>
+                                        <button
+                                            wire:click="triggerSingleSync({{ $circuit->id }})"
+                                            @disabled(!$circuit->planned_units_sync_enabled)
+                                            class="btn btn-info btn-sm {{ !$circuit->planned_units_sync_enabled ? 'btn-disabled' : '' }}"
+                                            title="{{ $circuit->planned_units_sync_enabled ? 'Sync this circuit now' : 'Enable sync first' }}"
+                                        >
+                                            <x-heroicon-o-arrow-path class="h-4 w-4" />
+                                            Sync Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         @if($circuit->hasUserModifications())
                             <div class="mt-4 p-3 bg-info/10 rounded-lg">
                                 <span class="text-xs font-semibold text-info uppercase">User Modified Fields</span>
@@ -460,7 +568,7 @@
                     @endif
 
                 @elseif($activeTab === 'raw')
-                    <x-ui.json-viewer :data="$circuit->api_data_json" maxHeight="500px" />
+                    <x-ui.json-viewer :data="$circuit" maxHeight="500px" />
 
                 @elseif($activeTab === 'history')
                     <x-ui.activity-log :activities="$this->activities" maxHeight="500px" />
