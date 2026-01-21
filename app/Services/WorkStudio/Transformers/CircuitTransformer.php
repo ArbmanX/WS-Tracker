@@ -57,9 +57,13 @@ class CircuitTransformer
         'VEGJOB_CONTRACTOR' => 'contractor',
         'VEGJOB_GF' => 'general_foreman',
 
-        // Dates
-        'SS_EDITDATE' => 'api_modified_date',
+        // Dates (api_modified_at is timestamp for full precision)
+        'SS_EDITDATE' => 'api_modified_at',
         'WPStartDate_Assessment_Xrefs_WP_STARTDATE' => 'work_plan_start_date',
+
+        // Version tracking for change/staleness detection
+        'WSREQ_VERSION' => 'ws_version',
+        'WSREQ_SYNCHVERSN' => 'ws_sync_version',
 
         // Other
         'VEGJOB_LINENAME' => 'line_name',
@@ -169,7 +173,7 @@ class CircuitTransformer
      */
     protected function normalizeDateFields(array $mapped): array
     {
-        $dateFields = ['api_modified_date', 'work_plan_start_date'];
+        $dateFields = ['api_modified_at', 'work_plan_start_date'];
 
         foreach ($dateFields as $field) {
             if (isset($mapped[$field])) {

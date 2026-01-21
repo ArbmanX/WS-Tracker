@@ -33,6 +33,10 @@ class Index extends Component
      */
     public function getTabsProperty(): array
     {
+        // TODO(planner-analytics): Add a "Settings" tab here for configuring:
+        // - Domain filter for SS_TAKENBY field (e.g., "ASPLUNDH" to filter planners by contractor domain)
+        // - This is critical for planner analytics to filter circuits by contractor
+        // - See docs/prompts/prompt02.md for requirements
         return [
             [
                 'name' => 'Circuit Browser',

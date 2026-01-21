@@ -323,14 +323,14 @@ class BuildAggregatesJob implements ShouldQueue
             ->whereNull('circuits.deleted_at')
             ->select(
                 'circuit_user.user_id',
-                DB::raw('COUNT(DISTINCT circuits.id) as circuit_count'),
-                DB::raw('SUM(circuit_aggregates.total_units) as total_units'),
+                DB::raw('COUNT(DISTINCT circuits.id) as circuits_worked'),
+                DB::raw('SUM(circuit_aggregates.total_units) as total_units_assessed'),
                 DB::raw('SUM(circuit_aggregates.total_linear_ft) as total_linear_ft'),
                 DB::raw('SUM(circuit_aggregates.total_acres) as total_acres'),
+                DB::raw('SUM(circuit_aggregates.total_trees) as total_trees'),
                 DB::raw('SUM(circuit_aggregates.units_approved) as units_approved'),
                 DB::raw('SUM(circuit_aggregates.units_refused) as units_refused'),
                 DB::raw('SUM(circuit_aggregates.units_pending) as units_pending'),
-                DB::raw('SUM(circuits.total_miles) as total_miles'),
                 DB::raw('SUM(circuits.miles_planned) as miles_planned')
             )
             ->groupBy('circuit_user.user_id')
@@ -338,14 +338,14 @@ class BuildAggregatesJob implements ShouldQueue
             ->map(fn ($row) => [
                 'user_id' => $row->user_id,
                 'aggregate_date' => $date,
-                'circuit_count' => $row->circuit_count,
-                'total_units' => $row->total_units ?? 0,
+                'circuits_worked' => $row->circuits_worked,
+                'total_units_assessed' => $row->total_units_assessed ?? 0,
                 'total_linear_ft' => $row->total_linear_ft ?? 0,
                 'total_acres' => $row->total_acres ?? 0,
+                'total_trees' => $row->total_trees ?? 0,
                 'units_approved' => $row->units_approved ?? 0,
                 'units_refused' => $row->units_refused ?? 0,
                 'units_pending' => $row->units_pending ?? 0,
-                'total_miles' => $row->total_miles ?? 0,
                 'miles_planned' => $row->miles_planned ?? 0,
             ])
             ->toArray();
@@ -368,30 +368,40 @@ class BuildAggregatesJob implements ShouldQueue
             ->whereNotNull('circuits.region_id')
             ->select(
                 'circuits.region_id',
-                DB::raw('COUNT(DISTINCT circuits.id) as circuit_count'),
+                DB::raw('COUNT(DISTINCT circuits.id) as total_circuits'),
+                DB::raw('COUNT(DISTINCT CASE WHEN circuits.api_status = \'ACTIV\' THEN circuits.id END) as active_circuits'),
+                DB::raw('COUNT(DISTINCT CASE WHEN circuits.api_status = \'QC\' THEN circuits.id END) as qc_circuits'),
+                DB::raw('COUNT(DISTINCT CASE WHEN circuits.api_status = \'CLOSE\' THEN circuits.id END) as closed_circuits'),
                 DB::raw('SUM(circuit_aggregates.total_units) as total_units'),
                 DB::raw('SUM(circuit_aggregates.total_linear_ft) as total_linear_ft'),
                 DB::raw('SUM(circuit_aggregates.total_acres) as total_acres'),
+                DB::raw('SUM(circuit_aggregates.total_trees) as total_trees'),
                 DB::raw('SUM(circuit_aggregates.units_approved) as units_approved'),
                 DB::raw('SUM(circuit_aggregates.units_refused) as units_refused'),
                 DB::raw('SUM(circuit_aggregates.units_pending) as units_pending'),
                 DB::raw('SUM(circuits.total_miles) as total_miles'),
-                DB::raw('SUM(circuits.miles_planned) as miles_planned')
+                DB::raw('SUM(circuits.miles_planned) as miles_planned'),
+                DB::raw('AVG(circuits.percent_complete) as avg_percent_complete')
             )
             ->groupBy('circuits.region_id')
             ->get()
             ->map(fn ($row) => [
                 'region_id' => $row->region_id,
                 'aggregate_date' => $date,
-                'circuit_count' => $row->circuit_count,
+                'total_circuits' => $row->total_circuits,
+                'active_circuits' => $row->active_circuits ?? 0,
+                'qc_circuits' => $row->qc_circuits ?? 0,
+                'closed_circuits' => $row->closed_circuits ?? 0,
                 'total_units' => $row->total_units ?? 0,
                 'total_linear_ft' => $row->total_linear_ft ?? 0,
                 'total_acres' => $row->total_acres ?? 0,
+                'total_trees' => $row->total_trees ?? 0,
                 'units_approved' => $row->units_approved ?? 0,
                 'units_refused' => $row->units_refused ?? 0,
                 'units_pending' => $row->units_pending ?? 0,
                 'total_miles' => $row->total_miles ?? 0,
                 'miles_planned' => $row->miles_planned ?? 0,
+                'avg_percent_complete' => round($row->avg_percent_complete ?? 0, 2),
             ])
             ->toArray();
     }
@@ -410,14 +420,15 @@ class BuildAggregatesJob implements ShouldQueue
             ->whereBetween('aggregate_date', [$weekStart->toDateString(), $weekEnding->toDateString()])
             ->select(
                 'user_id',
-                DB::raw('MAX(circuit_count) as circuit_count'),
-                DB::raw('SUM(total_units) as total_units'),
+                DB::raw('COUNT(DISTINCT aggregate_date) as days_worked'),
+                DB::raw('MAX(circuits_worked) as circuits_worked'),
+                DB::raw('SUM(total_units_assessed) as total_units_assessed'),
                 DB::raw('SUM(total_linear_ft) as total_linear_ft'),
                 DB::raw('SUM(total_acres) as total_acres'),
+                DB::raw('SUM(total_trees) as total_trees'),
                 DB::raw('SUM(units_approved) as units_approved'),
                 DB::raw('SUM(units_refused) as units_refused'),
                 DB::raw('SUM(units_pending) as units_pending'),
-                DB::raw('MAX(total_miles) as total_miles'),
                 DB::raw('MAX(miles_planned) as miles_planned')
             )
             ->groupBy('user_id')
@@ -425,14 +436,16 @@ class BuildAggregatesJob implements ShouldQueue
             ->map(fn ($row) => [
                 'user_id' => $row->user_id,
                 'week_ending' => $weekEnding->toDateString(),
-                'circuit_count' => $row->circuit_count ?? 0,
-                'total_units' => $row->total_units ?? 0,
+                'week_starting' => $weekStart->toDateString(),
+                'days_worked' => $row->days_worked ?? 0,
+                'circuits_worked' => $row->circuits_worked ?? 0,
+                'total_units_assessed' => $row->total_units_assessed ?? 0,
                 'total_linear_ft' => $row->total_linear_ft ?? 0,
                 'total_acres' => $row->total_acres ?? 0,
+                'total_trees' => $row->total_trees ?? 0,
                 'units_approved' => $row->units_approved ?? 0,
                 'units_refused' => $row->units_refused ?? 0,
                 'units_pending' => $row->units_pending ?? 0,
-                'total_miles' => $row->total_miles ?? 0,
                 'miles_planned' => $row->miles_planned ?? 0,
             ])
             ->toArray();
@@ -451,30 +464,41 @@ class BuildAggregatesJob implements ShouldQueue
             ->whereBetween('aggregate_date', [$weekStart->toDateString(), $weekEnding->toDateString()])
             ->select(
                 'region_id',
-                DB::raw('MAX(circuit_count) as circuit_count'),
+                DB::raw('MAX(total_circuits) as total_circuits'),
+                DB::raw('MAX(active_circuits) as active_circuits'),
+                DB::raw('MAX(qc_circuits) as qc_circuits'),
+                DB::raw('MAX(closed_circuits) as closed_circuits'),
                 DB::raw('SUM(total_units) as total_units'),
                 DB::raw('SUM(total_linear_ft) as total_linear_ft'),
                 DB::raw('SUM(total_acres) as total_acres'),
+                DB::raw('SUM(total_trees) as total_trees'),
                 DB::raw('SUM(units_approved) as units_approved'),
                 DB::raw('SUM(units_refused) as units_refused'),
                 DB::raw('SUM(units_pending) as units_pending'),
                 DB::raw('MAX(total_miles) as total_miles'),
-                DB::raw('MAX(miles_planned) as miles_planned')
+                DB::raw('MAX(miles_planned) as miles_planned'),
+                DB::raw('AVG(avg_percent_complete) as avg_percent_complete')
             )
             ->groupBy('region_id')
             ->get()
             ->map(fn ($row) => [
                 'region_id' => $row->region_id,
                 'week_ending' => $weekEnding->toDateString(),
-                'circuit_count' => $row->circuit_count ?? 0,
+                'week_starting' => $weekStart->toDateString(),
+                'total_circuits' => $row->total_circuits ?? 0,
+                'active_circuits' => $row->active_circuits ?? 0,
+                'qc_circuits' => $row->qc_circuits ?? 0,
+                'closed_circuits' => $row->closed_circuits ?? 0,
                 'total_units' => $row->total_units ?? 0,
                 'total_linear_ft' => $row->total_linear_ft ?? 0,
                 'total_acres' => $row->total_acres ?? 0,
+                'total_trees' => $row->total_trees ?? 0,
                 'units_approved' => $row->units_approved ?? 0,
                 'units_refused' => $row->units_refused ?? 0,
                 'units_pending' => $row->units_pending ?? 0,
                 'total_miles' => $row->total_miles ?? 0,
                 'miles_planned' => $row->miles_planned ?? 0,
+                'avg_percent_complete' => round($row->avg_percent_complete ?? 0, 2),
             ])
             ->toArray();
     }

@@ -421,7 +421,7 @@ class PlannerAnalytics extends Component
                 $oldestInProgress = $circuits
                     ->where('api_status', 'ACTIV')
                     ->where('miles_planned', '>', 0)
-                    ->sortBy('api_modified_date')
+                    ->sortBy('api_modified_at')
                     ->first();
 
                 $plannerActivity = collect([
@@ -431,7 +431,7 @@ class PlannerAnalytics extends Component
                     'active_circuits' => $activeCircuits,
                     'qc_circuits' => $qcCircuits,
                     'closed_circuits' => $closedCircuits,
-                    'oldest_in_progress' => $oldestInProgress?->api_modified_date,
+                    'oldest_in_progress' => $oldestInProgress?->api_modified_at,
                     'oldest_in_progress_wo' => $oldestInProgress?->display_work_order,
                 ]);
             }
@@ -707,7 +707,7 @@ class PlannerAnalytics extends Component
                     'miles_planned' => round($circuit->miles_planned ?? 0, 1),
                     'total_units' => $aggregate?->total_units ?? 0,
                     'approval_rate' => $approvalRate,
-                    'last_modified' => $circuit->api_modified_date,
+                    'last_modified' => $circuit->api_modified_at,
                 ];
             });
     }

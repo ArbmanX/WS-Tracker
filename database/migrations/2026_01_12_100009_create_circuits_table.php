@@ -28,6 +28,7 @@ return new class extends Migration
             $table->foreignId('region_id')->constrained();
             $table->string('title')->comment('Full circuit/line name');
             $table->string('contractor', 50)->nullable()->comment('Assigned contractor');
+            $table->string('taken_by', 100)->nullable()->comment('Planner identifier from SS_TAKENBY (format: CONTRACTOR\\username)');
             $table->string('cycle_type', 100)->nullable()->comment('Cycle type from API');
 
             // Metrics
@@ -38,11 +39,15 @@ return new class extends Migration
 
             // Dates
             $table->date('start_date')->nullable();
-            $table->date('api_modified_date')->comment('Last modified date from API');
+            $table->timestamp('api_modified_at')->nullable()->comment('Last modified timestamp from API (full precision)');
 
             // API status and raw data
             $table->string('api_status', 20)->comment('ACTIV, QC, REWORK, CLOSE');
             $table->jsonb('api_data_json')->nullable()->comment('Raw API response for reference');
+
+            // WorkStudio version tracking for change/staleness detection
+            $table->integer('ws_version')->nullable()->default(0)->comment('WSREQ_VERSION from API');
+            $table->integer('ws_sync_version')->nullable()->default(0)->comment('WSREQ_SYNCHVERSN from API');
 
             // User modification tracking for smart sync
             // Format: {"field_name": {"modified_at": "...", "modified_by": 123, "original_value": "..."}}
@@ -76,10 +81,14 @@ return new class extends Migration
 
             // Composite indexes for common queries
             $table->index(['region_id', 'api_status']);
-            $table->index('api_modified_date');
+            $table->index('api_modified_at');
             $table->index(['api_status', 'deleted_at']);
             $table->index('last_user_modified_at');
             $table->index('is_excluded');
+
+            // Planner analytics indexes
+            $table->index('taken_by');
+            $table->index(['taken_by', 'api_status']);
         });
     }
 

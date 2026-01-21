@@ -40,6 +40,9 @@ class CircuitBrowser extends Component
     #[Url(as: 'cycle')]
     public string $cycleTypeFilter = '';
 
+    #[Url(as: 'planner')]
+    public string $plannerFilter = '';
+
     // Detail/Edit Modal State
     public bool $showModal = false;
 
@@ -111,12 +114,17 @@ class CircuitBrowser extends Component
         $this->resetPage();
     }
 
+    public function updatedPlannerFilter(): void
+    {
+        $this->resetPage();
+    }
+
     /**
      * Clear all filters.
      */
     public function clearFilters(): void
     {
-        $this->reset(['search', 'regionFilter', 'apiStatusFilter', 'excludedFilter', 'modifiedFilter', 'scopeYearFilter', 'cycleTypeFilter']);
+        $this->reset(['search', 'regionFilter', 'apiStatusFilter', 'excludedFilter', 'modifiedFilter', 'scopeYearFilter', 'cycleTypeFilter', 'plannerFilter']);
         $this->resetPage();
     }
 
@@ -334,6 +342,23 @@ class CircuitBrowser extends Component
             ->where('cycle_type', '!=', '')
             ->orderBy('cycle_type')
             ->pluck('cycle_type', 'cycle_type')
+            ->toArray();
+    }
+
+    /**
+     * Get available planners (taken_by values).
+     *
+     * @return array<string, string>
+     */
+    public function getPlannerOptionsProperty(): array
+    {
+        return Circuit::query()
+            ->select('taken_by')
+            ->distinct()
+            ->whereNotNull('taken_by')
+            ->where('taken_by', '!=', '')
+            ->orderBy('taken_by')
+            ->pluck('taken_by', 'taken_by')
             ->toArray();
     }
 
@@ -664,6 +689,7 @@ class CircuitBrowser extends Component
             ->when($this->modifiedFilter === 'no', fn ($q) => $q->withoutUserModifications())
             ->when($this->scopeYearFilter, fn ($q) => $q->whereRaw('SUBSTR(work_order, 1, 4) = ?', [$this->scopeYearFilter]))
             ->when($this->cycleTypeFilter, fn ($q) => $q->where('cycle_type', $this->cycleTypeFilter))
+            ->when($this->plannerFilter, fn ($q) => $q->where('taken_by', $this->plannerFilter))
             ->orderBy('work_order')
             ->paginate(25);
 

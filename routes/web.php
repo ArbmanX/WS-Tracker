@@ -7,6 +7,7 @@ use App\Livewire\Admin\SyncHistory;
 use App\Livewire\Admin\UnlinkedPlanners;
 use App\Livewire\Admin\UserManagement;
 use App\Livewire\Assessments\Dashboard\Overview;
+use App\Livewire\Assessments\DataComparison;
 use App\Livewire\Assessments\PlannerAnalytics;
 use App\Livewire\DataManagement\CircuitBrowser;
 use App\Livewire\DataManagement\Endpoints;
@@ -27,6 +28,11 @@ Route::get('/', function () {
 
     return view('welcome');
 })->name('home');
+
+Route::view('/asstest', 'assessments.index')->name('asstest');
+
+// Temporary route for testing - no auth required
+Route::get('/data-comparison', DataComparison::class)->name('assessments.data-comparison');
 
 // Onboarding wizard - accessible to guests (for first-time setup) and pending users
 Route::get('/onboarding', OnboardingWizard::class)

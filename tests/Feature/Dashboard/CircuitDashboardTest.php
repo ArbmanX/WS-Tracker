@@ -62,11 +62,11 @@ describe('CircuitDashboard Filters', function () {
         $region = Region::factory()->create();
         Circuit::factory()->create([
             'region_id' => $region->id,
-            'api_modified_date' => now()->subDays(5),
+            'api_modified_at' => now()->subDays(5),
         ]);
         Circuit::factory()->create([
             'region_id' => $region->id,
-            'api_modified_date' => now()->subDays(15),
+            'api_modified_at' => now()->subDays(15),
         ]);
 
         $component = Livewire::actingAs($user)

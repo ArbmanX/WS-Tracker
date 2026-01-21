@@ -80,6 +80,19 @@
                     </select>
                 </div>
 
+                {{-- Planner Filter --}}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Planner</span>
+                    </label>
+                    <select wire:model.live="plannerFilter" class="select select-bordered select-sm">
+                        <option value="">All Planners</option>
+                        @foreach($this->plannerOptions as $planner)
+                            <option value="{{ $planner }}">{{ $planner }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 {{-- Excluded Filter --}}
                 <div class="form-control">
                     <label class="label">
@@ -105,7 +118,7 @@
                 </div>
 
                 {{-- Clear Filters --}}
-                @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter)
+                @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter || $plannerFilter)
                     <button wire:click="clearFilters" class="btn btn-ghost btn-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -187,7 +200,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     <p class="text-base-content/40">No circuits found</p>
-                    @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter)
+                    @if($search || $regionFilter || $apiStatusFilter || $excludedFilter || $modifiedFilter || $scopeYearFilter || $cycleTypeFilter || $plannerFilter)
                         <button wire:click="clearFilters" class="btn btn-ghost btn-sm mt-2">Clear filters</button>
                     @endif
                 </div>
@@ -212,6 +225,7 @@
                                 </th>
                                 <th>Work Order</th>
                                 <th>Title</th>
+                                <th>Planner</th>
                                 <th>Year</th>
                                 <th>Cycle Type</th>
                                 <th>Region</th>
@@ -242,6 +256,9 @@
                                     </td>
                                     <td class="max-w-xs truncate" title="{{ $circuit->title }}">
                                         {{ Str::limit($circuit->title, 40) }}
+                                    </td>
+                                    <td class="text-sm max-w-24 truncate" title="{{ $circuit->taken_by }}">
+                                        {{ $circuit->taken_by ? Str::limit($circuit->taken_by, 15) : '-' }}
                                     </td>
                                     <td class="font-mono text-sm text-base-content/70">
                                         {{ $circuit->scope_year ?? '-' }}
@@ -486,14 +503,37 @@
                                     <p>{{ $circuit->contractor ?? '-' }}</p>
                                 </div>
                                 <div>
+                                    <span class="text-xs text-base-content/60 uppercase tracking-wide">Planner (Taken By)</span>
+                                    <p>{{ $circuit->taken_by ?? '-' }}</p>
+                                </div>
+                                <div>
                                     <span class="text-xs text-base-content/60 uppercase tracking-wide">Cycle Type</span>
                                     <p>{{ $circuit->cycle_type ?? '-' }}</p>
                                 </div>
+                            </div>
+                        </div>
+
+                        {{-- Data Freshness Section --}}
+                        <div class="mt-4 p-3 bg-base-200 rounded-lg">
+                            <span class="text-xs font-semibold text-base-content/70 uppercase">Data Freshness</span>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
                                 <div>
-                                    <span class="text-xs text-base-content/60 uppercase tracking-wide">Last Synced</span>
-                                    <p>{{ $circuit->last_synced_at?->diffForHumans() ?? 'Never' }}</p>
+                                    <span class="text-xs text-base-content/50">API Modified</span>
+                                    <p class="text-sm">
+                                        @if($circuit->api_modified_at)
+                                            {{ $circuit->api_modified_at->format('M d, Y g:i A') }}
+                                            <span class="text-base-content/50">({{ $circuit->api_modified_at->diffForHumans() }})</span>
+                                        @else
+                                            <span class="text-base-content/40">Unknown</span>
+                                        @endif
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-base-content/50">Last Synced</span>
+                                    <p class="text-sm">{{ $circuit->last_synced_at?->diffForHumans() ?? 'Never' }}</p>
                                 </div>
                             </div>
+                        </div>
                         </div>
 
                         @if(auth()->user()?->hasRole('sudo_admin'))

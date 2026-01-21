@@ -3,9 +3,11 @@
 namespace App\Console\Commands\WorkStudio;
 
 use App\Enums\SyncTrigger;
+use App\Jobs\BuildAggregatesJob;
 use App\Jobs\CreateDailySnapshotsJob;
 use App\Jobs\SyncCircuitAggregatesJob;
 use App\Jobs\SyncCircuitsJob;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,11 +24,13 @@ class SyncCommand extends Command
      * The name and signature of the console command.
      */
     protected $signature = 'workstudio:sync
-        {type? : Type of sync: circuits, aggregates, snapshots, or all}
+        {type? : Type of sync: circuits, aggregates, planner, regional, snapshots, or all}
         {--status=* : API statuses to sync (ACTIV, QC, REWRK, CLOSE)}
         {--force : Force overwrite user modifications}
         {--queue : Queue the job instead of running synchronously}
-        {--preview : Preview what would be synced without making changes}';
+        {--preview : Preview what would be synced without making changes}
+        {--aggregate-type=both : For planner/regional: daily, weekly, or both}
+        {--date= : Target date for planner/regional aggregates (YYYY-MM-DD, default: today)}';
 
     /**
      * The console command description.
@@ -38,7 +42,9 @@ class SyncCommand extends Command
      */
     private const SYNC_TYPES = [
         'circuits' => 'Sync circuit list from API',
-        'aggregates' => 'Sync planned units and compute aggregates',
+        'aggregates' => 'Sync planned units and compute circuit aggregates',
+        'planner' => 'Build planner aggregates (daily/weekly rollups by user)',
+        'regional' => 'Build regional aggregates (daily/weekly rollups by region)',
         'snapshots' => 'Create daily snapshots for all circuits',
         'all' => 'Run all sync operations',
     ];
@@ -51,6 +57,15 @@ class SyncCommand extends Command
         'QC' => 'Quality Control',
         'REWRK' => 'Rework',
         'CLOSE' => 'Closed',
+    ];
+
+    /**
+     * Available aggregate types for planner/regional.
+     */
+    private const AGGREGATE_TYPES = [
+        'daily' => 'Daily aggregates only',
+        'weekly' => 'Weekly aggregates only',
+        'both' => 'Both daily and weekly aggregates',
     ];
 
     /**
@@ -79,16 +94,17 @@ class SyncCommand extends Command
         // Show what we're about to do
         $this->displaySyncInfo($type, $statuses, $forceOverwrite, $queue);
 
-
         /** Get current user ID if available
          *
-        */ 
+         */
         $userId = Auth::user()?->id;
 
         // Dispatch the appropriate job(s)
         return match ($type) {
             'circuits' => $this->syncCircuits($statuses, $forceOverwrite, $queue, $userId),
             'aggregates' => $this->syncAggregates($statuses, $queue, $userId),
+            'planner' => $this->buildPlannerAggregates($queue, $userId),
+            'regional' => $this->buildRegionalAggregates($queue, $userId),
             'snapshots' => $this->createSnapshots($queue),
             'all' => $this->syncAll($statuses, $forceOverwrite, $queue, $userId),
             default => $this->invalidType($type),
@@ -156,15 +172,20 @@ class SyncCommand extends Command
     {
         info('Starting WorkStudio Sync');
 
-        $this->table(
-            ['Setting', 'Value'],
-            [
-                ['Type', self::SYNC_TYPES[$type] ?? $type],
-                ['Statuses', implode(', ', $statuses)],
-                ['Force Overwrite', $forceOverwrite ? 'Yes' : 'No'],
-                ['Execution', $queue ? 'Queued' : 'Synchronous'],
-            ]
-        );
+        $tableRows = [
+            ['Type', self::SYNC_TYPES[$type] ?? $type],
+            ['Statuses', implode(', ', $statuses)],
+            ['Force Overwrite', $forceOverwrite ? 'Yes' : 'No'],
+            ['Execution', $queue ? 'Queued' : 'Synchronous'],
+        ];
+
+        // Add aggregate type and date for relevant sync types
+        if (in_array($type, ['planner', 'regional', 'all'])) {
+            $tableRows[] = ['Aggregate Type', self::AGGREGATE_TYPES[$this->getAggregateType()] ?? $this->getAggregateType()];
+            $tableRows[] = ['Target Date', $this->getTargetDate()->format('Y-m-d')];
+        }
+
+        $this->table(['Setting', 'Value'], $tableRows);
     }
 
     /**
@@ -299,26 +320,130 @@ class SyncCommand extends Command
     }
 
     /**
+     * Build planner aggregates (daily/weekly rollups by user).
+     */
+    private function buildPlannerAggregates(bool $queue, ?int $userId): int
+    {
+        $aggregateType = $this->getAggregateType();
+        $targetDate = $this->getTargetDate();
+
+        $this->info("Building planner {$aggregateType} aggregates for {$targetDate->format('Y-m-d')}...");
+
+        $job = new BuildAggregatesJob(
+            aggregateType: $aggregateType,
+            targetDate: $targetDate,
+            triggerType: SyncTrigger::Manual,
+            triggeredByUserId: $userId,
+        );
+
+        if ($queue) {
+            dispatch($job);
+            info('Planner aggregate build job queued successfully.');
+        } else {
+            try {
+                app()->call([$job, 'handle']);
+                info('Planner aggregates built successfully.');
+            } catch (\Exception $e) {
+                $this->error("Planner aggregate build failed: {$e->getMessage()}");
+
+                return self::FAILURE;
+            }
+        }
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Build regional aggregates (daily/weekly rollups by region).
+     */
+    private function buildRegionalAggregates(bool $queue, ?int $userId): int
+    {
+        $aggregateType = $this->getAggregateType();
+        $targetDate = $this->getTargetDate();
+
+        $this->info("Building regional {$aggregateType} aggregates for {$targetDate->format('Y-m-d')}...");
+
+        $job = new BuildAggregatesJob(
+            aggregateType: $aggregateType,
+            targetDate: $targetDate,
+            triggerType: SyncTrigger::Manual,
+            triggeredByUserId: $userId,
+        );
+
+        if ($queue) {
+            dispatch($job);
+            info('Regional aggregate build job queued successfully.');
+        } else {
+            try {
+                app()->call([$job, 'handle']);
+                info('Regional aggregates built successfully.');
+            } catch (\Exception $e) {
+                $this->error("Regional aggregate build failed: {$e->getMessage()}");
+
+                return self::FAILURE;
+            }
+        }
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Get the aggregate type option (daily, weekly, or both).
+     */
+    private function getAggregateType(): string
+    {
+        $type = $this->option('aggregate-type') ?? BuildAggregatesJob::TYPE_BOTH;
+
+        if (! array_key_exists($type, self::AGGREGATE_TYPES)) {
+            $this->warn("Invalid aggregate type '{$type}', defaulting to 'both'");
+
+            return BuildAggregatesJob::TYPE_BOTH;
+        }
+
+        return $type;
+    }
+
+    /**
+     * Get the target date option.
+     */
+    private function getTargetDate(): Carbon
+    {
+        $dateStr = $this->option('date');
+
+        if (! $dateStr) {
+            return now();
+        }
+
+        try {
+            return Carbon::parse($dateStr);
+        } catch (\Exception $e) {
+            $this->warn("Invalid date '{$dateStr}', defaulting to today");
+
+            return now();
+        }
+    }
+
+    /**
      * Run all sync operations.
      */
     private function syncAll(array $statuses, bool $forceOverwrite, bool $queue, ?int $userId): int
     {
         $this->info('Running all sync operations...');
 
-        // Sync circuits first
+        // 1. Sync circuits first
         $result = $this->syncCircuits($statuses, $forceOverwrite, $queue, $userId);
         if ($result !== self::SUCCESS) {
             return $result;
         }
 
-        // Then aggregates (with delay if queued)
+        // 2. Then circuit aggregates (with delay if queued)
         if ($queue) {
             dispatch(new SyncCircuitAggregatesJob(
                 apiStatuses: $statuses,
                 triggerType: SyncTrigger::Manual,
                 triggeredByUserId: $userId
             ))->delay(now()->addMinutes(2));
-            info('Aggregate sync job queued (will run in 2 minutes).');
+            info('Circuit aggregate sync job queued (will run in 2 minutes).');
         } else {
             $result = $this->syncAggregates($statuses, false, $userId);
             if ($result !== self::SUCCESS) {
@@ -326,7 +451,33 @@ class SyncCommand extends Command
             }
         }
 
-        // Finally snapshots
+        // 3. Build planner and regional aggregates (rollups)
+        $aggregateType = $this->getAggregateType();
+        $targetDate = $this->getTargetDate();
+
+        $rollupJob = new BuildAggregatesJob(
+            aggregateType: $aggregateType,
+            targetDate: $targetDate,
+            triggerType: SyncTrigger::Manual,
+            triggeredByUserId: $userId,
+        );
+
+        if ($queue) {
+            dispatch($rollupJob)->delay(now()->addMinutes(4));
+            info('Planner/regional aggregate build job queued (will run in 4 minutes).');
+        } else {
+            $this->info('Building planner and regional aggregates...');
+            try {
+                app()->call([$rollupJob, 'handle']);
+                info('Planner and regional aggregates built successfully.');
+            } catch (\Exception $e) {
+                $this->error("Planner/regional aggregate build failed: {$e->getMessage()}");
+
+                return self::FAILURE;
+            }
+        }
+
+        // 4. Finally snapshots
         return $this->createSnapshots($queue);
     }
 

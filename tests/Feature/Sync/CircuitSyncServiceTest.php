@@ -19,7 +19,7 @@ describe('syncCircuit', function () {
             'extension' => '@',
             'title' => 'Test Circuit',
             'api_status' => 'ACTIV',
-            'api_modified_date' => now()->subDay(),
+            'api_modified_at' => now()->subDay(),
             'region_id' => $this->region->id,
             'total_miles' => 10.5,
             'percent_complete' => 25.0,
@@ -166,7 +166,7 @@ describe('syncCircuits', function () {
                 'work_order' => '2026-0010',
                 'title' => 'Batch Circuit 1',
                 'api_status' => 'ACTIV',
-                'api_modified_date' => now()->subDay(),
+                'api_modified_at' => now()->subDay(),
                 'region_id' => $this->region->id,
             ],
             [
@@ -174,7 +174,7 @@ describe('syncCircuits', function () {
                 'work_order' => '2026-0011',
                 'title' => 'Batch Circuit 2',
                 'api_status' => 'ACTIV',
-                'api_modified_date' => now()->subDay(),
+                'api_modified_at' => now()->subDay(),
                 'region_id' => $this->region->id,
             ],
         ]);
@@ -197,7 +197,7 @@ describe('syncCircuits', function () {
                 'work_order' => '2026-0021',
                 'title' => 'Valid Circuit',
                 'api_status' => 'ACTIV',
-                'api_modified_date' => now()->subDay(),
+                'api_modified_at' => now()->subDay(),
                 'region_id' => $this->region->id,
             ],
         ]);
@@ -253,7 +253,7 @@ describe('previewSync', function () {
                 'work_order' => '2026-0030',
                 'title' => 'New Circuit',
                 'api_status' => 'ACTIV',
-                'api_modified_date' => now()->subDay(),
+                'api_modified_at' => now()->subDay(),
                 'region_id' => $this->region->id,
             ],
         ]);

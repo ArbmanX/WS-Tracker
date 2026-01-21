@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-01-21T12:00:00.000Z" agent="draw.io" version="21.0.0" type="device">
+  <diagram id="sync-data-flow" name="Sync Data Flow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="WS-Tracker Sync Data Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="20" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== ENTRY POINTS (Row 1) ==================== -->
+        <mxCell id="section1" value="Entry Points" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- UI Button -->
+        <mxCell id="ui-button" value="&lt;b&gt;Sync Control UI&lt;/b&gt;&lt;br&gt;(Admin Panel)&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;SyncControl.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="100" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Artisan Command -->
+        <mxCell id="artisan-cmd" value="&lt;b&gt;Artisan Command&lt;/b&gt;&lt;br&gt;workstudio:sync&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;SyncCommand.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Scheduler -->
+        <mxCell id="scheduler" value="&lt;b&gt;Scheduler&lt;/b&gt;&lt;br&gt;(Automated)&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;routes/console.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="520" y="100" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== JOBS (Row 2) ==================== -->
+        <mxCell id="section2" value="Queue Jobs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="210" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- SyncCircuitsJob -->
+        <mxCell id="sync-circuits-job" value="&lt;b&gt;1. SyncCircuitsJob&lt;/b&gt;&lt;br&gt;Fetch circuit list from API&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Jobs/SyncCircuitsJob.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- SyncCircuitAggregatesJob -->
+        <mxCell id="sync-aggregates-job" value="&lt;b&gt;2. SyncCircuitAggregatesJob&lt;/b&gt;&lt;br&gt;Fetch planned units per circuit&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Jobs/SyncCircuitAggregatesJob.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="380" y="240" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- BuildAggregatesJob -->
+        <mxCell id="build-aggregates-job" value="&lt;b&gt;3. BuildAggregatesJob&lt;/b&gt;&lt;br&gt;Build planner/regional rollups&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Jobs/BuildAggregatesJob.php&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="660" y="240" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== SERVICES (Row 3) ==================== -->
+        <mxCell id="section3" value="Services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- WorkStudioApiService -->
+        <mxCell id="api-service" value="&lt;b&gt;WorkStudioApiService&lt;/b&gt;&lt;br&gt;HTTP calls to WorkStudio API&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Services/WorkStudio/&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- CircuitSyncService -->
+        <mxCell id="circuit-sync-service" value="&lt;b&gt;CircuitSyncService&lt;/b&gt;&lt;br&gt;Transform &amp;amp; upsert circuits&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Services/WorkStudio/Sync/&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- AggregateServices -->
+        <mxCell id="aggregate-services" value="&lt;b&gt;Aggregate Services&lt;/b&gt;&lt;br&gt;Calculate, Store, Diff&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;app/Services/WorkStudio/Aggregation/&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="380" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== EXTERNAL API (Row 3.5) ==================== -->
+        <mxCell id="section3b" value="External" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- WorkStudio API -->
+        <mxCell id="workstudio-api" value="&lt;b&gt;WorkStudio DDOProtocol API&lt;/b&gt;&lt;br&gt;GETVIEWDATA endpoint&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;External Service&lt;/font&gt;" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="500" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== DATABASE (Row 4) ==================== -->
+        <mxCell id="section4" value="Database Tables" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- circuits table -->
+        <mxCell id="db-circuits" value="&lt;b&gt;circuits&lt;/b&gt;&lt;br&gt;Circuit master data&lt;br&gt;work_order, region_id,&lt;br&gt;api_status, total_miles..." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="650" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- circuit_aggregates table -->
+        <mxCell id="db-circuit-agg" value="&lt;b&gt;circuit_aggregates&lt;/b&gt;&lt;br&gt;Per-circuit daily stats&lt;br&gt;total_units, units_approved,&lt;br&gt;total_linear_ft..." style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="260" y="650" width="160" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- planner aggregates tables -->
+        <mxCell id="db-planner-agg" value="&lt;b&gt;planner_daily_aggregates&lt;/b&gt;&lt;br&gt;&lt;b&gt;planner_weekly_aggregates&lt;/b&gt;&lt;br&gt;Rollup by user (planner)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="460" y="650" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- regional aggregates tables -->
+        <mxCell id="db-regional-agg" value="&lt;b&gt;regional_daily_aggregates&lt;/b&gt;&lt;br&gt;&lt;b&gt;regional_weekly_aggregates&lt;/b&gt;&lt;br&gt;Rollup by region" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="680" y="650" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- circuit_user pivot -->
+        <mxCell id="db-circuit-user" value="&lt;b&gt;circuit_user&lt;/b&gt;&lt;br&gt;Planner assignments" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="900" y="650" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== UI DISPLAY (Row 5) ==================== -->
+        <mxCell id="section5" value="UI Display" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Dashboard Overview -->
+        <mxCell id="ui-dashboard" value="&lt;b&gt;Dashboard Overview&lt;/b&gt;&lt;br&gt;Regional stats cards/table&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;Assessments/Dashboard/Overview&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="120" y="820" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Planner Analytics -->
+        <mxCell id="ui-planner" value="&lt;b&gt;Planner Analytics&lt;/b&gt;&lt;br&gt;Planner performance metrics&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;Assessments/PlannerAnalytics&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="820" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Data Comparison -->
+        <mxCell id="ui-comparison" value="&lt;b&gt;Data Comparison&lt;/b&gt;&lt;br&gt;Compare data across periods&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;Assessments/DataComparison&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="820" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Circuit Browser -->
+        <mxCell id="ui-browser" value="&lt;b&gt;Circuit Browser&lt;/b&gt;&lt;br&gt;Search and browse circuits&lt;br&gt;&lt;font color=&quot;#888888&quot;&gt;DataManagement/CircuitBrowser&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;shadow=1" vertex="1" parent="1">
+          <mxGeometry x="840" y="820" width="200" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== ARROWS ==================== -->
+
+        <!-- Entry points to Jobs -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="ui-button" target="sync-circuits-job">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="artisan-cmd" target="sync-circuits-job">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="scheduler" target="sync-circuits-job">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Job chain arrows -->
+        <mxCell id="arrow4" value="then" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=2;endArrow=classic;dashed=1" edge="1" parent="1" source="sync-circuits-job" target="sync-aggregates-job">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" value="then" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=2;endArrow=classic;dashed=1" edge="1" parent="1" source="sync-aggregates-job" target="build-aggregates-job">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Jobs to Services -->
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="sync-circuits-job" target="api-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="sync-circuits-job" target="circuit-sync-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="sync-aggregates-job" target="api-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="sync-aggregates-job" target="aggregate-services">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Service to External -->
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="api-service" target="workstudio-api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Services to Database -->
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="circuit-sync-service" target="db-circuits">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="470" />
+              <mxPoint x="150" y="470" />
+              <mxPoint x="150" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="aggregate-services" target="db-circuit-agg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="470" />
+              <mxPoint x="340" y="470" />
+              <mxPoint x="340" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BuildAggregatesJob to planner/regional DB -->
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="build-aggregates-job" target="db-planner-agg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="330" />
+              <mxPoint x="900" y="330" />
+              <mxPoint x="900" y="600" />
+              <mxPoint x="550" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="build-aggregates-job" target="db-regional-agg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="330" />
+              <mxPoint x="770" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Database to UI -->
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="db-regional-agg" target="ui-dashboard">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="780" />
+              <mxPoint x="220" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="db-planner-agg" target="ui-planner">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="780" />
+              <mxPoint x="460" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="db-circuits" target="ui-browser">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="150" y="790" />
+              <mxPoint x="940" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- circuit_aggregates to UI comparison -->
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;endArrow=classic" edge="1" parent="1" source="db-circuit-agg" target="ui-comparison">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="340" y="785" />
+              <mxPoint x="700" y="785" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==================== LEGEND ==================== -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="1000" y="100" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="1060" y="105" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend1" value="UI Component" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1020" y="130" width="80" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="legend2" value="Queue Job" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1110" y="130" width="80" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="legend3" value="Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1020" y="165" width="80" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="legend4" value="Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1110" y="160" width="80" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="legend5" value="External API" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="1050" y="205" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== NOTES ==================== -->
+        <mxCell id="note1" value="&lt;b&gt;Data Flow Summary:&lt;/b&gt;&lt;br&gt;1. Entry point triggers SyncCircuitsJob&lt;br&gt;2. Circuits fetched from WorkStudio API&lt;br&gt;3. SyncCircuitAggregatesJob computes per-circuit stats&lt;br&gt;4. BuildAggregatesJob rolls up to planner/regional&lt;br&gt;5. Livewire components query aggregates for display" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffffcc;strokeColor=#999999;fontSize=11;align=left;spacingLeft=5" vertex="1" parent="1">
+          <mxGeometry x="1000" y="320" width="280" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

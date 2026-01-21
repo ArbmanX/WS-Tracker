@@ -590,7 +590,7 @@ it('provides activity timestamps when planner selected', function () {
     $circuit = Circuit::factory()->forRegion($region)->create([
         'api_status' => 'ACTIV',
         'miles_planned' => 5.5, // In progress
-        'api_modified_date' => now()->subDays(5),
+        'api_modified_at' => now()->subDays(5),
     ]);
     $planner->circuits()->attach($circuit);
 
@@ -622,7 +622,7 @@ it('tracks oldest in-progress circuit for planner', function () {
         'extension' => '@',
         'api_status' => 'ACTIV',
         'miles_planned' => 3.0, // In progress
-        'api_modified_date' => now()->subDays(30),
+        'api_modified_at' => now()->subDays(30),
     ]);
 
     $newerCircuit = Circuit::factory()->forRegion($region)->create([
@@ -630,7 +630,7 @@ it('tracks oldest in-progress circuit for planner', function () {
         'extension' => '@',
         'api_status' => 'ACTIV',
         'miles_planned' => 1.0, // In progress
-        'api_modified_date' => now()->subDays(5),
+        'api_modified_at' => now()->subDays(5),
     ]);
 
     $planner->circuits()->attach([$olderCircuit->id, $newerCircuit->id]);
