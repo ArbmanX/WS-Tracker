@@ -1,0 +1,24 @@
+Here are all the requirements for including a station's SPANLGTH in the Total_Footage and Total_Day_Miles calculations:
+
+Requirements for including a station's SPANLGTH:
+
+#	Condition	Field	Details
+1	IS NOT NULL	S.SPANLGTH	The span length value must exist
+2	!= ''	S.SPANLGTH	The span length cannot be empty string
+3	IS NOT NULL	V.UNIT	The associated unit on VEGUNIT must exist
+4	!= ''	V.UNIT	The associated unit cannot be empty string
+5	Not already counted this day	S.STATNAME	If a station has multiple units assessed on the same day, only count its SPANLGTH once for that day
+6	Not already counted on a previous day	S.STATNAME	If a station was assessed on multiple days, only count its SPANLGTH on the first assessment date - never again on subsequent days
+Example to illustrate rules 5 & 6:
+
+Station	SPANLGTH	Units	First Assessed	Also Assessed
+STA-001	150m	Unit-A, Unit-B, Unit-C	Jan 1	Jan 5, Jan 10
+STA-002	200m	Unit-D	Jan 5	-
+STA-003	100m	Unit-E, Unit-F	Jan 10	-
+Resulting Daily Records:
+
+Date	Total_Footage	Why
+Jan 1	150m	STA-001 counted once (rule 5: not 3x for 3 units)
+Jan 5	200m	STA-002 only (rule 6: STA-001 already counted on Jan 1)
+Jan 10	100m	STA-003 counted once (rules 5 & 6: STA-001 excluded, STA-003's 2 units count once)
+Grand Total across all days: 150 + 200 + 100 = 450m (each station counted exactly once)

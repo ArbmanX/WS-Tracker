@@ -1,27 +1,105 @@
 <?php
 
-use App\Livewire\Admin\AnalyticsSettings;
-use App\Livewire\Admin\PlannerManagement;
 use App\Livewire\Admin\SyncControl;
 use App\Livewire\Admin\SyncHistory;
-use App\Livewire\Admin\UnlinkedPlanners;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\UserManagement;
-use App\Livewire\Assessments\Dashboard\Overview;
-use App\Livewire\Assessments\DataComparison;
-use App\Livewire\Assessments\PlannerAnalytics;
-use App\Livewire\DataManagement\CircuitBrowser;
-use App\Livewire\DataManagement\Endpoints;
-use App\Livewire\DataManagement\Exclusions;
-use App\Livewire\DataManagement\Index as DataManagementIndex;
+use App\Livewire\Admin\UnlinkedPlanners;
+use App\Livewire\Admin\AnalyticsSettings;
+use App\Livewire\Admin\PlannerManagement;
 use App\Livewire\DataManagement\SyncLogs;
+use App\Livewire\DataManagement\Endpoints;
+use App\Livewire\Assessments\CircuitKanban;
+use App\Livewire\DataManagement\Exclusions;
+use App\Livewire\Assessments\DataComparison;
+use App\Services\WorkStudio\GetQueryService;
+use App\Services\WorkStudio\ResourceGroupAccessService;
 use App\Livewire\DataManagement\TableManager;
 use App\Livewire\Onboarding\OnboardingWizard;
-use Illuminate\Support\Facades\Route;
+use App\Livewire\Assessments\PlannerAnalytics;
+use App\Livewire\DataManagement\CircuitBrowser;
+use App\Livewire\Assessments\Dashboard\Overview;
+use App\Livewire\DataManagement\Index as DataManagementIndex;
+
+/* Parameters 
+|  - full_scope
+|  - active_owned
+|  - username
+|  - active
+|  - qc
+|  - rewrk
+|  - closed
+*/
+
+Route::get("/base-data", function (GetQueryService $queryService) {
+    $data = $queryService->getAssessmentsBaseData('full_scope');
+    dd($data);
+    return response()->json($data);
+});
+
+Route::get('/assessment-jobguids', function (GetQueryService $queryService) {
+    $data = $queryService->getJobGuids('username','ASPLUNDH\\jfarh');
+    dd($data);
+    return response()->json($data);
+});
+
+Route::get('/units-jobguids', function (GetQueryService $queryService) {
+    $jobguid = '{E82D92B3-68E6-43C4-AC8D-35C9DCA1BEA8}';
+    $data = $queryService->getAssessmentUnits('job_guid', $jobguid);
+    dd($data);
+    return response()->json($data);
+});
+
+// Test route: Get planner circuits with daily records
+Route::get('/curl', function (GetQueryService $queryService) {
+    $data = $queryService->getPlannerCircuitsWithDailyRecords(
+        username: 'ASPLUNDH\cnewcombe',
+        contractor: 'Asplundh'
+    );
+
+    // dd($data);
+    $sum = 0;
+    foreach ($data[0]['Daily_Records'] as $record) {
+        $sum += $record['Total_Day_Miles'];
+    }
+
+    return response()->json($data);
+});
+
+Route::get('/curl-units/{jobGuid}', function (GetQueryService $queryService, string $jobGuid) {
+    try {
+        $data = $queryService->getDailySpanSummary($jobGuid);
+        dd($data);
+
+        return response()->json($data);
+    } catch (Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'jobGuid' => $jobGuid,
+        ], 500);
+    }
+});
+
+Route::get('/curl-basic', function (GetQueryService $queryService) {
+    $data = $queryService->getPlannerOwnedCircuits(
+        username: 'ASPLUNDH\cnewcombe',
+        contractor: 'Asplundh'
+    );
+
+    return response()->json($data);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+*/
 
 // Landing page - redirect based on auth/onboarding status
 Route::get('/', function () {
-    if (auth()->check()) {
-        return auth()->user()->isOnboarded()
+    if (Auth::check()) {
+        return Auth::user()->isOnboarded()
             ? redirect()->route('dashboard')
             : redirect()->route('onboarding');
     }
@@ -47,6 +125,7 @@ Route::get('dashboard', fn () => redirect()->route('assessments.overview'))
 // Assessments routes
 Route::middleware(['auth', 'verified', 'onboarded'])->prefix('assessments')->name('assessments.')->group(function () {
     Route::get('/overview', Overview::class)->name('overview');
+    Route::get('/kanban', CircuitKanban::class)->name('kanban');
     Route::get('/planner-analytics', PlannerAnalytics::class)->name('planner-analytics');
 });
 
