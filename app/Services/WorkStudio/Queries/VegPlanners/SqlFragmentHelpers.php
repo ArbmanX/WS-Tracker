@@ -63,7 +63,7 @@ trait SqlFragmentHelpers
     /**
      * Get total footage for a circuit (sum of all station span lengths).
      */
-    private static function totalFootageSubquery(string $jobGuidRef = 'WSREQSS.JOBGUID'): string
+    private static function totalFootageSubquery(string $jobGuidRef = 'SS.JOBGUID'): string
     {
         return "(SELECT CAST(SUM(SPANLGTH) AS DECIMAL(10,2)) FROM STATIONS WHERE STATIONS.JOBGUID = {$jobGuidRef})";
     }
@@ -108,7 +108,7 @@ trait SqlFragmentHelpers
     /**
      * Build the CROSS APPLY for unit counts (more efficient for list queries).
      */
-    private static function unitCountsCrossApply(string $jobGuidRef = 'WSREQSS.JOBGUID'): string
+    private static function unitCountsCrossApply(string $jobGuidRef = 'SS.JOBGUID'): string
     {
         $validUnit = self::validUnitFilter();
 
@@ -140,7 +140,7 @@ trait SqlFragmentHelpers
         ) AS UnitCounts";
     }
 
-      /**
+    /**
      * Build the Daily Records subquery/OUTER APPLY.
      * Groups by assessment date with distinct station footage calculation.
      *
@@ -167,7 +167,7 @@ trait SqlFragmentHelpers
                         WHERE V3.JOBGUID = {$jobGuidRef}
                             AND V3.UNIT IS NOT NULL AND V3.UNIT != '' AND V3.UNIT != 'NW'
                             AND V3.ASSDDATE IS NOT NULL AND V3.ASSDDATE != ''
-                            AND ".self::parseMsDateToDate('V3.ASSDDATE')." = StationFirstDate.Assessed_Date
+                            AND " . self::parseMsDateToDate('V3.ASSDDATE') . " = StationFirstDate.Assessed_Date
                     ) AS Total_Unit_Count,
                     (
                         SELECT STRING_AGG(UNIT, ', ')
@@ -217,7 +217,7 @@ trait SqlFragmentHelpers
     /**
      * Build the Stations with nested Units subquery.
      */
-    private static function stationsWithUnitsQuery(string $jobGuidRef = 'WSREQSS.JOBGUID'): string
+    private static function stationsWithUnitsQuery(string $jobGuidRef = 'SS.JOBGUID'): string
     {
         $stationFields = SqlFieldBuilder::select('Stations', 'S');
         $vegunitFields = SqlFieldBuilder::select('VEGUNIT', 'U');
@@ -237,8 +237,8 @@ trait SqlFragmentHelpers
                 ) AS Units
             FROM STATIONS S
             WHERE S.JOBGUID = {$jobGuidRef}
+            AND S.STATNAME NOT LIKE '%EX%'
             FOR JSON PATH
         )";
     }
 }
-

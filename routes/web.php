@@ -1,5 +1,6 @@
 <?php
 
+use App\ExecutionTimer;
 use App\Livewire\Admin\SyncControl;
 use App\Livewire\Admin\SyncHistory;
 use Illuminate\Support\Facades\Auth;
@@ -31,22 +32,46 @@ use App\Livewire\DataManagement\Index as DataManagementIndex;
 |  - rewrk
 |  - closed
 */
+Route::get("/test", function (GetQueryService $queryService) {
+    dd($queryService->test());
+});
+
+Route::get("/queryAll", function (GetQueryService $queryService) {
+    dd($queryService->queryAll());
+});
 
 Route::get("/base-data", function (GetQueryService $queryService) {
-    $data = $queryService->getAssessmentsBaseData('full_scope');
-    dd($data);
+
+    $jobguid = '{0D89DA18-2D65-4535-9D7E-F612FB6DA07B}';
+
+    // $data1 = $queryService->getAssessmentsBaseData('full_scope');
+
+    // $data2 = $queryService->getAssessmentsBaseData('active_owned');
+
+    // $data3 = $queryService->getAssessmentsBaseData('username', 'ASPLUNDH\\jfarh');
+
+    // $data4 = $queryService->getJobGuids('full_scope');
+
+    // $data5 = $queryService->getJobGuids('active_owned');
+
+    // $data6 = $queryService->getJobGuids('username', 'ASPLUNDH\\jfarh');
+
+    // $data7 = $queryService->getAssessmentUnits('job_guid', $jobguid);
+
+    // dd($data3);
+    // dd($data1, $data2, $data3, $data4, $data5, $data6, $data7);
     return response()->json($data);
 });
 
 Route::get('/assessment-jobguids', function (GetQueryService $queryService) {
-    $data = $queryService->getJobGuids('username','ASPLUNDH\\jfarh');
+    $data = $queryService->getJobGuids('username', 'ASPLUNDH\\jfarh');
     dd($data);
     return response()->json($data);
 });
 
 Route::get('/units-jobguids', function (GetQueryService $queryService) {
     $jobguid = '{E82D92B3-68E6-43C4-AC8D-35C9DCA1BEA8}';
-    $data = $queryService->getAssessmentUnits('job_guid', $jobguid);
+    $data = $queryService->getAssessmentUnits('job_guid', null, $jobguid);
     dd($data);
     return response()->json($data);
 });
@@ -118,7 +143,7 @@ Route::get('/onboarding', OnboardingWizard::class)
     ->name('onboarding');
 
 // Dashboard redirects to assessments overview
-Route::get('dashboard', fn () => redirect()->route('assessments.overview'))
+Route::get('dashboard', fn() => redirect()->route('assessments.overview'))
     ->middleware(['auth', 'verified', 'onboarded'])
     ->name('dashboard');
 
@@ -151,4 +176,4 @@ Route::middleware(['auth', 'verified', 'onboarded', 'sudo_admin'])->prefix('admi
     Route::get('/data/tables', TableManager::class)->name('data.tables');
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

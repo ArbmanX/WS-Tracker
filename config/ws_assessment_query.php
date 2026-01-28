@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "scope_year"=> "2026",
 
     'contractors' => [
        'Asplundh'
@@ -11,7 +12,7 @@ return [
         'ASPLUNDH\\joseam',
     ],
 
-    'jobTypes' => [
+    'job_types' => [
         'Assessment',
         'Assessment Dx',
         'Split_Assessment',

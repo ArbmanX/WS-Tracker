@@ -2,15 +2,17 @@
 
 namespace App\Services\WorkStudio;
 
-use App\Services\WorkStudio\Queries\CircuitWithDailyRecordsQuery;
-use App\Services\WorkStudio\Queries\PlannerOwnedCircuitsQuery;
-use App\Services\WorkStudio\Queries\VegPlanners\AssessmentMetrics;
-use App\Services\WorkStudio\Transformers\DailySpanTransformer;
 use Exception;
+use App\ExecutionTimer;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Response;
+use App\Services\WorkStudio\Queries\PlannerOwnedCircuitsQuery;
+use App\Services\WorkStudio\Transformers\DailySpanTransformer;
+use App\Services\WorkStudio\Queries\CircuitWithDailyRecordsQuery;
+use App\Services\WorkStudio\Queries\VegPlanners\AssessmentMetrics;
+use App\Services\WorkStudio\Queries\VegPlanners\VegAssessmentQueries;
 
 class GetQueryService
 {
@@ -56,9 +58,6 @@ class GetQueryService
                 }])
                 ->post($url, $payload);
 
-            // dd('0', $response->onError(fn() => true), "1", $response->status(), $response->dumpHeaders(), $response->dump());
-            // Check for API-level errors in the response body
-
             $data = $response->json();
 
             if (isset($data['protocol']) && $data['protocol'] == 'ERROR' || isset($data['errorMessage'])) {
@@ -69,13 +68,12 @@ class GetQueryService
 
                 ]);
 
-                dd($data);
 
                 throw new Exception(json_encode(
                     [
                         'Status_Code' => $response->status(),
                         'Message' => $data['protocol'] . ' in the ' . class_basename($this) . ' ' . $data['errorMessage'],
-                        'SQL' => substr($sql, 0, 150),
+                        'SQL' => json_encode($sql, JSON_PRETTY_PRINT),
                     ]
                 ) ?? 'Unknown API error', 500);
             }
@@ -142,6 +140,7 @@ class GetQueryService
      */
     public function transformJsonResponse(array $response): Collection
     {
+
         if (! isset($response['Data']) || empty($response['Data'])) {
             return collect([]);
         }
@@ -167,22 +166,61 @@ class GetQueryService
         return collect([$data]) ?? [];
     }
 
+
+    public function queryAll(): Collection
+    {
+        $timer = new ExecutionTimer();
+        $timer->startTotal();
+
+        $timer->start('systemWideDataQuery');
+        $sql = VegAssessmentQueries::systemWideDataQuery();
+        $systemWideDataQuery = $this->executeAndHandle($sql, null);
+        $timer->stop('systemWideDataQuery');
+
+        $timer->start('groupedByRegionDataQuery');
+        $sql = VegAssessmentQueries::groupedByRegionDataQuery();
+        $groupedByRegionDataQuery = $this->executeAndHandle($sql, null);
+        $timer->stop('groupedByRegionDataQuery');
+        
+        
+
+        $timer->start('groupedByCircuitDataQuery');
+        $sql = VegAssessmentQueries::groupedByCircuitDataQuery();
+        $groupedByCircuitDataQuery = $this->executeAndHandle($sql, null);
+        $timer->stop('groupedByCircuitDataQuery');
+
+        dump('$systemWideDataQuery',$systemWideDataQuery);
+        dump('$groupedByRegionDataQuery',$groupedByRegionDataQuery);
+        dump('$groupedByCircuitDataQuery',$groupedByCircuitDataQuery);
+        $timer->logTotalTime();
+        return collect($groupedByCircuitDataQuery);
+    }
+
+    public function test()
+    {
+
+        $sql = VegAssessmentQueries::test();
+
+
+        return $this->executeAndHandle($sql, null);
+    }
+
     // TODO need to add the following params for a more dynamic selection
     // @param  int|null  $userId  Optional user ID for credentials
     // @param  string  $contractor  The contractor name
 
     /**
-    * Get planner-owned assessments (basic info without daily records).
-    *
-    * @param  string  $method  The method that chooses the disired response returned
-    * @param  string|null  $username  The planner's username
-    */
+     * Get planner-owned assessments (basic info without daily records).
+     *
+     * @param  string  $method  The method that chooses the disired response returned
+     * @param  string|null  $username  The planner's username
+     */
     public function getAssessmentsBaseData(string $method, ?string $username = null): Collection
     {
 
         switch ($method) {
             case 'full_scope':
-                $sql = AssessmentMetrics::getBaseDataForEnitireScopeYearAssessments();
+                $sql = AssessmentMetrics::getBaseDataForEntireScopeYearAssessments();
                 break;
 
             case 'active_owned':
@@ -197,15 +235,14 @@ class GetQueryService
                 return collect([]);
                 break;
         }
-
         return $this->executeAndHandle($sql, null);
     }
 
     /** Get job guids for assessments (used for requesting individual jobs).
-    *
-    * @param  string  $method  The method that chooses the disired response returned
-    * @param  string|null  $username  The planner's username
-    */
+     *
+     * @param  string  $method  The method that chooses the disired response returned
+     * @param  string|null  $username  The planner's username
+     */
     public function getJobGuids(string $method, ?string $username = null): Collection
     {
         switch ($method) {
@@ -241,37 +278,25 @@ class GetQueryService
         return $this->executeAndHandle($sql, null);
     }
 
-    public function getAssessmentUnits(string $method, ?string $username = null, string $jobGuid = null): Collection
+    public function getAssessmentUnits(string $method, ?string $username = null, ?string $jobguid = null): Collection
     {
         switch ($method) {
             case 'job_guid':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllUnitsForAssessmentByJobGUID(),
-                    null
-                );
+                $sql = AssessmentMetrics::getAllUnitsForAssessmentByJobGUID($jobguid);
                 break;
 
             case 'active_owned':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllUnitsForActiveAndOwnedAssessments(),
-                    null
-                );
+                $sql = AssessmentMetrics::getAllUnitsForActiveAndOwnedAssessments();
                 break;
 
             case 'username':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllUnitsForActiveAssessmentsByUsername(
-                        $username
-                    ),
-                    null
-                );
+                $sql = AssessmentMetrics::getAllUnitsForActiveAssessmentsByUsername($username);
                 break;
 
             default:
                 return collect([]);
                 break;
         }
-
 
         return $this->executeAndHandle($sql, null);
     }
