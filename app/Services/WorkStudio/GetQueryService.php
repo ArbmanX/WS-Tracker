@@ -79,7 +79,6 @@ class GetQueryService
             }
 
             $response->throw();
-
             return $data;
         } catch (Exception $e) {
             Log::error('WorkStudio GETQUERY failed', [
@@ -166,6 +165,35 @@ class GetQueryService
         return collect([$data]) ?? [];
     }
 
+    // TODO 
+        // Exctact the code below to its own class, it only gets the structure sql statement as a string 
+
+
+    /** Get job guids for assessments (used for requesting individual jobs).
+     *
+     * @param  string  $method  The method that chooses the disired response returned
+     * @param  string|null  $username  The planner's username
+     */
+    public function getJobGuids(): Collection
+    {
+        $sql = VegAssessmentQueries::getAllJobGUIDsForEntireScopeYear();
+
+        return $this->executeAndHandle($sql, null);
+    }
+
+    public function getSystemWideMetrics(): Collection
+    {
+        $sql = VegAssessmentQueries::systemWideDataQuery();
+
+        return $this->executeAndHandle($sql, null);
+    }
+
+    public function getRegionalMetrics(): Collection
+    {
+        $sql = VegAssessmentQueries::groupedByRegionDataQuery();
+
+        return $this->executeAndHandle($sql, null);
+    }
 
     public function queryAll(): Collection
     {
@@ -181,33 +209,20 @@ class GetQueryService
         $sql = VegAssessmentQueries::groupedByRegionDataQuery();
         $groupedByRegionDataQuery = $this->executeAndHandle($sql, null);
         $timer->stop('groupedByRegionDataQuery');
-        
-        
+
+
 
         $timer->start('groupedByCircuitDataQuery');
         $sql = VegAssessmentQueries::groupedByCircuitDataQuery();
         $groupedByCircuitDataQuery = $this->executeAndHandle($sql, null);
         $timer->stop('groupedByCircuitDataQuery');
 
-        dump('$systemWideDataQuery',$systemWideDataQuery);
-        dump('$groupedByRegionDataQuery',$groupedByRegionDataQuery);
-        dump('$groupedByCircuitDataQuery',$groupedByCircuitDataQuery);
+        dump('$systemWideDataQuery', $systemWideDataQuery);
+        dump('$groupedByRegionDataQuery', $groupedByRegionDataQuery);
+        dump('$groupedByCircuitDataQuery', $groupedByCircuitDataQuery);
         $timer->logTotalTime();
         return collect($groupedByCircuitDataQuery);
     }
-
-    public function test()
-    {
-
-        $sql = VegAssessmentQueries::test();
-
-
-        return $this->executeAndHandle($sql, null);
-    }
-
-    // TODO need to add the following params for a more dynamic selection
-    // @param  int|null  $userId  Optional user ID for credentials
-    // @param  string  $contractor  The contractor name
 
     /**
      * Get planner-owned assessments (basic info without daily records).
@@ -238,45 +253,7 @@ class GetQueryService
         return $this->executeAndHandle($sql, null);
     }
 
-    /** Get job guids for assessments (used for requesting individual jobs).
-     *
-     * @param  string  $method  The method that chooses the disired response returned
-     * @param  string|null  $username  The planner's username
-     */
-    public function getJobGuids(string $method, ?string $username = null): Collection
-    {
-        switch ($method) {
-            case 'full_scope':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllJobGUIDsForEntireScopeYear(),
-                    null
-                );
-                break;
 
-            case 'active_owned':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllJobGUIDsForActiveAndOwnedAssessments(),
-                    null
-                );
-                break;
-
-            case 'username':
-                return $this->executeAndHandle(
-                    AssessmentMetrics::getAllJobGUIDsForActiveAssessmentsByUsername(
-                        $username
-                    ),
-                    null
-                );
-                break;
-
-            default:
-                return collect([]);
-                break;
-        }
-
-
-        return $this->executeAndHandle($sql, null);
-    }
 
     public function getAssessmentUnits(string $method, ?string $username = null, ?string $jobguid = null): Collection
     {

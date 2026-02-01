@@ -34,7 +34,7 @@ class AssessmentMetrics
 
         FROM JOBVEGETATIONUNIT
         
-            WHERE JOBVEGETATIONUNITS.JOBGUID = ''
+            WHERE JOBVEGETATIONUNITS.JOBGUID = ''";
     }
 
 

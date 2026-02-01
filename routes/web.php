@@ -32,88 +32,28 @@ use App\Livewire\DataManagement\Index as DataManagementIndex;
 |  - rewrk
 |  - closed
 */
-Route::get("/test", function (GetQueryService $queryService) {
-    dd($queryService->test());
-});
-
-Route::get("/queryAll", function (GetQueryService $queryService) {
-    dd($queryService->queryAll());
-});
-
-Route::get("/base-data", function (GetQueryService $queryService) {
-
-    $jobguid = '{0D89DA18-2D65-4535-9D7E-F612FB6DA07B}';
-
-    // $data1 = $queryService->getAssessmentsBaseData('full_scope');
-
-    // $data2 = $queryService->getAssessmentsBaseData('active_owned');
-
-    // $data3 = $queryService->getAssessmentsBaseData('username', 'ASPLUNDH\\jfarh');
-
-    // $data4 = $queryService->getJobGuids('full_scope');
-
-    // $data5 = $queryService->getJobGuids('active_owned');
-
-    // $data6 = $queryService->getJobGuids('username', 'ASPLUNDH\\jfarh');
-
-    // $data7 = $queryService->getAssessmentUnits('job_guid', $jobguid);
-
-    // dd($data3);
-    // dd($data1, $data2, $data3, $data4, $data5, $data6, $data7);
-    return response()->json($data);
-});
 
 Route::get('/assessment-jobguids', function (GetQueryService $queryService) {
-    $data = $queryService->getJobGuids('username', 'ASPLUNDH\\jfarh');
+    $data = $queryService->getJobGuids();
     dd($data);
     return response()->json($data);
 });
 
-Route::get('/units-jobguids', function (GetQueryService $queryService) {
-    $jobguid = '{E82D92B3-68E6-43C4-AC8D-35C9DCA1BEA8}';
-    $data = $queryService->getAssessmentUnits('job_guid', null, $jobguid);
+Route::get('/system-wide-metrics', function (GetQueryService $queryService) {
+    $data = $queryService->getSystemWideMetrics();
+    dd($data->first());
+    return response()->json($data);
+});
+
+Route::get('/regional-metrics', function (GetQueryService $queryService) {
+    $data = $queryService->getRegionalMetrics();
     dd($data);
     return response()->json($data);
 });
 
-// Test route: Get planner circuits with daily records
-Route::get('/curl', function (GetQueryService $queryService) {
-    $data = $queryService->getPlannerCircuitsWithDailyRecords(
-        username: 'ASPLUNDH\cnewcombe',
-        contractor: 'Asplundh'
-    );
 
-    // dd($data);
-    $sum = 0;
-    foreach ($data[0]['Daily_Records'] as $record) {
-        $sum += $record['Total_Day_Miles'];
-    }
 
-    return response()->json($data);
-});
 
-Route::get('/curl-units/{jobGuid}', function (GetQueryService $queryService, string $jobGuid) {
-    try {
-        $data = $queryService->getDailySpanSummary($jobGuid);
-        dd($data);
-
-        return response()->json($data);
-    } catch (Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'jobGuid' => $jobGuid,
-        ], 500);
-    }
-});
-
-Route::get('/curl-basic', function (GetQueryService $queryService) {
-    $data = $queryService->getPlannerOwnedCircuits(
-        username: 'ASPLUNDH\cnewcombe',
-        contractor: 'Asplundh'
-    );
-
-    return response()->json($data);
-});
 
 /*
 |--------------------------------------------------------------------------
