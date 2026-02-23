@@ -6,6 +6,8 @@ use App\Livewire\Concerns\WithCircuitFilters;
 use App\Models\Circuit;
 use App\Models\Region;
 use App\Models\RegionalWeeklyAggregate;
+use App\Services\WorkStudio\Queries\CircuitAnalyticsQueryFactory;
+use App\Support\WorkStudioStatus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -30,6 +32,16 @@ class Overview extends Component
 
     #[Url]
     public string $sortDir = 'asc';
+
+    /**
+     * Overview defaults to showing all statuses.
+     *
+     * @return array<string>
+     */
+    protected function getDefaultStatusFilter(): array
+    {
+        return WorkStudioStatus::all();
+    }
 
     #[Computed]
     public function regions(): Collection
@@ -74,9 +86,7 @@ class Overview extends Component
      */
     protected function computeStatsFromCircuits(): Collection
     {
-        $baseQuery = Circuit::query()
-            ->whereNull('deleted_at')
-            ->notExcluded();
+        $baseQuery = app(CircuitAnalyticsQueryFactory::class)->baseIncluded();
 
         // Apply circuit filters
         $this->applyCircuitFilters($baseQuery);
@@ -85,10 +95,10 @@ class Overview extends Component
             ->select([
                 'region_id',
                 DB::raw('COUNT(*) as total_circuits'),
-                DB::raw("COUNT(CASE WHEN api_status = 'ACTIV' THEN 1 END) as active_circuits"),
-                DB::raw("COUNT(CASE WHEN api_status = 'QC' THEN 1 END) as qc_circuits"),
-                DB::raw("COUNT(CASE WHEN api_status = 'CLOSE' THEN 1 END) as closed_circuits"),
-                DB::raw("COUNT(CASE WHEN api_status = 'REWRK' THEN 1 END) as rework_circuits"),
+                DB::raw("COUNT(CASE WHEN api_status = '".WorkStudioStatus::ACTIVE."' THEN 1 END) as active_circuits"),
+                DB::raw("COUNT(CASE WHEN api_status = '".WorkStudioStatus::QC."' THEN 1 END) as qc_circuits"),
+                DB::raw("COUNT(CASE WHEN api_status = '".WorkStudioStatus::CLOSED."' THEN 1 END) as closed_circuits"),
+                DB::raw("COUNT(CASE WHEN api_status = '".WorkStudioStatus::REWORK."' THEN 1 END) as rework_circuits"),
                 DB::raw('COALESCE(SUM(total_miles), 0) as total_miles'),
                 DB::raw('COALESCE(SUM(miles_planned), 0) as miles_planned'),
                 DB::raw('COALESCE(SUM(total_miles) - SUM(miles_planned), 0) as miles_remaining'),
@@ -99,31 +109,15 @@ class Overview extends Component
             ->get();
 
         // Get planner counts per region (with filters applied)
-        $plannerQuery = DB::table('circuit_user')
-            ->join('circuits', 'circuit_user.circuit_id', '=', 'circuits.id')
-            ->whereNull('circuits.deleted_at')
-            ->where('circuits.is_excluded', false);
-
-        // Apply status filter to planner counts
-        if (! empty($this->statusFilter)) {
-            $plannerQuery->whereIn('circuits.api_status', $this->statusFilter);
-        }
-
-        // Apply cycle type filter to planner counts
-        if (! empty($this->cycleTypeFilter)) {
-            $plannerQuery->whereIn('circuits.cycle_type', $this->cycleTypeFilter);
-        }
-
-        $plannerCounts = $plannerQuery
+        $plannerCounts = (clone $baseQuery)
+            ->join('circuit_user', 'circuit_user.circuit_id', '=', 'circuits.id')
             ->select('circuits.region_id', DB::raw('COUNT(DISTINCT circuit_user.user_id) as active_planners'))
             ->groupBy('circuits.region_id')
             ->pluck('active_planners', 'region_id');
 
         // Get unit stats from circuit_aggregates (with filters applied)
-        $unitQuery = DB::table('circuit_aggregates')
-            ->join('circuits', 'circuit_aggregates.circuit_id', '=', 'circuits.id')
-            ->whereNull('circuits.deleted_at')
-            ->where('circuits.is_excluded', false)
+        $unitQuery = (clone $baseQuery)
+            ->join('circuit_aggregates', 'circuit_aggregates.circuit_id', '=', 'circuits.id')
             ->where('circuit_aggregates.is_rollup', false)
             ->whereIn('circuit_aggregates.id', function ($query) {
                 $query->select(DB::raw('MAX(id)'))
@@ -131,16 +125,6 @@ class Overview extends Component
                     ->where('is_rollup', false)
                     ->groupBy('circuit_id');
             });
-
-        // Apply status filter to unit stats
-        if (! empty($this->statusFilter)) {
-            $unitQuery->whereIn('circuits.api_status', $this->statusFilter);
-        }
-
-        // Apply cycle type filter to unit stats
-        if (! empty($this->cycleTypeFilter)) {
-            $unitQuery->whereIn('circuits.cycle_type', $this->cycleTypeFilter);
-        }
 
         $unitStats = $unitQuery
             ->select(
@@ -184,14 +168,38 @@ class Overview extends Component
                 'total_planner_days' => 0,
                 'unit_counts_by_type' => [],
                 'status_breakdown' => [
-                    'ACTIV' => (int) $row->active_circuits,
-                    'QC' => (int) $row->qc_circuits,
-                    'CLOSE' => (int) $row->closed_circuits,
-                    'REWRK' => (int) ($row->rework_circuits ?? 0),
+                    WorkStudioStatus::ACTIVE => (int) $row->active_circuits,
+                    WorkStudioStatus::QC => (int) $row->qc_circuits,
+                    WorkStudioStatus::CLOSED => (int) $row->closed_circuits,
+                    WorkStudioStatus::REWORK => (int) ($row->rework_circuits ?? 0),
                 ],
                 'daily_breakdown' => [],
             ];
         })->keyBy('region_id');
+    }
+
+    /**
+     * Summary stats shown in the header cards.
+     *
+     * @return array<string, int|float>
+     */
+    #[Computed]
+    public function summaryStats(): array
+    {
+        $stats = $this->regionStats;
+
+        $totalAssessments = (int) $stats->sum(fn ($row) => (int) ($row->total_circuits ?? 0));
+        $totalMiles = (float) $stats->sum(fn ($row) => (float) ($row->total_miles ?? 0));
+        $completedMiles = (float) $stats->sum(fn ($row) => (float) ($row->miles_planned ?? 0));
+        $activePlanners = (int) $stats->sum(fn ($row) => (int) ($row->active_planners ?? 0));
+
+        return [
+            'total_assessments' => $totalAssessments,
+            'total_miles' => $totalMiles,
+            'completed_miles' => $completedMiles,
+            'overall_percent' => $totalMiles > 0 ? round(($completedMiles / $totalMiles) * 100, 2) : 0.0,
+            'active_planners' => $activePlanners,
+        ];
     }
 
     #[Computed]
@@ -271,6 +279,7 @@ class Overview extends Component
     {
         unset(
             $this->regionStats,
+            $this->summaryStats,
             $this->sortedRegions,
             $this->selectedRegionStats,
             $this->availableCycleTypes

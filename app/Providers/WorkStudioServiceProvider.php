@@ -8,6 +8,12 @@ use App\Services\WorkStudio\Aggregation\AggregateQueryService;
 use App\Services\WorkStudio\Aggregation\AggregateStorageService;
 use App\Services\WorkStudio\ApiCredentialManager;
 use App\Services\WorkStudio\Contracts\WorkStudioApiInterface;
+use App\Services\WorkStudio\GetQuery\GetQueryExecutor;
+use App\Services\WorkStudio\GetQuery\GetQueryResponseParser;
+use App\Services\WorkStudio\GetQueryService;
+use App\Services\WorkStudio\Queries\CircuitAnalyticsQueryFactory;
+use App\Services\WorkStudio\Queries\CircuitFilterOptionsService;
+use App\Services\Sync\SyncLogQueryService;
 use App\Services\WorkStudio\Transformers\CircuitTransformer;
 use App\Services\WorkStudio\Transformers\DDOTableTransformer;
 use App\Services\WorkStudio\Transformers\PlannedUnitAggregateTransformer;
@@ -29,6 +35,12 @@ class WorkStudioServiceProvider extends ServiceProvider
 
         // Register credential manager
         $this->app->singleton(ApiCredentialManager::class);
+        $this->app->singleton(GetQueryExecutor::class);
+        $this->app->singleton(GetQueryResponseParser::class);
+        $this->app->singleton(GetQueryService::class);
+        $this->app->singleton(CircuitAnalyticsQueryFactory::class);
+        $this->app->singleton(CircuitFilterOptionsService::class);
+        $this->app->singleton(SyncLogQueryService::class);
 
         // Register main API service and bind to interface
         $this->app->singleton(WorkStudioApiService::class, function ($app) {

@@ -11,6 +11,8 @@ use App\Models\AnalyticsSetting;
 use App\Models\Circuit;
 use App\Models\SyncLog;
 use App\Services\Sync\SyncOutputLogger;
+use App\Services\WorkStudio\Queries\CircuitAnalyticsQueryFactory;
+use App\Support\WorkStudioStatus;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -28,7 +30,7 @@ class SyncControl extends Component
     /**
      * Circuit sync options.
      */
-    public array $selectedStatuses = ['ACTIV'];
+    public array $selectedStatuses = [WorkStudioStatus::ACTIVE];
 
     public bool $forceOverwrite = false;
 
@@ -93,12 +95,7 @@ class SyncControl extends Component
     #[Computed]
     public function availableStatuses(): array
     {
-        return [
-            'ACTIV' => 'In Progress',
-            'QC' => 'Quality Control',
-            'REWRK' => 'Rework',
-            'CLOSE' => 'Closed',
-        ];
+        return WorkStudioStatus::labels();
     }
 
     /**
@@ -178,7 +175,7 @@ class SyncControl extends Component
             ->where('planned_units_sync_enabled', true)
             ->notExcluded()
             ->needsSync()
-            ->whereIn('api_status', ['ACTIV', 'QC', 'REWRK'])
+            ->whereIn('api_status', WorkStudioStatus::plannedUnitsSyncable())
             ->count();
     }
 
@@ -188,10 +185,9 @@ class SyncControl extends Component
     #[Computed]
     public function circuitsMatchingFilters(): int
     {
-        return Circuit::query()
-            ->forAnalytics()
+        return app(CircuitAnalyticsQueryFactory::class)
+            ->baseIncluded()
             ->where('planned_units_sync_enabled', true)
-            ->notExcluded()
             ->count();
     }
 

@@ -66,7 +66,7 @@
                             <div class="stat-value text-xl text-primary">{{ $stats?->active_circuits ?? 0 }}</div>
                         </div>
                         <div class="stat py-3 px-4">
-                            <div class="stat-title text-xs">QC</div>
+                            <div class="stat-title text-xs">Quality Control</div>
                             <div class="stat-value text-xl text-warning">{{ $stats?->qc_circuits ?? 0 }}</div>
                         </div>
                         <div class="stat py-3 px-4">

@@ -12,6 +12,8 @@ use App\Models\PlannerWeeklyAggregate;
 use App\Models\Region;
 use App\Models\UnitType;
 use App\Models\User;
+use App\Services\WorkStudio\Queries\CircuitAnalyticsQueryFactory;
+use App\Support\WorkStudioStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -204,6 +206,35 @@ class PlannerAnalytics extends Component
     }
 
     /**
+     * Build the filtered circuit id set for planner-based snapshot analytics.
+     *
+     * @param  array<int>  $includedPlannerIds
+     */
+    protected function plannerCircuitIds(array $includedPlannerIds): Collection
+    {
+        return app(CircuitAnalyticsQueryFactory::class)
+            ->forPlannerIds($includedPlannerIds, $this->regionId)
+            ->pluck('id');
+    }
+
+    /**
+     * Get latest planned unit snapshot per circuit.
+     */
+    protected function latestSnapshotsForCircuitIds(Collection $circuitIds): Collection
+    {
+        return PlannedUnitsSnapshot::query()
+            ->whereIn('circuit_id', $circuitIds)
+            ->whereIn('id', function ($sub) use ($circuitIds) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('planned_units_snapshots')
+                    ->whereIn('circuit_id', $circuitIds)
+                    ->groupBy('circuit_id');
+            })
+            ->whereNotNull('raw_json')
+            ->get();
+    }
+
+    /**
      * Full permission status breakdown (all 6 statuses) from snapshot data.
      * Uses the raw_json->summary->by_permission data from PlannedUnitsSnapshots.
      *
@@ -219,27 +250,14 @@ class PlannerAnalytics extends Component
         }
 
         // Get circuits for the filtered planners (respecting global analytics settings)
-        $circuitIds = Circuit::query()
-            ->forAnalytics()
-            ->whereHas('planners', fn ($q) => $q->whereIn('users.id', $includedPlannerIds))
-            ->when($this->regionId, fn ($q) => $q->where('region_id', $this->regionId))
-            ->pluck('id');
+        $circuitIds = $this->plannerCircuitIds($includedPlannerIds);
 
         if ($circuitIds->isEmpty()) {
             return [];
         }
 
         // Get latest snapshots for these circuits and aggregate permission counts
-        $snapshots = PlannedUnitsSnapshot::query()
-            ->whereIn('circuit_id', $circuitIds)
-            ->whereIn('id', function ($sub) use ($circuitIds) {
-                $sub->selectRaw('MAX(id)')
-                    ->from('planned_units_snapshots')
-                    ->whereIn('circuit_id', $circuitIds)
-                    ->groupBy('circuit_id');
-            })
-            ->whereNotNull('raw_json')
-            ->get();
+        $snapshots = $this->latestSnapshotsForCircuitIds($circuitIds);
 
         // Aggregate permission counts from snapshots
         $permissionCounts = [];
@@ -292,27 +310,14 @@ class PlannerAnalytics extends Component
         }
 
         // Get circuits for the filtered planners (respecting global analytics settings)
-        $circuitIds = Circuit::query()
-            ->forAnalytics()
-            ->whereHas('planners', fn ($q) => $q->whereIn('users.id', $includedPlannerIds))
-            ->when($this->regionId, fn ($q) => $q->where('region_id', $this->regionId))
-            ->pluck('id');
+        $circuitIds = $this->plannerCircuitIds($includedPlannerIds);
 
         if ($circuitIds->isEmpty()) {
             return [];
         }
 
         // Get latest snapshots for these circuits
-        $snapshots = PlannedUnitsSnapshot::query()
-            ->whereIn('circuit_id', $circuitIds)
-            ->whereIn('id', function ($sub) use ($circuitIds) {
-                $sub->selectRaw('MAX(id)')
-                    ->from('planned_units_snapshots')
-                    ->whereIn('circuit_id', $circuitIds)
-                    ->groupBy('circuit_id');
-            })
-            ->whereNotNull('raw_json')
-            ->get();
+        $snapshots = $this->latestSnapshotsForCircuitIds($circuitIds);
 
         // Aggregate unit counts by type from snapshots
         $unitCounts = [];
@@ -413,13 +418,13 @@ class PlannerAnalytics extends Component
                     ->first();
 
                 // Find circuits by status
-                $activeCircuits = $circuits->where('api_status', 'ACTIV')->count();
-                $qcCircuits = $circuits->where('api_status', 'QC')->count();
-                $closedCircuits = $circuits->where('api_status', 'CLOSE')->count();
+                $activeCircuits = $circuits->where('api_status', WorkStudioStatus::ACTIVE)->count();
+                $qcCircuits = $circuits->where('api_status', WorkStudioStatus::QC)->count();
+                $closedCircuits = $circuits->where('api_status', WorkStudioStatus::CLOSED)->count();
 
                 // Get oldest circuit that's still in progress
                 $oldestInProgress = $circuits
-                    ->where('api_status', 'ACTIV')
+                    ->where('api_status', WorkStudioStatus::ACTIVE)
                     ->where('miles_planned', '>', 0)
                     ->sortBy('api_modified_at')
                     ->first();
@@ -702,6 +707,8 @@ class PlannerAnalytics extends Component
                     'title' => $circuit->title,
                     'region' => $circuit->region?->name ?? 'Unknown',
                     'status' => $circuit->api_status,
+                    'status_label' => WorkStudioStatus::labelFor($circuit->api_status),
+                    'status_badge' => WorkStudioStatus::badgeClass($circuit->api_status),
                     'cycle_type' => $circuit->cycle_type,
                     'total_miles' => round($circuit->total_miles ?? 0, 1),
                     'miles_planned' => round($circuit->miles_planned ?? 0, 1),

@@ -11,6 +11,7 @@ use App\Services\WorkStudio\Aggregation\AggregateDiffService;
 use App\Services\WorkStudio\Aggregation\AggregateStorageService;
 use App\Services\WorkStudio\PlannedUnitsSnapshotService;
 use App\Services\WorkStudio\WorkStudioApiService;
+use App\Support\WorkStudioStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -227,7 +228,7 @@ class SyncCircuitAggregatesJob implements ShouldQueue
             $query->whereIn('api_status', $this->apiStatuses);
         } else {
             // Default: only sync active, QC, and rework circuits
-            $query->whereIn('api_status', ['ACTIV', 'QC', 'REWRK']);
+            $query->whereIn('api_status', WorkStudioStatus::plannedUnitsSyncable());
         }
 
         // Apply needs sync scope (not synced recently)

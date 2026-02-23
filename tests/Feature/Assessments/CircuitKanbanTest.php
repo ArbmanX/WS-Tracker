@@ -251,13 +251,11 @@ test('hasAnyFilters returns true when filters are active', function () {
     $user->assignRole('planner');
     $user->markAsOnboarded();
 
-    $region = Region::factory()->create();
-
     $component = Livewire::actingAs($user)
         ->test(CircuitKanban::class)
         ->set('search', 'test');
 
-    expect($component->call('hasAnyFilters')->get('hasAnyFilters'))->toBeTrue();
+    expect($component->get('hasAnyFilters'))->toBeTrue();
 });
 
 test('kanban columns include all configured statuses', function () {

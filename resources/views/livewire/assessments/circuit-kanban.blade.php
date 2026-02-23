@@ -92,7 +92,7 @@
                 </div>
 
                 {{-- Clear Filters --}}
-                @if($this->hasAnyFilters())
+                @if($this->hasAnyFilters)
                     <button
                         wire:click="clearAllFilters"
                         class="btn btn-sm btn-ghost text-error"
@@ -216,16 +216,7 @@
                         <div>
                             <label class="text-xs text-base-content/60 uppercase tracking-wide">Status</label>
                             <p>
-                                @php
-                                    $statusColor = match($this->selectedCircuit->api_status) {
-                                        'ACTIV' => 'primary',
-                                        'QC' => 'warning',
-                                        'CLOSE' => 'success',
-                                        'REWRK' => 'error',
-                                        default => 'neutral',
-                                    };
-                                @endphp
-                                <span class="badge badge-{{ $statusColor }}">
+                                <span class="badge badge-{{ \App\Support\WorkStudioStatus::daisyColor($this->selectedCircuit->api_status) }}">
                                     {{ $this->columns[$this->selectedCircuit->api_status]['label'] ?? $this->selectedCircuit->api_status }}
                                 </span>
                             </p>

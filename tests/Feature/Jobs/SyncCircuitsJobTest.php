@@ -46,6 +46,10 @@ describe('SyncCircuitsJob Configuration', function () {
 });
 
 describe('SyncCircuitsJob Execution', function () {
+    beforeEach(function () {
+        Queue::fake();
+    });
+
     test('creates sync log when starting', function () {
         Event::fake();
 

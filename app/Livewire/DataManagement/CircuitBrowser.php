@@ -7,6 +7,7 @@ use App\Jobs\SyncPlannedUnitsJob;
 use App\Models\AnalyticsSetting;
 use App\Models\Circuit;
 use App\Models\Region;
+use App\Services\WorkStudio\Queries\CircuitFilterOptionsService;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -303,13 +304,7 @@ class CircuitBrowser extends Component
      */
     public function getApiStatusOptionsProperty(): array
     {
-        return Circuit::query()
-            ->select('api_status')
-            ->distinct()
-            ->whereNotNull('api_status')
-            ->orderBy('api_status')
-            ->pluck('api_status', 'api_status')
-            ->toArray();
+        return app(CircuitFilterOptionsService::class)->apiStatusOptions();
     }
 
     /**
@@ -319,13 +314,7 @@ class CircuitBrowser extends Component
      */
     public function getScopeYearOptionsProperty(): array
     {
-        return Circuit::query()
-            ->selectRaw('DISTINCT SUBSTR(work_order, 1, 4) as scope_year')
-            ->whereRaw("SUBSTR(work_order, 1, 4) BETWEEN '2000' AND '2099'")
-            ->orderByDesc('scope_year')
-            ->toBase()
-            ->pluck('scope_year', 'scope_year')
-            ->toArray();
+        return app(CircuitFilterOptionsService::class)->scopeYearOptions();
     }
 
     /**
@@ -335,14 +324,7 @@ class CircuitBrowser extends Component
      */
     public function getCycleTypeOptionsProperty(): array
     {
-        return Circuit::query()
-            ->select('cycle_type')
-            ->distinct()
-            ->whereNotNull('cycle_type')
-            ->where('cycle_type', '!=', '')
-            ->orderBy('cycle_type')
-            ->pluck('cycle_type', 'cycle_type')
-            ->toArray();
+        return app(CircuitFilterOptionsService::class)->cycleTypeOptions();
     }
 
     /**
@@ -352,14 +334,7 @@ class CircuitBrowser extends Component
      */
     public function getPlannerOptionsProperty(): array
     {
-        return Circuit::query()
-            ->select('taken_by')
-            ->distinct()
-            ->whereNotNull('taken_by')
-            ->where('taken_by', '!=', '')
-            ->orderBy('taken_by')
-            ->pluck('taken_by', 'taken_by')
-            ->toArray();
+        return app(CircuitFilterOptionsService::class)->plannerTakenByOptions();
     }
 
     /**

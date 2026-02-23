@@ -231,10 +231,10 @@ test('pollForUpdates refreshes computed properties', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    // This just tests that the method can be called without error
     Livewire::actingAs($user)
         ->test(SyncControl::class)
-        ->call('pollForUpdates');
+        ->call('pollForUpdates')
+        ->assertSet('activeTab', 'circuits');
 });
 
 // ==== Enhanced Sync Control Tests ====

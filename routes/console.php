@@ -21,7 +21,7 @@ Artisan::command('inspire', function () {
 | in Eastern Time (America/New_York) and run on weekdays only.
 |
 | ACTIV circuits: Twice daily (4:30 AM & 4:30 PM ET)
-| QC/REWORK/CLOSE circuits: Weekly on Monday (4:30 AM ET)
+| QC/REWRK/CLOSE circuits: Weekly on Monday (4:30 AM ET)
 | Daily snapshots: 5:00 AM ET (after syncs complete)
 | Aggregate sync: 5:30 AM ET (after circuit sync)
 |
@@ -44,7 +44,7 @@ Schedule::job(new SyncCircuitsJob(['ACTIV']))
     ->withoutOverlapping()
     ->onOneServer();
 
-// QC, REWORK, CLOSE - weekly on Monday
+// QC, REWRK, CLOSE - weekly on Monday
 Schedule::job(new SyncCircuitsJob(['QC', 'REWRK', 'CLOSE']))
     ->mondays()
     ->timezone('America/New_York')

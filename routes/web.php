@@ -18,40 +18,8 @@ use App\Livewire\DataManagement\SyncLogs;
 use App\Livewire\DataManagement\TableManager;
 use App\Livewire\MapDemo;
 use App\Livewire\Onboarding\OnboardingWizard;
-use App\Services\WorkStudio\GetQueryService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-/* Parameters
-|  - full_scope
-|  - active_owned
-|  - username
-|  - active
-|  - qc
-|  - rewrk
-|  - closed
-*/
-
-Route::get('/assessment-jobguids', function (GetQueryService $queryService) {
-    $data = $queryService->getJobGuids();
-    dd($data);
-
-    return response()->json($data);
-});
-
-Route::get('/system-wide-metrics', function (GetQueryService $queryService) {
-    $data = $queryService->getSystemWideMetrics();
-    dd($data->first());
-
-    return response()->json($data);
-});
-
-Route::get('/regional-metrics', function (GetQueryService $queryService) {
-    $data = $queryService->getRegionalMetrics();
-    dd($data);
-
-    return response()->json($data);
-});
 
 /*
 |--------------------------------------------------------------------------

@@ -72,7 +72,7 @@ it('shows correct status breakdown', function () {
     Circuit::factory()->forRegion($region)->count(2)->qc()->create();
     Circuit::factory()->forRegion($region)->count(1)->closed()->create();
 
-    // Default filter is ACTIV only, so set all statuses to see full breakdown
+    // Include all statuses to validate full status breakdown
     $component = Livewire::actingAs($this->user)
         ->test(Overview::class)
         ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE', 'REWRK']);
@@ -278,10 +278,9 @@ it('combines status and cycle type filters', function () {
 });
 
 it('toggles status filter', function () {
-    // Default is now ACTIV only, so first set multiple statuses to test toggle
     Livewire::actingAs($this->user)
         ->test(Overview::class)
-        ->assertSet('statusFilter', ['ACTIV']) // New default is ACTIV only
+        ->assertSet('statusFilter', ['ACTIV', 'QC', 'REWRK', 'CLOSE'])
         ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE'])
         ->call('toggleStatus', 'CLOSE')
         ->assertSet('statusFilter', ['ACTIV', 'QC']);
@@ -309,13 +308,12 @@ it('toggles cycle type filter', function () {
 });
 
 it('clears all circuit filters', function () {
-    // Clear filters should reset to ACTIV only (the new default)
     Livewire::actingAs($this->user)
         ->test(Overview::class)
-        ->set('statusFilter', ['ACTIV', 'QC', 'CLOSE'])
+        ->set('statusFilter', ['ACTIV', 'QC'])
         ->set('cycleTypeFilter', ['Reactive'])
         ->call('clearCircuitFilters')
-        ->assertSet('statusFilter', ['ACTIV']) // New default is ACTIV only
+        ->assertSet('statusFilter', ['ACTIV', 'QC', 'REWRK', 'CLOSE'])
         ->assertSet('cycleTypeFilter', []);
 });
 
@@ -345,14 +343,14 @@ it('detects when circuit filters are active', function () {
     $component = Livewire::actingAs($this->user)
         ->test(Overview::class);
 
-    // Default state (ACTIV only) - no active filters from default perspective
+    // Default state (all statuses) - no active filters from default perspective
     expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
 
-    // When we add more statuses beyond default, filters are considered active
+    // Narrowing statuses from default should activate filters
     $component->set('statusFilter', ['ACTIV', 'QC']);
     expect($component->instance()->hasActiveCircuitFilters())->toBeTrue();
 
-    // Reset to ACTIV only (the default)
+    // Reset to default
     $component->call('clearCircuitFilters');
     expect($component->instance()->hasActiveCircuitFilters())->toBeFalse();
 
@@ -373,4 +371,31 @@ it('provides available cycle types from database', function () {
     expect($cycleTypes)->toContain('Reactive');
     expect($cycleTypes)->toContain('VM Detection');
     expect($cycleTypes)->toHaveCount(2); // Should be distinct
+});
+
+it('builds summary stats from region stats data source', function () {
+    $regionA = Region::factory()->create();
+    $regionB = Region::factory()->create();
+
+    Circuit::factory()->forRegion($regionA)->count(2)->create([
+        'api_status' => 'ACTIV',
+        'total_miles' => 100,
+        'miles_planned' => 50,
+    ]);
+
+    Circuit::factory()->forRegion($regionB)->create([
+        'api_status' => 'QC',
+        'total_miles' => 80,
+        'miles_planned' => 20,
+    ]);
+
+    $summary = Livewire::actingAs($this->user)
+        ->test(Overview::class)
+        ->instance()
+        ->summaryStats;
+
+    expect($summary['total_assessments'])->toBe(3);
+    expect($summary['total_miles'])->toBe(280.0);
+    expect($summary['completed_miles'])->toBe(120.0);
+    expect($summary['overall_percent'])->toBe(round((120 / 280) * 100, 2));
 });

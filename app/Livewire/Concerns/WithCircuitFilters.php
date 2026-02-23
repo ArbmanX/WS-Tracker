@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Concerns;
 
-use App\Models\Circuit;
+use App\Services\WorkStudio\Queries\CircuitFilterOptionsService;
+use App\Support\WorkStudioStatus;
 use Illuminate\Contracts\Database\Eloquent\Builder as BuilderContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -25,7 +26,7 @@ trait WithCircuitFilters
      */
     protected function getDefaultStatusFilter(): array
     {
-        return ['ACTIV'];
+        return WorkStudioStatus::defaultFilter();
     }
 
     /**
@@ -46,12 +47,7 @@ trait WithCircuitFilters
     #[Computed]
     public function availableStatuses(): array
     {
-        return [
-            'ACTIV' => 'Active',
-            'QC' => 'Quality Control',
-            'CLOSE' => 'Closed',
-            'REWRK' => 'Rework',
-        ];
+        return WorkStudioStatus::labels();
     }
 
     /**
@@ -63,15 +59,7 @@ trait WithCircuitFilters
     #[Computed]
     public function availableCycleTypes(): Collection
     {
-        return Circuit::query()
-            ->forAnalytics()
-            ->whereNull('deleted_at')
-            ->notExcluded()
-            ->whereNotNull('cycle_type')
-            ->where('cycle_type', '!=', '')
-            ->distinct()
-            ->orderBy('cycle_type')
-            ->pluck('cycle_type');
+        return app(CircuitFilterOptionsService::class)->analyticsCycleTypes();
     }
 
     /**
@@ -124,7 +112,7 @@ trait WithCircuitFilters
     }
 
     /**
-     * Clear all circuit filters to defaults (ACTIV only).
+     * Clear all circuit filters to component defaults.
      */
     public function clearCircuitFilters(): void
     {
@@ -135,7 +123,6 @@ trait WithCircuitFilters
 
     /**
      * Check if any circuit filters are active (non-default).
-     * Default is ACTIV only with no cycle type filter.
      */
     public function hasActiveCircuitFilters(): bool
     {

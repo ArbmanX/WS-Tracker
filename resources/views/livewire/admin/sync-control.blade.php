@@ -598,16 +598,16 @@
                     <tbody>
                         <tr class="hover">
                             <td>
-                                <span class="badge badge-primary badge-sm">ACTIV</span>
+                                <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass(\App\Support\WorkStudioStatus::ACTIVE) }} badge-sm">{{ \App\Support\WorkStudioStatus::ACTIVE }}</span>
                             </td>
                             <td>Twice Daily</td>
                             <td class="font-mono text-sm">4:30 AM, 4:30 PM</td>
                         </tr>
                         <tr class="hover">
                             <td class="space-x-1">
-                                <span class="badge badge-info badge-sm">QC</span>
-                                <span class="badge badge-warning badge-sm">REWRK</span>
-                                <span class="badge badge-neutral badge-sm">CLOSE</span>
+                                <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass(\App\Support\WorkStudioStatus::QC) }} badge-sm">{{ \App\Support\WorkStudioStatus::QC }}</span>
+                                <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass(\App\Support\WorkStudioStatus::REWORK) }} badge-sm">{{ \App\Support\WorkStudioStatus::REWORK }}</span>
+                                <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass(\App\Support\WorkStudioStatus::CLOSED) }} badge-sm">{{ \App\Support\WorkStudioStatus::CLOSED }}</span>
                             </td>
                             <td>Weekly</td>
                             <td class="font-mono text-sm">Monday 4:30 AM</td>

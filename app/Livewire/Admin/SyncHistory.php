@@ -2,10 +2,9 @@
 
 namespace App\Livewire\Admin;
 
-use App\Enums\SyncStatus;
-use App\Enums\SyncTrigger;
-use App\Enums\SyncType;
 use App\Models\SyncLog;
+use App\Services\Sync\SyncLogFilterOptionsService;
+use App\Services\Sync\SyncLogQueryService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -57,9 +56,7 @@ class SyncHistory extends Component
      */
     public function getStatusOptionsProperty(): array
     {
-        return collect(SyncStatus::cases())
-            ->mapWithKeys(fn ($status) => [$status->value => $status->label()])
-            ->toArray();
+        return app(SyncLogFilterOptionsService::class)->statusOptions();
     }
 
     /**
@@ -67,9 +64,7 @@ class SyncHistory extends Component
      */
     public function getTriggerOptionsProperty(): array
     {
-        return collect(SyncTrigger::cases())
-            ->mapWithKeys(fn ($trigger) => [$trigger->value => $trigger->label()])
-            ->toArray();
+        return app(SyncLogFilterOptionsService::class)->triggerOptions();
     }
 
     /**
@@ -77,18 +72,17 @@ class SyncHistory extends Component
      */
     public function getTypeOptionsProperty(): array
     {
-        return collect(SyncType::cases())
-            ->mapWithKeys(fn ($type) => [$type->value => $type->label()])
-            ->toArray();
+        return app(SyncLogFilterOptionsService::class)->typeOptions();
     }
 
     public function render()
     {
-        $logs = SyncLog::query()
-            ->with(['triggeredBy', 'region'])
-            ->when($this->statusFilter, fn ($q) => $q->where('sync_status', $this->statusFilter))
-            ->when($this->triggerFilter, fn ($q) => $q->where('sync_trigger', $this->triggerFilter))
-            ->when($this->typeFilter, fn ($q) => $q->where('sync_type', $this->typeFilter))
+        $logs = app(SyncLogQueryService::class)
+            ->filtered(
+                status: $this->statusFilter,
+                trigger: $this->triggerFilter,
+                type: $this->typeFilter,
+            )
             ->latest('started_at')
             ->paginate(15);
 

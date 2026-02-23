@@ -48,8 +48,8 @@
                     </label>
                     <select wire:model.live="apiStatusFilter" class="select select-bordered select-sm">
                         <option value="">All Statuses</option>
-                        @foreach($this->apiStatusOptions as $status)
-                            <option value="{{ $status }}">{{ $status }}</option>
+                        @foreach($this->apiStatusOptions as $code => $label)
+                            <option value="{{ $code }}">{{ $label }} ({{ $code }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -270,7 +270,9 @@
                                         {{ $circuit->region?->name ?? '-' }}
                                     </td>
                                     <td>
-                                        <span class="badge badge-ghost badge-sm">{{ $circuit->api_status }}</span>
+                                        <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass($circuit->api_status) }} badge-sm">
+                                            {{ \App\Support\WorkStudioStatus::labelFor($circuit->api_status) }}
+                                        </span>
                                     </td>
                                     <td class="font-mono text-sm">
                                         {{ number_format($circuit->total_miles, 2) }}

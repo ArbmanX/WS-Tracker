@@ -504,14 +504,14 @@
                                 <span class="badge badge-primary badge-sm" title="Active">
                                     {{ $activity['planner_activity']['active_circuits'] ?? 0 }}
                                 </span>
-                                <span class="badge badge-warning badge-sm" title="QC">
+                                <span class="badge badge-warning badge-sm" title="{{ \App\Support\WorkStudioStatus::labelFor(\App\Support\WorkStudioStatus::QC) }}">
                                     {{ $activity['planner_activity']['qc_circuits'] ?? 0 }}
                                 </span>
                                 <span class="badge badge-success badge-sm" title="Closed">
                                     {{ $activity['planner_activity']['closed_circuits'] ?? 0 }}
                                 </span>
                             </div>
-                            <div class="stat-desc">Active / QC / Closed</div>
+                            <div class="stat-desc">Active / Quality Control / Closed</div>
                         </div>
 
                         {{-- Oldest In-Progress --}}
@@ -679,16 +679,7 @@
                                     <td class="max-w-xs truncate" title="{{ $circuit['title'] }}">{{ $circuit['title'] }}</td>
                                     <td>{{ $circuit['region'] }}</td>
                                     <td>
-                                        @php
-                                            $statusBadge = match($circuit['status']) {
-                                                'ACTIV' => 'badge-primary',
-                                                'QC' => 'badge-warning',
-                                                'CLOSE' => 'badge-success',
-                                                'REWRK' => 'badge-error',
-                                                default => 'badge-neutral',
-                                            };
-                                        @endphp
-                                        <span class="badge {{ $statusBadge }} badge-sm">{{ $circuit['status'] }}</span>
+                                        <span class="badge {{ $circuit['status_badge'] }} badge-sm">{{ $circuit['status_label'] }}</span>
                                     </td>
                                     <td class="text-right font-mono">{{ number_format($circuit['total_units']) }}</td>
                                     <td class="text-right font-mono">{{ number_format($circuit['total_miles'], 1) }}</td>

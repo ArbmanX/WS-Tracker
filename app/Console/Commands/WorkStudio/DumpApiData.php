@@ -14,7 +14,7 @@ class DumpApiData extends Command
 {
     protected $signature = 'ws:dump
                             {type=circuits : Data type to fetch (circuits, units, health, raw)}
-                            {--status=ACTIV : Circuit status filter (ACTIV, QC, CLOSED)}
+                            {--status=ACTIV : Circuit status filter (ACTIV, QC, REWRK, CLOSE)}
                             {--work-order= : Work order number for units (e.g., 2025-1234)}
                             {--limit=0 : Limit number of records (0 = no limit)}
                             {--raw : Show raw DDOTable data before transformation}

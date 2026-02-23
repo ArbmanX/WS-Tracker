@@ -1,19 +1,12 @@
 <div class="space-y-6">
-    {{-- Summary Stats --}}
     @php
-        $queryService = new App\Services\WorkStudio\GetQueryService();
-        $data = $queryService->getSystemWideMetrics();
-        $totalStats = $data->first();
-        $overallPercent =
-            $totalStats['total_miles'] > 0 ? ($totalStats['completed_miles'] / $totalStats['total_miles']) * 100 : 0;
+        $summary = $this->summaryStats;
+        $overallPercent = $summary['overall_percent'] ?? 0;
     @endphp
-    
-    {{-- Header --}}
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold">Regional Overview For
-                {{ Str::of($totalStats['contractor'])->lower()->ucfirst() }}</h1>
+            <h1 class="text-2xl font-bold">Regional Overview</h1>
             <p class="text-base-content/60">Circuit assessment progress across all regions</p>
         </div>
 
@@ -36,14 +29,14 @@
 
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <x-ui.stat-card label="Total Assessments" :value="number_format($totalStats['total_assessments'])" icon="bolt" color="primary" size="sm" />
+        <x-ui.stat-card label="Total Assessments" :value="number_format($summary['total_assessments'] ?? 0)" icon="bolt" color="primary" size="sm" />
 
-        <x-ui.stat-card label="Total Miles" :value="number_format($totalStats['total_miles'], 0)" suffix="mi" icon="map" size="sm" />
+        <x-ui.stat-card label="Total Miles" :value="number_format($summary['total_miles'] ?? 0, 0)" suffix="mi" icon="map" size="sm" />
 
         <x-ui.stat-card label="Overall Progress" :value="number_format($overallPercent, 0)" suffix="%" icon="chart-bar" :color="$overallPercent >= 75 ? 'success' : ($overallPercent <= 70 ? 'warning' : 'primary')"
             size="sm" />
 
-        <x-ui.stat-card label="Active Planners" :value="number_format($totalStats['active_planners'])" icon="users" size="sm" />
+        <x-ui.stat-card label="Active Planners" :value="number_format($summary['active_planners'] ?? 0)" icon="users" size="sm" />
     </div>
 
     {{-- <div class="">
@@ -87,7 +80,7 @@
                     </div>
                 @else
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        @foreach ($this->regions as $region)
+                        @foreach ($this->sortedRegions as $region)
                             <x-dashboard.assessments.region-card :region="$region" :stats="$this->regionStats[$region->id] ?? null"
                                 wire:key="region-card-{{ $region->id }}" />
                         @endforeach

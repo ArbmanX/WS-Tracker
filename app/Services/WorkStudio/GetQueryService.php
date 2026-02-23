@@ -4,10 +4,10 @@ namespace App\Services\WorkStudio;
 
 use Exception;
 use App\ExecutionTimer;
+use App\Services\WorkStudio\GetQuery\GetQueryExecutor;
+use App\Services\WorkStudio\GetQuery\GetQueryResponseParser;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Response;
 use App\Services\WorkStudio\Queries\PlannerOwnedCircuitsQuery;
 use App\Services\WorkStudio\Transformers\DailySpanTransformer;
 use App\Services\WorkStudio\Queries\CircuitWithDailyRecordsQuery;
@@ -19,10 +19,11 @@ class GetQueryService
     //  TODO: eventually will need to get signed in users credentials to use for parameters. 
     // credential manager is already pluged in 
 
-    public $sqlState;
+    public string $sqlState = '';
 
     public function __construct(
-        private ?ApiCredentialManager $credentialManager = null,
+        private GetQueryExecutor $executor,
+        private GetQueryResponseParser $parser,
     ) {}
 
     /**
@@ -34,80 +35,22 @@ class GetQueryService
      *
      * @throws Exception
      */
-    public function executeQuery(string $sql, ?int $userId = null, bool $getStations = false): ?array
+    public function executeQuery(string $sql, ?int $userId = null): array
     {
-        $credentials = $this->getCredentials($userId);
-
-        $payload = [
-            'Protocol' => 'GETQUERY',
-            'DBParameters' => "USER NAME=ASPLUNDH\\cnewcombe\r\nPASSWORD=chrism\r\n",
-            'SQL' => $sql,
-        ];
-
-        $url = rtrim(config('workstudio.base_url'), '/') . '/GETQUERY';
         $this->sqlState = $sql;
 
-        try {
-            /** @var \Illuminate\Http\Client\Response $response */
-            $response = Http::withBasicAuth('ASPLUNDH\cnewcombe', 'chrism')
-                ->timeout(120)
-                ->connectTimeout(30)
-                ->withOptions(['on_stats' => function (\GuzzleHttp\TransferStats $stats) {
-                    $transferTime = $stats->getTransferTime(); // seconds
-                    logger()->info("Transfer time: {$transferTime}s");
-                }])
-                ->post($url, $payload);
-
-            $data = $response->json();
-
-            if (isset($data['protocol']) && $data['protocol'] == 'ERROR' || isset($data['errorMessage'])) {
-                Log::error('WorkStudio API returned error', [
-                    'Status_Code' => 500,
-                    'error' => $data['protocol'] . ' ' . $data['errorMessage'] ?? 'Unknown',
-                    'sql' => substr($sql, 0, 500),
-
-                ]);
-
-
-                throw new Exception(json_encode(
-                    [
-                        'Status_Code' => $response->status(),
-                        'Message' => $data['protocol'] . ' in the ' . class_basename($this) . ' ' . $data['errorMessage'],
-                        'SQL' => json_encode($sql, JSON_PRETTY_PRINT),
-                    ]
-                ) ?? 'Unknown API error', 500);
-            }
-
-            $response->throw();
-            return $data;
-        } catch (Exception $e) {
-            Log::error('WorkStudio GETQUERY failed', [
-                'url' => $url,
-                'error' => $e->getMessage(),
-                'sql' => substr($sql, 0, 500), // Log first 500 chars of SQL
-            ]);
-
-            throw $e;
-        }
+        return $this->executor->execute($sql, $userId);
     }
 
     /**
      * Execute a query and parse the response as a collection of associative arrays.
      * Used for standard DDOTable responses with Heading and Data arrays.
      */
-    public function executeAndHandle(string $sql, ?int $userId = null): Collection|array
+    public function executeAndHandle(string $sql, ?int $userId = null): Collection
     {
         $response = $this->executeQuery($sql, $userId);
 
-        if (isset($response['Heading']) && str_contains($response['Heading'][0], 'JSON_')) {
-            return $this->transformJsonResponse($response);
-        }
-
-        if (isset($response['Heading']) && count($response) > 1) {
-            return $this->transformArrayResponse($response);
-        }
-
-        return collect([]);
+        return $this->parser->parse($response);
     }
 
     /**
@@ -119,15 +62,7 @@ class GetQueryService
      */
     public function transformArrayResponse(array $response): Collection
     {
-        if (! isset($response['Data']) || ! isset($response['Heading'])) {
-            return collect([]);
-        }
-
-        $prepared = collect($response['Data'])->map(function ($row) use ($response) {
-            return array_combine($response['Heading'], $row);
-        });
-
-        return $prepared;
+        return $this->parser->parseTabularResponse($response);
     }
 
     /**
@@ -139,30 +74,7 @@ class GetQueryService
      */
     public function transformJsonResponse(array $response): Collection
     {
-
-        if (! isset($response['Data']) || empty($response['Data'])) {
-            return collect([]);
-        }
-
-        // FOR JSON PATH responses come back as chunked strings in Data array
-        // Each row contains a single element which is a JSON string fragment
-        $jsonString = implode('', array_map(fn($row) => $row[0], $response['Data']));
-
-        // Remove control characters that might break JSON parsing
-        $jsonString = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $jsonString);
-
-        $data = json_decode($jsonString, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::error('Failed to parse JSON response from WorkStudio', [
-                'error' => json_last_error_msg(),
-                'raw_length' => strlen($jsonString),
-            ]);
-
-            return collect([]);
-        }
-
-        return collect([$data]) ?? [];
+        return $this->parser->parseJsonResponse($response);
     }
 
     // TODO 
@@ -217,11 +129,14 @@ class GetQueryService
         $groupedByCircuitDataQuery = $this->executeAndHandle($sql, null);
         $timer->stop('groupedByCircuitDataQuery');
 
-        dump('$systemWideDataQuery', $systemWideDataQuery);
-        dump('$groupedByRegionDataQuery', $groupedByRegionDataQuery);
-        dump('$groupedByCircuitDataQuery', $groupedByCircuitDataQuery);
+        Log::debug('WorkStudio queryAll debug summary', [
+            'system_wide_count' => $systemWideDataQuery->count(),
+            'grouped_region_count' => $groupedByRegionDataQuery->count(),
+            'grouped_circuit_count' => $groupedByCircuitDataQuery->count(),
+        ]);
         $timer->logTotalTime();
-        return collect($groupedByCircuitDataQuery);
+
+        return $groupedByCircuitDataQuery;
     }
 
     /**
@@ -313,8 +228,6 @@ class GetQueryService
         ?int $userId = null
     ): Collection {
 
-        $sql = '';
-
         if ($username === null) {
             return $this->executeAndHandle(
                 PlannerOwnedCircuitsQuery::getAllJobGUIDsForActiveAndOwnedAssessments()
@@ -340,7 +253,7 @@ class GetQueryService
         string $username,
         string $contractor = 'Asplundh',
         ?int $userId = null
-    ): array {
+    ): Collection {
         $sql = CircuitWithDailyRecordsQuery::getForPlannerMonitoring($username, $contractor);
 
         return $this->executeAndHandle($sql, $userId);
@@ -357,9 +270,9 @@ class GetQueryService
         $sql = CircuitWithDailyRecordsQuery::getByJobGuid($jobGuid);
         $result = $this->executeAndHandle($sql, $userId);
 
-        // Single circuit query returns object (WITHOUT_ARRAY_WRAPPER), not array
-        // But executeJsonQuery wraps it, so we might get the object directly
-        return is_array($result) && ! isset($result[0]) ? $result : ($result[0] ?? null);
+        $first = $result->first();
+
+        return is_array($first) ? $first : null;
     }
 
     /**
@@ -389,19 +302,4 @@ class GetQueryService
         return $transformer->transform($rawData);
     }
 
-    /**
-     * Get credentials for API requests.
-     */
-    private function getCredentials(?int $userId = null): array
-    {
-        if ($this->credentialManager) {
-            return $this->credentialManager->getCredentials($userId);
-        }
-
-        // Fallback to config if no credential manager
-        return [
-            'username' => config('workstudio.service_account.username'),
-            'password' => config('workstudio.service_account.password'),
-        ];
-    }
 }

@@ -7,6 +7,7 @@ use App\Jobs\BuildAggregatesJob;
 use App\Jobs\CreateDailySnapshotsJob;
 use App\Jobs\SyncCircuitAggregatesJob;
 use App\Jobs\SyncCircuitsJob;
+use App\Support\WorkStudioStatus;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
@@ -47,16 +48,6 @@ class SyncCommand extends Command
         'regional' => 'Build regional aggregates (daily/weekly rollups by region)',
         'snapshots' => 'Create daily snapshots for all circuits',
         'all' => 'Run all sync operations',
-    ];
-
-    /**
-     * Available API statuses.
-     */
-    private const API_STATUSES = [
-        'ACTIV' => 'Active circuits',
-        'QC' => 'Quality Control',
-        'REWRK' => 'Rework',
-        'CLOSE' => 'Closed',
     ];
 
     /**
@@ -135,13 +126,13 @@ class SyncCommand extends Command
             if ($this->input->isInteractive() && ! $this->argument('type')) {
                 $statuses = multiselect(
                     label: 'Which statuses do you want to sync?',
-                    options: self::API_STATUSES,
-                    default: ['ACTIV'],
+                    options: WorkStudioStatus::labels(),
+                    default: WorkStudioStatus::defaultFilter(),
                     required: true
                 );
             } else {
                 // Default to ACTIV
-                $statuses = ['ACTIV'];
+                $statuses = WorkStudioStatus::defaultFilter();
             }
         }
 

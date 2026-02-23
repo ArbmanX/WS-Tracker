@@ -5,6 +5,9 @@ namespace App\Livewire\Assessments;
 use App\Livewire\Concerns\WithCircuitFilters;
 use App\Models\Circuit;
 use App\Models\Region;
+use App\Services\WorkStudio\Queries\CircuitAnalyticsQueryFactory;
+use App\Services\WorkStudio\Queries\CircuitFilterOptionsService;
+use App\Support\WorkStudioStatus;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -32,34 +35,6 @@ class CircuitKanban extends Component
 
     public ?int $selectedCircuitId = null;
 
-    /**
-     * Kanban column definitions with their display order.
-     *
-     * @var array<string, array{label: string, color: string, description: string}>
-     */
-    protected array $columnConfig = [
-        'ACTIV' => [
-            'label' => 'Active',
-            'color' => 'primary',
-            'description' => 'Circuits currently being worked',
-        ],
-        'QC' => [
-            'label' => 'Quality Control',
-            'color' => 'warning',
-            'description' => 'Awaiting QC review',
-        ],
-        'REWRK' => [
-            'label' => 'Rework',
-            'color' => 'error',
-            'description' => 'Needs corrections',
-        ],
-        'CLOSE' => [
-            'label' => 'Closed',
-            'color' => 'success',
-            'description' => 'Completed circuits',
-        ],
-    ];
-
     public function mount(): void
     {
         $this->initializeWithCircuitFilters();
@@ -73,7 +48,7 @@ class CircuitKanban extends Component
     #[Computed]
     public function columns(): array
     {
-        return $this->columnConfig;
+        return WorkStudioStatus::kanbanColumns();
     }
 
     /**
@@ -84,11 +59,8 @@ class CircuitKanban extends Component
     #[Computed]
     public function circuitsByStatus(): Collection
     {
-        $query = Circuit::query()
-            ->with(['region'])
-            ->whereNull('deleted_at')
-            ->notExcluded()
-            ->forAnalytics();
+        $query = app(CircuitAnalyticsQueryFactory::class)->baseIncluded()
+            ->with(['region']);
 
         // Apply circuit filters from trait (status, cycle type)
         $this->applyCircuitFilters($query);
@@ -121,7 +93,7 @@ class CircuitKanban extends Component
 
         // Ensure all configured columns exist in the result
         $result = collect();
-        foreach (array_keys($this->columnConfig) as $status) {
+        foreach (array_keys($this->columns) as $status) {
             $result[$status] = $grouped->get($status, collect());
         }
 
@@ -173,13 +145,7 @@ class CircuitKanban extends Component
     #[Computed]
     public function planners(): Collection
     {
-        return Circuit::query()
-            ->forAnalytics()
-            ->whereNotNull('taken_by')
-            ->where('taken_by', '!=', '')
-            ->distinct()
-            ->orderBy('taken_by')
-            ->pluck('taken_by');
+        return app(CircuitFilterOptionsService::class)->analyticsPlannerTakenBy();
     }
 
     /**
@@ -228,6 +194,7 @@ class CircuitKanban extends Component
     /**
      * Check if any filters are active.
      */
+    #[Computed]
     public function hasAnyFilters(): bool
     {
         return $this->hasActiveCircuitFilters()

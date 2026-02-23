@@ -63,16 +63,7 @@
                                 @endif
                             />
                             <span class="flex-1 text-sm">{{ $label }}</span>
-                            @php
-                                $statusBadge = match($status) {
-                                    'ACTIV' => 'badge-primary',
-                                    'QC' => 'badge-warning',
-                                    'CLOSE' => 'badge-success',
-                                    'REWRK' => 'badge-error',
-                                    default => 'badge-neutral',
-                                };
-                            @endphp
-                            <span class="badge {{ $statusBadge }} badge-xs">{{ $status }}</span>
+                            <span class="badge {{ \App\Support\WorkStudioStatus::badgeClass($status) }} badge-xs">{{ $status }}</span>
                         </label>
                     </li>
                 @endforeach

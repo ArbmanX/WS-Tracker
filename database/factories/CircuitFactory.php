@@ -77,7 +77,7 @@ class CircuitFactory extends Factory
      */
     public function rework(): static
     {
-        return $this->withApiStatus('REWORK');
+        return $this->withApiStatus('REWRK');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Livewire\Assessments;
 
 use App\Models\Circuit;
 use App\Services\WorkStudio\WorkStudioApiService;
+use App\Support\WorkStudioStatus;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -81,7 +82,7 @@ class DataComparison extends Component
 
         try {
             $api = app(WorkStudioApiService::class);
-            $rawCircuits = $api->getCircuitsByStatus('ACTIV');
+            $rawCircuits = $api->getCircuitsByStatus(WorkStudioStatus::ACTIVE);
 
             // Filter by domain if specified
             if ($this->domainFilter) {
