@@ -1,0 +1,3 @@
+[submodule "packages/leafwire"]
+	path = packages/leafwire
+	url = https://github.com/Livewire-maps/Leafwire.git
