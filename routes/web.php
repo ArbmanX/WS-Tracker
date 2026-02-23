@@ -1,29 +1,28 @@
 <?php
 
-use App\ExecutionTimer;
-use App\Livewire\Admin\SyncControl;
-use App\Livewire\Admin\SyncHistory;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Livewire\Admin\UserManagement;
-use App\Livewire\Admin\UnlinkedPlanners;
 use App\Livewire\Admin\AnalyticsSettings;
 use App\Livewire\Admin\PlannerManagement;
-use App\Livewire\DataManagement\SyncLogs;
-use App\Livewire\DataManagement\Endpoints;
+use App\Livewire\Admin\SyncControl;
+use App\Livewire\Admin\SyncHistory;
+use App\Livewire\Admin\UnlinkedPlanners;
+use App\Livewire\Admin\UserManagement;
 use App\Livewire\Assessments\CircuitKanban;
-use App\Livewire\DataManagement\Exclusions;
+use App\Livewire\Assessments\Dashboard\Overview;
 use App\Livewire\Assessments\DataComparison;
-use App\Services\WorkStudio\GetQueryService;
-use App\Services\WorkStudio\ResourceGroupAccessService;
-use App\Livewire\DataManagement\TableManager;
-use App\Livewire\Onboarding\OnboardingWizard;
 use App\Livewire\Assessments\PlannerAnalytics;
 use App\Livewire\DataManagement\CircuitBrowser;
-use App\Livewire\Assessments\Dashboard\Overview;
+use App\Livewire\DataManagement\Endpoints;
+use App\Livewire\DataManagement\Exclusions;
 use App\Livewire\DataManagement\Index as DataManagementIndex;
+use App\Livewire\DataManagement\SyncLogs;
+use App\Livewire\DataManagement\TableManager;
+use App\Livewire\MapDemo;
+use App\Livewire\Onboarding\OnboardingWizard;
+use App\Services\WorkStudio\GetQueryService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
-/* Parameters 
+/* Parameters
 |  - full_scope
 |  - active_owned
 |  - username
@@ -36,24 +35,23 @@ use App\Livewire\DataManagement\Index as DataManagementIndex;
 Route::get('/assessment-jobguids', function (GetQueryService $queryService) {
     $data = $queryService->getJobGuids();
     dd($data);
+
     return response()->json($data);
 });
 
 Route::get('/system-wide-metrics', function (GetQueryService $queryService) {
     $data = $queryService->getSystemWideMetrics();
     dd($data->first());
+
     return response()->json($data);
 });
 
 Route::get('/regional-metrics', function (GetQueryService $queryService) {
     $data = $queryService->getRegionalMetrics();
     dd($data);
+
     return response()->json($data);
 });
-
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -83,9 +81,14 @@ Route::get('/onboarding', OnboardingWizard::class)
     ->name('onboarding');
 
 // Dashboard redirects to assessments overview
-Route::get('dashboard', fn() => redirect()->route('assessments.overview'))
+Route::get('dashboard', fn () => redirect()->route('assessments.overview'))
     ->middleware(['auth', 'verified', 'onboarded'])
     ->name('dashboard');
+
+// Map demo (Leafwire test page)
+Route::get('/map-demo', MapDemo::class)
+    ->middleware(['auth', 'verified', 'onboarded'])
+    ->name('map-demo');
 
 // Assessments routes
 Route::middleware(['auth', 'verified', 'onboarded'])->prefix('assessments')->name('assessments.')->group(function () {
@@ -116,4 +119,4 @@ Route::middleware(['auth', 'verified', 'onboarded', 'sudo_admin'])->prefix('admi
     Route::get('/data/tables', TableManager::class)->name('data.tables');
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

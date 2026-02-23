@@ -50,6 +50,9 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        {{-- Leafwire (Leaflet maps) assets --}}
+        @leafwireStyles
+
         {{-- User Preferences - Makes DB preferences available to Alpine stores --}}
         <x-layout.preferences-init />
 
@@ -157,5 +160,8 @@
                 <x-layout.sidebar :currentRoute="Route::currentRouteName()" />
             </div>
         </div>
+
+        {{-- Leafwire (Leaflet maps) scripts - must be after Livewire --}}
+        @leafwireScripts
     </body>
 </html>

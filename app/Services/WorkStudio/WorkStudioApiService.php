@@ -2,82 +2,21 @@
 
 namespace App\Services\WorkStudio;
 
-use App\Services\WorkStudio\Contracts\WorkStudioApiInterface;
-use App\Services\WorkStudio\Transformers\CircuitTransformer;
-use App\Services\WorkStudio\Transformers\DDOTableTransformer;
 use Exception;
-use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Client\ConnectionException;
+use App\Services\WorkStudio\Contracts\WorkStudioApiInterface;
 
 class WorkStudioApiService implements WorkStudioApiInterface
 {
-    public string $circuitQueryStatement =
-        "SELECT
-            WSREQSS.JOBGUID AS Job_ID,
-            VEGJOB.LINENAME AS Line_Name,
-            WSREQSS.WO AS Work_Order,
-            WSREQSS.EXT AS Extension,
-            WSREQSS.STATUS AS Status,
-            WSREQSS.TAKEN AS Taken,
-
-            YEAR(
-                REPLACE(
-                    REPLACE(
-                        WPStartDate_Assessment_Xrefs.WP_STARTDATE, '/Date(', ''),
-                 ')/', '')
-            ) AS Scope_Year,
-
-            VEGJOB.OPCO AS Utility,
-            VEGJOB.REGION AS Region,
-            VEGJOB.SERVCOMP AS Department,
-            WSREQSS.JOBTYPE AS Job_Type,
-            VEGJOB.CYCLETYPE AS Cycle_Type,
-
-            VEGJOB.LENGTH AS Total_Miles,
-            VEGJOB.LENGTHCOMP AS Completed_Miles,
-            VEGJOB.PRCENT AS Percent_Complete,
-
-            VEGJOB.CONTRACTOR AS Contractor,
-            WSREQSS.TAKENBY AS Current_Owner,
-            SS.MODIFIEDBY AS Last_Modified_By,
-            FORMAT(
-                CAST(
-                    CAST(SS.EDITDATE AS DATETIME)
-                    AT TIME ZONE 'UTC'
-                    AT TIME ZONE 'Eastern Standard Time'
-                AS DATETIME),
-                    'MM/dd/yyyy h:mm tt'
-            ) AS Last_Modified_On,
-
-            WSREQSS.ASSIGNEDTO AS Assigned_To,
-            VEGJOB.COSTMETHOD AS Cost_Method,
-            VEGJOB.CIRCCOMNTS AS Circuit_Comments
-
-            FROM SS
-            INNER JOIN SS AS WSREQSS ON SS.JOBGUID = WSREQSS.JOBGUID
-            INNER JOIN VEGJOB ON SS.JOBGUID = VEGJOB.JOBGUID
-            LEFT JOIN WPStartDate_Assessment_Xrefs ON SS.JOBGUID = WPStartDate_Assessment_Xrefs.Assess_JOBGUID
-            WHERE VEGJOB.REGION IN (
-                SELECT RESOURCEPERSON.GROUPDESC
-                FROM RESOURCEPERSON
-                WHERE RESOURCEPERSON.GROUPTYPE = 'GROUP'
-                AND RESOURCEPERSON.USERNAME = 'ASPLUNDH\\cnewcombe'
-            )
-            AND WSREQSS.STATUS = 'ACTIV'
-            AND VEGJOB.CONTRACTOR IN ('Asplundh', 'PPL')
-            AND WSREQSS.JOBTYPE IN ('Assessment', 'Assessment Dx', 'Split_Assessment', 'Tandem_Assessment')
-        ORDER BY SS.EDITDATE DESC, SS.WO DESC, SS.EXT DESC";
-
     private ?int $currentUserId = null;
 
     public function __construct(
         private ?ApiCredentialManager $credentialManager,
-        private ?DDOTableTransformer $ddoTransformer,
-        private ?CircuitTransformer $circuitTransformer,
     ) {}
 
     /**
@@ -97,68 +36,6 @@ class WorkStudioApiService implements WorkStudioApiInterface
 
             return false;
         }
-    }
-
-    /**
-     * Get view data from WorkStudio using a view GUID and filter.
-     */
-    public function getViewData(string $viewGuid, array $filter, ?int $userId = null): array
-    {
-        $this->currentUserId = $userId;
-        $credentials = $this->credentialManager->getCredentials($userId);
-
-        $payload = [
-            'Protocol' => 'GETVIEWDATA',
-            'ViewDefinitionGuid' => $viewGuid,
-            'ViewFilter' => array_merge([
-                'PersistFilter' => true,
-                'ClassName' => 'TViewFilter',
-            ], $filter),
-            'ResultFormat' => 'DDOTable',
-        ];
-
-        return $this->makeRequest($payload, $credentials, $userId);
-    }
-
-    /**
-     * Get circuits (vegetation assessments) filtered by status.
-     */
-    public function getCircuitsByStatus(string $status, ?int $userId = null): Collection
-    {
-        $response = $this->getViewData(
-            config('workstudio.views.vegetation_assessments'),
-            [
-                'FilterName' => 'By Job Status',
-                'FilterValue' => $status,
-                'FilterCaption' => $this->getStatusCaption($status),
-            ],
-            $userId
-        );
-
-        // Transform DDOTable to collection of arrays
-        $rawData = $this->ddoTransformer->transform($response);
-
-        // Transform to circuit data
-        return $this->circuitTransformer->transformCollection($rawData);
-    }
-
-    /**
-     * Get planned units for a specific work order.
-     */
-    public function getPlannedUnits(string $workOrder, ?int $userId = null): Collection
-    {
-        $response = $this->getViewData(
-            config('workstudio.views.planned_units'),
-            [
-                'FilterName' => 'WO#',
-                'FilterValue' => $workOrder,
-                'FilterCaption' => 'WO Number',
-            ],
-            $userId
-        );
-
-        // Return raw DDOTable data as collection for aggregate processing
-        return $this->ddoTransformer->transform($response);
     }
 
     /**

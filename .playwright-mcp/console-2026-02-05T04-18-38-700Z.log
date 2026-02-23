@@ -1,0 +1,4 @@
+[   16160ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/_boost/browser-logs:0
+[   16161ms] [ERROR] Failed to send logs: TypeError: Failed to fetch
+    at window.fetch (http://localhost:8000/_debugbar/assets/javascript?v=1766511420:2038:39)
+    at flushLogs (http://localhost:8000/login:72:9) @ http://localhost:8000/login:80
